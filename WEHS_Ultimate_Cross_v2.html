@@ -102,9 +102,9 @@
         <div class="form-group">
             <label>投保計劃：</label>
             <select id="plan" onchange="checkUpgrade()">
-                <option value="10" selected>計劃 10 (總額度250萬)</option>
-                <option value="20">計劃 20 (總額度500萬)</option>
-                <option value="30">計劃 30 (總額度750萬)</option>
+                <option value="10" selected>計畫 10 (雙帳戶各250萬)</option>
+                <option value="20">計畫 20 (雙帳戶各500萬)</option>
+                <option value="30">計畫 30 (雙帳戶各750萬)</option>
             </select>
         </div>
     </div>
@@ -245,7 +245,7 @@
                     <div>
                         <h3>💡 進階試算：升級計畫 20 效益分析</h3>
                         每年只需增加 <strong style="color:#d35400;">${(diff_premium/10000).toFixed(2)} 萬</strong> (約 +${diff_ratio}%)，<br>
-                        即可讓 74 歲後的實支實付總額度從 250 萬 <b style="color:#c0392b;">直接翻倍至 500 萬</b>！各項限額同步翻倍！
+                        即可讓 74 歲後的實支實付獨立額度從 250 萬 <b style="color:#c0392b;">直接翻倍至 500 萬</b>！各項限額同步翻倍！
                     </div>
                     <button class="btn-upgrade" onclick="executeUpgrade()">🚀 一鍵升級試算</button>
                 </div>
@@ -261,7 +261,7 @@
                     <div>
                         <h3>💡 進階試算：升級計畫 30 效益分析</h3>
                         每年只需增加 <strong style="color:#d35400;">${(diff_premium/10000).toFixed(2)} 萬</strong> (約 +${diff_ratio}%)，<br>
-                        即可讓 74 歲後的實支實付總額度從 500 萬 <b style="color:#c0392b;">直上頂規 750 萬</b>！從容應對最昂貴的重症醫療！
+                        即可讓 74 歲後的實支實付獨立額度從 500 萬 <b style="color:#c0392b;">直上頂規 750 萬</b>！從容應對最昂貴的重症醫療！
                     </div>
                     <button class="btn-upgrade" onclick="executeUpgrade()">🚀 一鍵升級試算</button>
                 </div>
