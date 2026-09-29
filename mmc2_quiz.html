@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    :root {
+      --primary: #3b82f6;
+    }
+    .option-label {
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      background-color: var(--card);
+      transition: all 0.2s;
+    }
+    .option-label:not(.disabled-label):hover {
+      border-color: #94a3b8;
+    }
+    .option-input {
+      margin-top: 0.25rem;
+      margin-right: 0.75rem;
+      cursor: pointer;
+    }
+    .disabled-label {
+      cursor: default;
+    }
+    .selected {
+      border-color: var(--primary) !important;
+      background-color: rgba(59, 130, 246, 0.05) !important;
+    }
+    .correct {
+      border-color: #22c55e !important;
+      background-color: rgba(34, 197, 94, 0.05) !important;
+    }
+    .wrong {
+      border-color: #ef4444 !important;
+      background-color: rgba(239, 68, 68, 0.05) !important;
+    }
+    .disabled {
+      pointer-events: none;
+      opacity: 0.9;
+    }
+    .btn {
+      background-color: var(--primary);
+      color: white;
+      padding: 0.5rem 1.5rem;
+      border-radius: 0.375rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s;
+    }
+    .btn-secondary {
+      background-color: #64748b;
+    }
+    .btn:hover:not(:disabled) { opacity: 0.9; }
+    .btn:disabled { background-color: #94a3b8; cursor: not-allowed; }
+  </style>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased p-4">
+  <div id="app" class="max-w-3xl mx-auto h-full flex flex-col min-h-[400px]"></div>
+
+  <script>
+    const questions = [
+      {
+        title: "第 1 題【單選題】：疾病等待期",
+        question: "要保人投保本保險，關於一般「疾病」與「癌症/乳房惡性腫瘤」之等待期間規定，下列何者正確？",
+        type: "single",
+        options: { "A": "一般疾病等待期為 14 日；癌症等待期為 30 日", "B": "一般疾病等待期為 30 日；癌症等待期為 90 日", "C": "一般疾病等待期為 30 日；癌症等待期為 180 日", "D": "本保險為定期險，自生效日起即無等待期限制" },
+        answer: ["B"],
+        explanation: "依保單條款首頁及第二條第十四款，一般疾病等待期間為三十日；癌症及乳房惡性腫瘤之等待期間為九十日。"
+      },
+      {
+        title: "第 2 題【單選題】：契約撤銷權",
+        question: "要保人欲行使本契約之「契約撤銷權」，應於保險單送達之翌日起算幾日內提出？",
+        type: "single",
+        options: { "A": "3 日內", "B": "5 日內", "C": "10 日內", "D": "15 日內" },
+        answer: ["C"],
+        explanation: "依第三條規定，要保人於保險單送達的翌日起算十日內，得以書面或其他約定方式向本公司撤銷本契約。"
+      },
+      {
+        title: "第 3 題【單選題】：罹癌後凍卵補助保險金",
+        question: "被保險人於保險年齡四十五歲保單年度末前，經診斷確定「首次罹患癌症」並進行取卵手術，其「罹癌後凍卵補助保險金」之給付標準為何？",
+        type: "single",
+        options: { "A": "「投保單位」乘以新臺幣三萬元", "B": "「投保單位」乘以新臺幣五萬元", "C": "「投保單位」乘以新臺幣八萬元", "D": "「投保單位」乘以新臺幣十萬元" },
+        answer: ["C"],
+        explanation: "依第十四條規定，經診斷確定「首次罹患癌症」後至衛生福利部許可之人工生殖機構接受取卵手術者，按「投保單位」乘以新臺幣八萬元給付，有效期間內以一次為限。"
+      },
+      {
+        title: "第 4 題【單選題】：不孕症特定試管嬰兒保險金（保單年度）",
+        question: "王女士投保該產品後，於「第三保單年度」進行不孕症特定試管嬰兒療程之胚胎植入，其保險金給付金額為何？",
+        type: "single",
+        options: { "A": "「投保单位」乘以新臺幣一萬元", "B": "「投保單位」乘以新臺幣三萬元", "C": "「投保單位」乘以新臺幣五萬元", "D": "「投保單位」乘以新臺幣八萬元" },
+        answer: ["C"],
+        explanation: "依第十五條規定，第一及第二保單年度為「投保單位」乘以新臺幣一萬元；第三保單年度（含）以後者，按「投保單位」乘以新臺幣五萬元給付。"
+      },
+      {
+        title: "第 5 題【單選題】：婦女關懷保險金（活產胎數）",
+        question: "被保險人於契約有效期間內分娩「第二位」活產嬰兒時，其「婦女關懷保險金」之給付金額為何？",
+        type: "single",
+        options: { "A": "「投保單位」乘以新臺幣一萬元", "B": "「投保單位」乘以新臺幣三萬元", "C": "「投保單位」乘以新臺幣五萬元", "D": "「投保單位」乘以新臺幣八萬元" },
+        answer: ["B"],
+        explanation: "依第十七條規定，第一位活產嬰兒給付一萬元；第二位活產嬰兒給付三萬元；第三位（含）以後活產嬰兒給付五萬元（均需乘以投保單位）。"
+      },
+      {
+        title: "第 6 題【單選題】：活產嬰兒保障年限",
+        question: "本保險針對活產嬰兒之「嬰兒先天性重大缺損」及「早期療育補助」保障，最長給付至該嬰兒年滿幾足歲（含）前？",
+        type: "single",
+        options: { "A": "三足歲", "B": "五足歲", "C": "七足歲", "D": "十二足歲" },
+        answer: ["C"],
+        explanation: "依保單首頁及第二條第二十三款，活產嬰兒之保障期間至多保障至其「七足歲（含）前」且契約仍有效時為止。"
+      },
+      {
+        title: "第 7 題【單選題】：累計最高總給付金額上限",
+        question: "本契約第十四條至第二十四條之各項保險金，其累計最高總給付金額限制為何？",
+        type: "single",
+        options: { "A": "「投保單位」乘以新臺幣一百萬元", "B": "「投保單位」乘以新臺幣二百萬元", "C": "「投保單位」乘以新臺幣三百六十萬元", "D": "無最高給付上限限制" },
+        answer: ["C"],
+        explanation: "依第三十二條規定，給付第十四條至第二十四條各項保險金，累計最高總給付金額以本契約「投保單位」乘以新臺幣三百六十萬元為限。"
+      },
+      {
+        title: "第 8 題【單選題】：受益人之指定與變更限制",
+        question: "根據第四十一條規定，關於第十四條至第二十四條保險金受益人之敘述，何者正確？",
+        type: "single",
+        options: { "A": "經要保人書面申請，可指定為配偶或直系血親", "B": "經保險公司同意後，得變更為法定繼承人", "C": "受益人固定為被保險人本人，本公司不受理指定或變更", "D": "預設為被保險人本人，但身故後可由子女繼承領取" },
+        answer: ["C"],
+        explanation: "依第四十一條第一項，本契約第十四條至第二十四條保險金之受益人為被保險人本人，本公司不受理其指定及變更。"
+      },
+      {
+        title: "第 9 題【單選題】：身故保險金給付計算",
+        question: "被保險人於本契約有效期間內身故時，保險公司應如何給付身故保險金？",
+        type: "single",
+        options: { "A": "給付「壽險當年度保險金額」與「保單價值準備金」兩者之和", "B": "給付「壽險當年度保險金額」與「保單價值準備金」兩者中之最大值", "C": "僅退還已繳保費總和的 1.06 倍", "D": "給付固定定額新臺幣 100 萬元" },
+        answer: ["B"],
+        explanation: "依第二十六條第一項，被保險人身故時，按身故當時「壽險當年度保險金額」與「保單價值準備金」二者中之最大值給付。"
+      },
+      {
+        title: "第 10 題【單選題】：一至六級失能豁免保費之效力",
+        question: "被保險人於繳費期間內致成第一至六級失能並申請豁免保費後，下列敘述何者正確？",
+        type: "single",
+        options: { "A": "本契約效力即行終止", "B": "本契約繼續有效，且當期已繳之未滿期保費按日數比例返還", "C": "要保人仍得隨時申請辦理減額繳清保險", "D": "豁免保費後，健康險部分之給付額度將減半計算" },
+        answer: ["B"],
+        explanation: "依第二十五條，豁免保費自診斷確定翌日起算，返還未滿期保費，契約繼續有效，且要保人不得再辦理減額繳清保險。"
+      },
+      {
+        title: "第 11 題【複選題】：特定女性不孕症之定義要件",
+        question: "關於「特定女性不孕症」之條款定義，下列哪些條件符合規範？（多選）",
+        type: "multiple",
+        options: { "A": "男女伴侶經過 12 個月以上無避孕規律性生活而未成功受孕", "B": "須經婦產科專科醫師診斷確診", "C": "因無排卵、輸卵管、子宮、卵巢或子宮內膜異位等原因所致", "D": "包含了「未特定原因」之原發性不孕症" },
+        answer: ["A", "B", "C"],
+        explanation: "依第二條十四款（一），特定女性不孕症明確排除「不含未特定原因」，故 D 選項錯誤，其餘皆符合條款約定。"
+      },
+      {
+        title: "第 12 題【複選題】：寬限期間與停效催告",
+        question: "關於第二期以後分期保險費交付與寬限期間之規定，下列哪些敘述正確？（多選）",
+        type: "multiple",
+        options: { "A": "年繳或半年繳者，自催告到達翌日起 30 日內為寬限期間", "B": "月繳或季繳者，不另為催告，自保單所載交付日期翌日起 30 日為寬限期間", "C": "寬限期間內發生保險事故，保險公司不負保險責任", "D": "逾寬限期間仍未交付者，契約自寬限期間終了翌日起停止效力" },
+        answer: ["A", "B", "D"],
+        explanation: "依第六條，寬限期間內發生保險事故，保險公司「仍負保險責任」，故 C 選項錯誤。"
+      },
+      {
+        title: "第 13 題【選擇題】：癌症乳房重建手術保險金",
+        question: "被保險人經確診罹患「乳房惡性腫瘤」並於醫院施行「癌症乳房重建手術」，其給付額度與次數限制為何？",
+        type: "single",
+        options: { "A": "每側乳房按投保單位乘以 5 萬元，每側以一次為限", "B": "每側乳房按投保單位乘以 10 萬元，每側以一次為限", "C": "雙側乳房合計最高給付 10 萬元，一生以一次為限", "D": "按投保單位乘以 20 萬元，不限次數" },
+        answer: ["B"],
+        explanation: "依第二十條，每側乳房按「投保單位」乘以新臺幣十萬元給付，本契約有效期間內每側乳房各以一次為限。"
+      },
+      {
+        title: "第 14 題【選擇題】：皮膚移植手術醫療保險金給付條件",
+        question: "被保險人因疾病或意外接受皮膚移植手術，若受植總面積「大於或等於 25 平方公分」，保險金如何給付？",
+        type: "single",
+        options: { "A": "「投保單位」乘以新臺幣 2.5 萬元", "B": "「投保單位」乘以新臺幣 5 萬元", "C": "「投保單位」乘以新臺幣 8 萬元", "D": "「投保單位」乘以新臺幣 10 萬元" },
+        answer: ["B"],
+        explanation: "依第二十四條，受植總面積小於 25 平方公分給付 2.5 萬元；大於或等於 25 平方公分則給付 5 萬元（均乘以投保單位）。"
+      },
+      {
+        title: "第 15 題【複選題】：契約復效程序",
+        question: "關於本契約停止效力後申請「復效」之規定，下列哪些敘述符合條款？（多選）",
+        type: "multiple",
+        options: { "A": "要保人得在停效日起二年內申請復效", "B": "停效日起六個月內提出申請並清償欠繳保費者，自翌日上午零時起恢復效力，免附可保證明", "C": "停效超過六個月申請復效，保險公司得要求提供可保證明", "D": "被保險人危險程度重大變更達拒保程度者，保險公司仍不得拒絕復效" },
+        answer: ["A", "B", "C"],
+        explanation: "依第八條第四項，被保險人之危險程度有重大變更已達拒絕承保程度者，本公司得拒絕其復效，故 D 選項錯誤。"
+      },
+      {
+        title: "第 16 題【複選題】：除外責任（第十四條至第二十四條）",
+        question: "被保險人因下列哪些原因導致保險事故發生時，保險公司不負給付第十四條至第二十四條保險金之責任？（多選）",
+        type: "multiple",
+        options: { "A": "被保險人之故意行為（含自殺及自殺未遂）", "B": "被保險人之犯罪行為", "C": "被保險人非法施用防制毒品相關法令所稱之毒品", "D": "被保險人因不可抗力之意外事故" },
+        answer: ["A", "B", "C"],
+        explanation: "依第三十三條第三項，故意行為、犯罪行為及非法施用毒品均屬於健康險及豁免保費之除外責任。"
+      },
+      {
+        title: "第 17 題【單選題】：減少投保單位之規定",
+        question: "要保人申請減少「投保單位」時，下列敘述何者錯誤？",
+        type: "single",
+        options: { "A": "減少後之投保單位不得低於最低承保單位", "B": "減少之部分視為辦理契約終止（解約）", "C": "第 14~24 條保險金累計最高總給付額度（360萬元x單位）將不受影響，維持原額度", "D": "保險公司按減少後之投保單位計算後續保險給付額度" },
+        answer: ["C"],
+        explanation: "依第三十二條第二項，辦理減少投保單位時，累計最高總給付金額將「等比例減少」，故 C 敘述錯誤。"
+      },
+      {
+        title: "第 18 題【單選題】：減額繳清保險之營業費用扣除上限",
+        question: "要保人申請改保「減額繳清保險」時，保險公司扣除之營業費用上限為何？",
+        type: "single",
+        options: { "A": "申請當時原「壽險當年度保險金額」之百分之一或保價金與解約金差額，兩者較小者", "B": "申請當時原「壽險當年度保險金額」之百分之五", "C": "一律扣除新臺幣 5,000 元固定手續費", "D": "扣除保單價值準備金之百分之十" },
+        answer: ["A"],
+        explanation: "依第三十七條第三項，營業費用以申請當時原「壽險當年度保險金額」之百分之一或以其保價金與解約金之差額，兩者較小者為限。"
+      },
+      {
+        title: "第 19 題【選擇題】：早期療育補助保險金",
+        question: "活產嬰兒於七足歲前經診斷確定為「發展遲緩」並實際接受早期療育治療，其「早期療育補助保險金」給付條件為何？",
+        type: "single",
+        options: { "A": "按投保單位乘以 3 萬元，每一位活產嬰兒以一次為限", "B": "按投保單位乘以 5 萬元，每年可申請一次", "C": "按投保單位乘以 8 萬元，每一位活產嬰兒以一次為限", "D": "按投保單位乘以 10 萬元，最高給付至七足歲" },
+        answer: ["C"],
+        explanation: "依第十九條，於第一次接受早期療育治療時，按「投保單位」乘以新臺幣八萬元給付，每一位活產嬰兒以一次為限。"
+      },
+      {
+        title: "第 20 題【選擇題】：特定手術醫療保險金（重複手術規則）",
+        question: "被保險人在「同一次手術中，於同一手術位置」接受兩項（含）以上附表三之特定手術時，保險公司如何給付？",
+        type: "single",
+        options: { "A": "兩項手術給付金額加總給付", "B": "僅按給付金額最高之項目給付一次", "C": "按各項目平均金額給付", "D": "僅給付第一項列定之手術項目" },
+        answer: ["B"],
+        explanation: "依第二十一條第二項，在同一次手術中於同一手術位置接受兩項（含）以上特定手術時，僅按給付金額較高之項目給付。"
+      },
+      {
+        title: "第 21 題【選擇題】：嚴重全身性紅斑性狼瘡腎病變醫療保險金",
+        question: "罹患「嚴重全身性紅斑性狼瘡腎病變」時，其保險金給付額度與次數限制為何？",
+        type: "single",
+        options: { "A": "按投保單位乘以 30 萬元，以一次為限", "B": "按投保單位乘以 50 萬元，以一次為限", "C": "按投保单位乘以 100 萬元，以兩次為限", "D": "依實際醫療收據實支實付，最高 50 萬元" },
+        answer: ["B"],
+        explanation: "依第二十二條，按「投保單位」乘以新臺幣五十萬元給付「嚴重全身性紅斑性狼瘡腎病變醫療保險金」，本契約有效期間內以一次為限。"
+      },
+      {
+        title: "第 22 題【選擇題】：嚴重類風濕性關節炎醫療保險金",
+        question: "診斷確定罹患「嚴重類風濕性關節炎」時，其保險金給付金額為何？",
+        type: "single",
+        options: { "A": "「投保單位」乘以新臺幣 20 萬元", "B": "「投保單位」乘以新臺幣 36 萬元", "C": "「投保單位」乘以新臺幣 50 萬元", "D": "「投保單位」乘以新臺幣 80 萬元" },
+        answer: ["C"],
+        explanation: "依第二十三條，診斷確定罹患嚴重類風濕性關節炎時，按「投保單位」乘以新臺幣五十萬元給付，有效期間內以一次為限。"
+      },
+      {
+        title: "第 23 題【選擇題】：妊娠期特定併發症保險金（同一次懷孕多項併發症）",
+        question: "被保險人在「同一次懷孕中」，若經診斷確定罹患兩項（含）以上之妊娠期特定併發症（如同時發生子宮外孕與子癲症），保險公司如何給付？",
+        type: "single",
+        options: { "A": "依併發症項目分別給付並累加金額", "B": "僅按給付金額較高之項目給付一次", "C": "均按固定金額 10 萬元給付", "D": "需扣除 50% 扣除額後給付" },
+        answer: ["B"],
+        explanation: "依第十六條第二項，被保險人在同一次懷孕中，有兩項（含）以上併發症時，本公司僅按給付金額較高之項目給付。"
+      },
+      {
+        title: "第 24 題【選擇題】：嬰兒先天性重大缺損保險金（母親身故後之效力）",
+        question: "若活產嬰兒於 7 足歲前確診罹患先天性重大缺損，但被保險人（母親）已身故，保險公司是否仍負給付責任？",
+        type: "single",
+        options: { "A": "否，因被保險人已身故，契約即告終止不予給付", "B": "是，條款明定被保險人已身故或嬰兒未能接受手術即死亡者，保險公司仍負給付責任", "C": "否，必須轉由法定繼承人重新投保後方可申請", "D": "是，但給付金額需按原額度折半給付" },
+        answer: ["B"],
+        explanation: "依第十八條第三項，活產嬰兒於 7 足歲前罹患先天性重大缺損，若被保險人已身故或該嬰兒未能接受手術即死亡，本公司仍負給付保險金之責任。"
+      },
+      {
+        title: "第 25 題【選擇題】：嬰兒先天性重大缺損保險金給付額度",
+        question: "活產嬰兒於七足歲前經教學醫院專科醫師確診罹患附表一之「嬰兒先天性重大缺損」，其保險金給付金額為何？",
+        type: "single",
+        options: { "A": "按投保單位乘以新臺幣 10 萬元", "B": "按投保單位乘以新臺幣 30 萬元", "C": "按投保單位乘以新臺幣 50 萬元", "D": "按投保單位乘以新臺幣 100 萬元" },
+        answer: ["C"],
+        explanation: "依第十八條第一項，經教學醫院專科醫師確診罹患附表一之嬰兒先天性重大缺損時，按「投保單位」乘以新臺幣五十萬元給付，每一位活產嬰兒以一次為限。"
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let answersHistory = []; // Store history objects: { userAnswers: [], isCorrect: boolean }
+    let selectedOptions = new Set();
+
+    const app = document.getElementById('app');
+
+    function renderStart() {
+      app.innerHTML = `
+        <div class="bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] rounded-xl p-8 shadow-sm flex flex-col items-center justify-center h-full my-auto text-center">
+          <h1 class="text-3xl font-bold mb-4">MMC2條款小學堂</h1>
+          <p class="text-[var(--muted-foreground)] mb-8 text-lg">共 25 題測驗，測試您對保單條款的了解！</p>
+          <button class="btn text-lg" onclick="startQuiz()">開始測驗</button>
+        </div>
+      `;
+    }
+
+    function startQuiz() {
+      currentQuestionIndex = 0;
+      answersHistory = [];
+      renderQuestion();
+    }
+
+    function calculateScore() {
+      return answersHistory.filter(h => h && h.isCorrect).length;
+    }
+
+    function renderQuestion() {
+      const q = questions[currentQuestionIndex];
+      const isMulti = q.type === 'multiple';
+      
+      const history = answersHistory[currentQuestionIndex];
+      const isAnswered = !!history;
+      
+      if (!isAnswered) {
+        selectedOptions.clear();
+      }
+
+      const userAnswersArray = isAnswered ? history.userAnswers : Array.from(selectedOptions);
+
+      let optionsHtml = '';
+      for (const [key, text] of Object.entries(q.options)) {
+        const isChecked = userAnswersArray.includes(key);
+        optionsHtml += `
+          <label class="option-label ${isAnswered ? 'disabled-label' : ''}" id="label-${key}">
+            <input type="${isMulti ? 'checkbox' : 'radio'}" name="answer" value="${key}" class="option-input" 
+              onchange="handleOptionChange('${key}', ${isMulti})" 
+              ${isChecked ? 'checked' : ''} 
+              ${isAnswered ? 'disabled' : ''}>
+            <div>
+              <span class="font-semibold mr-1">${key}.</span>
+              <span>${text}</span>
+            </div>
+          </label>
+        `;
+      }
+
+      app.innerHTML = `
+        <div class="bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] rounded-xl p-6 shadow-sm flex-1 flex flex-col">
+          <div class="flex justify-between items-center mb-4 text-sm text-[var(--muted-foreground)] border-b border-[var(--border)] pb-2">
+            <span class="font-semibold">${q.title}</span>
+            <span>第 ${currentQuestionIndex + 1} / ${questions.length} 題</span>
+          </div>
+          
+          <div class="text-lg font-medium mb-6 leading-relaxed">
+            ${q.question}
+          </div>
+          
+          <div class="flex-1 ${isAnswered ? 'disabled' : ''}" id="options-container">
+            ${optionsHtml}
+          </div>
+
+          <div id="feedback-container" class="mt-4 mb-4 hidden p-4 rounded-lg bg-[var(--muted)] text-sm">
+            <div id="feedback-icon" class="font-bold text-lg mb-1"></div>
+            <div id="feedback-text" class="text-[var(--foreground)] leading-relaxed"></div>
+          </div>
+
+          <div class="mt-4 flex justify-between items-center pt-4 border-t border-[var(--border)]">
+            <button id="prev-btn" class="btn btn-secondary ${currentQuestionIndex === 0 ? 'invisible' : ''}" onclick="prevQuestion()">上一題</button>
+            <div class="text-sm font-medium" id="score-display">目前分數: ${calculateScore()}</div>
+            <button id="action-btn" class="btn" ${!isAnswered && selectedOptions.size === 0 ? 'disabled' : ''} onclick="submitOrNext()">
+              ${isAnswered ? (currentQuestionIndex === questions.length - 1 ? '看結果' : '下一題') : '送出答案'}
+            </button>
+          </div>
+        </div>
+      `;
+
+      if (isAnswered) {
+        applyFeedbackStyling(q, history.userAnswers);
+      }
+    }
+
+    function handleOptionChange(key, isMulti) {
+      if (answersHistory[currentQuestionIndex]) return; // already answered
+      
+      const btn = document.getElementById('action-btn');
+      
+      if (!isMulti) {
+        selectedOptions.clear();
+        selectedOptions.add(key);
+        // UI updates for single select radio button styling
+        document.querySelectorAll('.option-label').forEach(el => el.classList.remove('selected'));
+        document.getElementById(`label-${key}`).classList.add('selected');
+      } else {
+        const checkbox = document.querySelector(`input[value="${key}"]`);
+        if (checkbox.checked) {
+          selectedOptions.add(key);
+          document.getElementById(`label-${key}`).classList.add('selected');
+        } else {
+          selectedOptions.delete(key);
+          document.getElementById(`label-${key}`).classList.remove('selected');
+        }
+      }
+
+      btn.disabled = selectedOptions.size === 0;
+    }
+
+    function applyFeedbackStyling(q, userAnswersArray) {
+      const correctAnswers = q.answer;
+      
+      // Highlight options
+      for (const [key, text] of Object.entries(q.options)) {
+        const labelEl = document.getElementById(`label-${key}`);
+        labelEl.classList.remove('selected');
+        
+        if (correctAnswers.includes(key)) {
+          labelEl.classList.add('correct');
+        } else if (userAnswersArray.includes(key)) {
+          labelEl.classList.add('wrong');
+        }
+      }
+
+      const isCorrect = 
+        correctAnswers.length === userAnswersArray.length && 
+        correctAnswers.every(ans => userAnswersArray.includes(ans));
+
+      // Show feedback
+      const feedbackContainer = document.getElementById('feedback-container');
+      const feedbackIcon = document.getElementById('feedback-icon');
+      const feedbackText = document.getElementById('feedback-text');
+      
+      feedbackContainer.classList.remove('hidden');
+      if (isCorrect) {
+        feedbackIcon.innerHTML = '✅ 答對了！';
+        feedbackIcon.className = 'font-bold text-lg mb-1 text-green-600';
+      } else {
+        feedbackIcon.innerHTML = `❌ 答錯了！正確答案是：${correctAnswers.join(', ')}`;
+        feedbackIcon.className = 'font-bold text-lg mb-1 text-red-600';
+      }
+      feedbackText.innerHTML = q.explanation;
+    }
+
+    function submitOrNext() {
+      const history = answersHistory[currentQuestionIndex];
+      if (history) { 
+        // already answered, go to next
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+          renderQuestion();
+        } else {
+          renderResult();
+        }
+        return;
+      }
+
+      // submitting answer
+      const q = questions[currentQuestionIndex];
+      const correctAnswers = q.answer;
+      const userAnswersArray = Array.from(selectedOptions);
+      
+      const isCorrect = 
+        correctAnswers.length === userAnswersArray.length && 
+        correctAnswers.every(ans => userAnswersArray.includes(ans));
+
+      answersHistory[currentQuestionIndex] = {
+        userAnswers: userAnswersArray,
+        isCorrect: isCorrect
+      };
+
+      // Disable inputs
+      document.querySelectorAll('.option-input').forEach(input => {
+        input.disabled = true;
+      });
+      document.querySelectorAll('.option-label').forEach(label => {
+        label.classList.add('disabled-label');
+      });
+      document.getElementById('options-container').classList.add('disabled');
+
+      applyFeedbackStyling(q, userAnswersArray);
+
+      // Update button
+      const btn = document.getElementById('action-btn');
+      btn.innerText = currentQuestionIndex === questions.length - 1 ? '看結果' : '下一題';
+      
+      // Update score
+      document.getElementById('score-display').innerText = `目前分數: ${calculateScore()}`;
+    }
+
+    function prevQuestion() {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        renderQuestion();
+      }
+    }
+
+    function renderResult() {
+      const finalScore = calculateScore();
+      const percentage = Math.round((finalScore / questions.length) * 100);
+      let message = '';
+      if (percentage >= 90) message = '太棒了！您對條款非常了解。';
+      else if (percentage >= 60) message = '不錯喔！但還有進步空間。';
+      else message = '建議您再多複習一下條款喔！';
+
+      app.innerHTML = `
+        <div class="bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] rounded-xl p-8 shadow-sm flex flex-col items-center justify-center h-full my-auto text-center">
+          <h1 class="text-3xl font-bold mb-6">測驗完成</h1>
+          <div class="text-5xl font-bold text-blue-600 mb-2">${finalScore} / ${questions.length}</div>
+          <div class="text-xl mb-6">得分: ${percentage} 分</div>
+          <p class="text-[var(--muted-foreground)] mb-8">${message}</p>
+          <div class="flex gap-4">
+            <button class="btn btn-secondary" onclick="prevQuestion()">回顧最後一題</button>
+            <button class="btn" onclick="startQuiz()">重新測驗</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Initialize
+    renderStart();
+  </script>
+</body>
+</html>
