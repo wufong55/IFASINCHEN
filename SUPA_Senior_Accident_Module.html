@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>南山人壽長享平安終身傷害保險 (SUPA) 互動試算模組</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="長享平安SUPA">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <style>
+        :root {
+            --ns-blue: #005596;
+            --ns-blue-dark: #003b6b;
+            --ns-blue-light: #e6f2fa;
+            --ns-teal: #1d6f42;
+            --ns-teal-light: #eaf4ee;
+            --ns-orange: #e66b27;
+            --ns-orange-light: #fdf0e6;
+            --ns-purple: #884b9d;
+            --ns-purple-light: #f4ecf7;
+            --ns-red: #d32f2f;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --bg-page: #f1f5f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            line-height: 1.5;
+            padding: 20px 15px 80px;
+        }
+
+        /* 浮動回首頁與列印按鈕 */
+        .floating-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 9999;
+        }
+
+        .nav-pill {
+            background-color: #1e293b;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            border: 1px solid #334155;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-pill:hover {
+            background-color: var(--ns-blue);
+            transform: translateY(-2px);
+        }
+
+        .main-wrapper {
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        /* 頂部控制面板 (可收合或列印隱藏) */
+        .control-panel {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 22px 26px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0, 85, 150, 0.08);
+            border-top: 5px solid var(--ns-blue);
+        }
+
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .control-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--ns-blue-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-badge {
+            background: var(--ns-blue-light);
+            color: var(--ns-blue);
+            font-size: 13px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 16px;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #475569;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+            background-color: #f8fafc;
+            transition: all 0.2s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: var(--ns-blue);
+            background-color: #fff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 85, 150, 0.12);
+        }
+
+        /* 步進按鈕群組 */
+        .stepper-box {
+            display: flex;
+            align-items: center;
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .stepper-btn {
+            background: #e2e8f0;
+            border: none;
+            padding: 11px 14px;
+            font-size: 16px;
+            font-weight: 900;
+            color: #334155;
+            cursor: pointer;
+            transition: background 0.15s;
+            user-select: none;
+        }
+
+        .stepper-btn:hover {
+            background: #cbd5e1;
+        }
+
+        .stepper-box input {
+            border: none;
+            text-align: center;
+            background: transparent;
+            padding: 11px 4px;
+            border-radius: 0;
+            min-width: 60px;
+        }
+
+        .stepper-box input:focus {
+            box-shadow: none;
+        }
+
+        .quick-sa-pills {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .sa-pill {
+            font-size: 12px;
+            padding: 3px 9px;
+            border-radius: 12px;
+            background: #e2e8f0;
+            color: #475569;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .sa-pill:hover, .sa-pill.active {
+            background: var(--ns-blue);
+            color: #fff;
+        }
+
+        /* 傳單主視覺容器 (模擬 DM 第一頁與現代化升級) */
+        .dm-sheet {
+            background: #ffffff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 35px rgba(15, 23, 42, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 頂部南山藍橫幅 */
+        .dm-banner {
+            background: linear-gradient(135deg, #005596 0%, #0077c8 100%);
+            color: #ffffff;
+            padding: 22px 30px 18px;
+            position: relative;
+        }
+
+        .dm-banner-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .dm-banner h1 {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .dm-banner h1 span.sub-brand {
+            font-weight: 700;
+            font-size: 26px;
+        }
+
+        .dm-code-note {
+            font-size: 13px;
+            color: #dbeafe;
+            font-weight: 600;
+        }
+
+        /* 客戶與保費摘要區 (對應 DM 上方填空區，升級為高質感資訊卡) */
+        .summary-banner {
+            background: linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%);
+            padding: 20px 30px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .summary-sentence {
+            font-size: 19px;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 2;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .hl-field {
+            display: inline-block;
+            color: var(--ns-blue);
+            font-weight: 900;
+            font-size: 22px;
+            border-bottom: 2px solid var(--ns-blue);
+            padding: 0 10px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .hl-prem {
+            color: var(--ns-red);
+            font-size: 26px;
+            font-weight: 900;
+            border-bottom: 2px solid var(--ns-red);
+            padding: 0 12px;
+        }
+
+        /* 保費雙年期快速對照卡 */
+        .prem-compare-bar {
+            margin-top: 14px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 14px;
+        }
+
+        .prem-card {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .prem-card.active {
+            border-color: var(--ns-blue);
+            background: #f0f9ff;
+            box-shadow: 0 4px 12px rgba(0, 85, 150, 0.1);
+        }
+
+        .prem-card-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .prem-card-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .prem-card-sub {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .prem-card-right {
+            text-align: right;
+        }
+
+        .prem-card-price {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--ns-blue-dark);
+        }
+
+        .prem-card.active .prem-card-price {
+            color: var(--ns-red);
+        }
+
+        .prem-card-daily {
+            font-size: 12px;
+            font-weight: 700;
+            color: #059669;
+            background: #d1fae5;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        /* 四大特色膠囊徽章 */
+        .feature-badges {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 18px 30px;
+            background: #ffffff;
+        }
+
+        .f-badge {
+            display: flex;
+            align-items: center;
+            border-radius: 40px;
+            padding: 6px 14px 6px 6px;
+            border: 2px solid;
+            font-weight: 800;
+            font-size: 16px;
+            gap: 10px;
+        }
+
+        .f-badge-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .f-badge.green { border-color: #2e7d32; color: #2e7d32; background: #f1f8e9; }
+        .f-badge.green .f-badge-icon { background: #2e7d32; }
+
+        .f-badge.orange { border-color: #ef6c00; color: #e65100; background: #fff3e0; }
+        .f-badge.orange .f-badge-icon { background: #ef6c00; }
+
+        .f-badge.blue { border-color: #1565c0; color: #0d47a1; background: #e3f2fd; }
+        .f-badge.blue .f-badge-icon { background: #1565c0; }
+
+        .f-badge.red { border-color: #c62828; color: #b71c1c; background: #ffebee; }
+        .f-badge.red .f-badge-icon { background: #c62828; }
+
+        /* 雙欄保障內容主區塊 */
+        .coverage-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.15fr;
+            gap: 22px;
+            padding: 10px 30px 26px;
+        }
+
+        /* 左欄提示框 */
+        .age90-notice {
+            border: 2px solid #e65100;
+            background: #fff8f3;
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .age90-asterisk {
+            color: #d32f2f;
+            font-size: 32px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .age90-text {
+            font-size: 15px;
+            font-weight: 800;
+            color: #334155;
+            line-height: 1.45;
+        }
+
+        .age90-text strong {
+            color: #d32f2f;
+            font-size: 20px;
+        }
+
+        /* 左側三大保障卡片 */
+        .cov-card {
+            border-radius: 16px;
+            border: 2px solid;
+            overflow: hidden;
+            margin-bottom: 16px;
+            background: #fff;
+        }
+
+        .cov-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .cov-card-header {
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .cov-card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cov-icon-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        /* 藍：骨折保障 */
+        .cov-card.theme-blue { border-color: #3b82f6; background: #f8fbff; }
+        .cov-card.theme-blue .cov-card-header { background: #dbeafe; color: #1e3a8a; }
+        .cov-card.theme-blue .cov-icon-circle { background: #2563eb; }
+
+        /* 橘：傷害日額 */
+        .cov-card.theme-orange { border-color: #f59e0b; background: #fffdf9; }
+        .cov-card.theme-orange .cov-card-header { background: #fef3c7; color: #92400e; }
+        .cov-card.theme-orange .cov-icon-circle { background: #d97706; }
+
+        /* 紫：特定醫療 */
+        .cov-card.theme-purple { border-color: #a855f7; background: #fcfaff; }
+        .cov-card.theme-purple .cov-card-header { background: #f3e8ff; color: #581c87; }
+        .cov-card.theme-purple .cov-icon-circle { background: #9333ea; }
+
+        /* 右側深綠：意外身故/意外失能 */
+        .cov-card.theme-green {
+            border-color: #15803d;
+            background: #f4fbf7;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .green-banner-header {
+            background: #dcfce7;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #86efac;
+        }
+
+        .green-title-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #14532d;
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .age100-badge {
+            background: #14532d;
+            color: #ffffff;
+            padding: 6px 14px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.3;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(20, 83, 45, 0.25);
+        }
+
+        .age100-badge strong {
+            color: #fde047;
+            font-size: 16px;
+            display: block;
+        }
+
+        /* 給付項目表格 */
+        .cov-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .cov-table th {
+            font-size: 13px;
+            color: #475569;
+            font-weight: 800;
+            padding: 8px 16px 4px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .cov-table th:last-child {
+            text-align: right;
+        }
+
+        .cov-table td {
+            padding: 11px 16px;
+            border-bottom: 1px dashed #cbd5e1;
+            vertical-align: middle;
+        }
+
+        .cov-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .item-name {
+            font-size: 15.5px;
+            font-weight: 800;
+            color: #0369a1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .item-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #15803d;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .asterisk-red {
+            color: #d32f2f;
+            font-weight: 900;
+            margin-left: 2px;
+        }
+
+        .extra-pay-tag {
+            color: #d97706;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .total-payout-tag {
+            display: inline-block;
+            font-size: 12px;
+            background: #fef3c7;
+            color: #b45309;
+            padding: 1px 7px;
+            border-radius: 6px;
+            margin-top: 3px;
+            font-weight: 800;
+        }
+
+        .item-amount {
+            text-align: right;
+            font-size: 19px;
+            font-weight: 900;
+            color: #0f172a;
+            white-space: nowrap;
+        }
+
+        .item-amount .unit {
+            font-size: 14px;
+            color: #0284c7;
+            font-weight: 800;
+            margin-left: 3px;
+        }
+
+        .waiver-row {
+            background: #dcfce7;
+            padding: 12px 18px;
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1.5px solid #86efac;
+        }
+
+        .waiver-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 900;
+            color: #14532d;
+            font-size: 16px;
+        }
+
+        .waiver-badge {
+            background: #15803d;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        /* 下半部：意外骨折保險金給付比例與實際賠付金額區 */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 1.35fr 0.85fr;
+            gap: 22px;
+            padding: 0 30px 26px;
+        }
+
+        .fracture-panel {
+            border: 2px solid #0284c7;
+            border-radius: 16px;
+            background: #f8fafc;
+            overflow: hidden;
+        }
+
+        .fracture-header {
+            background: linear-gradient(90deg, #005596 0%, #0284c7 100%);
+            color: #fff;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .fracture-header-title {
+            font-size: 20px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .fracture-header-sub {
+            font-size: 12.5px;
+            color: #e0f2fe;
+            font-weight: 600;
+        }
+
+        /* 骨折程度切換按鈕 (開放性 100% / 閉鎖性手術 75% / 閉鎖性未手術 25%) */
+        .fracture-toolbar {
+            background: #e0f2fe;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid #bae6fd;
+        }
+
+        .fracture-mode-tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .f-tab {
+            border: 1.5px solid #0284c7;
+            background: #ffffff;
+            color: #0369a1;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .f-tab.active {
+            background: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+        }
+
+        .care-toggle-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 800;
+            color: #0f172a;
+            cursor: pointer;
+            background: #fff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid #94a3b8;
+        }
+
+        .care-toggle-label input {
+            accent-color: #0284c7;
+            width: 15px;
+            height: 15px;
+        }
+
+        /* 12項常見骨折部位 + 骨骼視覺圖 */
+        .fracture-body {
+            display: grid;
+            grid-template-columns: 1fr 140px 1fr;
+            gap: 10px;
+            padding: 16px;
+            align-items: center;
+        }
+
+        .fracture-col {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .bone-card {
+            background: #ffffff;
+            border: 1.5px solid #93c5fd;
+            border-radius: 12px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .bone-card:hover {
+            border-color: #0284c7;
+            background: #f0f9ff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.12);
+        }
+
+        .bone-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bone-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #005596;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 900;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .bone-name {
+            font-size: 15px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .bone-pct-badge {
+            font-size: 13px;
+            font-weight: 900;
+            color: #0284c7;
+            background: #e0f2fe;
+            padding: 2px 7px;
+            border-radius: 6px;
+        }
+
+        .bone-right {
+            text-align: right;
+        }
+
+        .bone-pay-main {
+            font-size: 17px;
+            font-weight: 900;
+            color: #d32f2f;
+            line-height: 1.2;
+        }
+
+        .bone-pay-care {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #059669;
+            display: block;
+        }
+
+        /* 中央人體骨骼定位示意 SVG */
+        .skeleton-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, #e0f2fe 0%, transparent 75%);
+            border-radius: 12px;
+            padding: 6px;
+        }
+
+        .skeleton-svg {
+            width: 130px;
+            height: 310px;
+        }
+
+        .fracture-footnote {
+            background: #f1f5f9;
+            padding: 10px 16px;
+            font-size: 12.5px;
+            color: #475569;
+            border-top: 1px solid #cbd5e1;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        /* 右下醫療說明與保障一路陪伴區 */
+        .companion-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .hospital-def-box {
+            border: 1.5px solid #f9a8d4;
+            background: #fdf2f8;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #9d174d;
+            font-weight: 700;
+            line-height: 1.55;
+        }
+
+        .companion-card {
+            border: 2px solid #bae6fd;
+            background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 16px;
+            padding: 18px 16px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center;
+        }
+
+        .companion-title {
+            background: #005596;
+            color: #fff;
+            font-size: 20px;
+            font-weight: 900;
+            padding: 8px 18px;
+            border-radius: 30px;
+            display: inline-block;
+            margin: 0 auto 14px;
+            box-shadow: 0 4px 10px rgba(0, 85, 150, 0.25);
+        }
+
+        .companion-title span {
+            color: #fde047;
+        }
+
+        .companion-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .c-step {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px 6px;
+            border: 1px solid #bae6fd;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .c-step-icon {
+            font-size: 26px;
+            margin-bottom: 6px;
+        }
+
+        .c-step-tag {
+            font-size: 12.5px;
+            font-weight: 900;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+            width: 100%;
+        }
+
+        .c-step:nth-child(1) .c-step-tag { background: #e11d48; }
+        .c-step:nth-child(2) .c-step-tag { background: #d97706; }
+        .c-step:nth-child(3) .c-step-tag { background: #7c3aed; }
+        .c-step:nth-child(4) .c-step-tag { background: #15803d; }
+
+        .c-step-desc {
+            font-size: 12px;
+            color: #475569;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .companion-footer {
+            font-size: 15px;
+            font-weight: 900;
+            color: #005596;
+            margin-top: 8px;
+        }
+
+        .companion-footer small {
+            display: block;
+            font-size: 12.5px;
+            color: #475569;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        /* 頁尾與第二頁費率表收合區 */
+        .dm-footer {
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 14px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .rate-drawer {
+            margin-top: 22px;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px 26px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .rate-drawer summary {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--ns-blue-dark);
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rate-drawer summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .rate-table-wrap {
+            margin-top: 16px;
+            overflow-x: auto;
+        }
+
+        .full-rate-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+            text-align: center;
+        }
+
+        .full-rate-table th {
+            background: var(--ns-blue);
+            color: #fff;
+            padding: 8px;
+            font-weight: 800;
+            border: 1px solid #cbd5e1;
+        }
+
+        .full-rate-table td {
+            padding: 6px 8px;
+            border: 1px solid #e2e8f0;
+            font-weight: 600;
+        }
+
+        .full-rate-table tr.active-age-row td {
+            background: #fef08a !important;
+            font-weight: 900;
+            color: #b91c1c;
+        }
+
+        /* 響應式設計 */
+        @media screen and (max-width: 992px) {
+            .feature-badges {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .coverage-grid,
+            .bottom-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media screen and (max-width: 680px) {
+            .fracture-body {
+                grid-template-columns: 1fr;
+            }
+            .skeleton-center {
+                display: none;
+            }
+            .feature-badges {
+                grid-template-columns: 1fr;
+            }
+            .companion-steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .dm-banner h1 {
+                font-size: 24px;
+            }
+        }
+
+        .prem-card.locked {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            border-style: dashed;
+            opacity: 0.72;
+            cursor: not-allowed;
+        }
+
+        /* 列印專用最佳化樣式：第1頁顯示主保障內容，第2頁完整顯示意外骨折給付比例與醫療陪伴資訊，避免被切斷 */
+        @page {
+            size: A4 portrait;
+            margin: 8mm 8mm;
+        }
+
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            html, body {
+                width: 100%;
+                height: auto;
+                padding: 0 !important;
+                margin: 0 !important;
+                background: #ffffff !important;
+            }
+            .control-panel,
+            .floating-nav,
+            .rate-drawer,
+            .fracture-toolbar {
+                display: none !important;
+            }
+            .main-wrapper {
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
+            }
+            .dm-sheet {
+                box-shadow: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+            }
+            .dm-banner {
+                padding: 14px 20px 12px !important;
+                border-radius: 12px 12px 0 0 !important;
+            }
+            .dm-banner h1 {
+                font-size: 25px !important;
+            }
+            .dm-banner h1 span.sub-brand {
+                font-size: 20px !important;
+            }
+            .dm-code-note {
+                font-size: 11px !important;
+            }
+            .summary-banner {
+                padding: 12px 20px !important;
+                border-left: 1px solid #cbd5e1 !important;
+                border-right: 1px solid #cbd5e1 !important;
+            }
+            .summary-sentence {
+                font-size: 15px !important;
+                line-height: 1.7 !important;
+            }
+            .hl-field {
+                font-size: 17px !important;
+                padding: 0 7px !important;
+                min-width: 42px !important;
+            }
+            .hl-prem {
+                font-size: 19px !important;
+                padding: 0 9px !important;
+            }
+            .prem-compare-bar {
+                margin-top: 10px !important;
+                gap: 10px !important;
+                grid-template-columns: 1fr 1fr !important;
+            }
+            .prem-card {
+                padding: 8px 14px !important;
+                border-radius: 10px !important;
+            }
+            .prem-card-title {
+                font-size: 13.5px !important;
+            }
+            .prem-card-sub {
+                font-size: 11.5px !important;
+            }
+            .prem-card-price {
+                font-size: 17px !important;
+            }
+            .prem-card-daily {
+                font-size: 11px !important;
+                padding: 2px 7px !important;
+            }
+            .feature-badges {
+                grid-template-columns: repeat(4, 1fr) !important;
+                padding: 10px 20px !important;
+                gap: 10px !important;
+                border-left: 1px solid #cbd5e1 !important;
+                border-right: 1px solid #cbd5e1 !important;
+            }
+            .f-badge {
+                padding: 4px 10px 4px 5px !important;
+                font-size: 13px !important;
+                gap: 7px !important;
+            }
+            .f-badge-icon {
+                width: 28px !important;
+                height: 28px !important;
+                font-size: 15px !important;
+            }
+            .coverage-grid {
+                grid-template-columns: 1fr 1.15fr !important;
+                gap: 14px !important;
+                padding: 6px 20px 16px !important;
+                border: 1px solid #cbd5e1 !important;
+                border-top: none !important;
+                border-radius: 0 0 12px 12px !important;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            .age90-notice {
+                padding: 8px 12px !important;
+                margin-bottom: 10px !important;
+                border-radius: 10px !important;
+            }
+            .age90-asterisk {
+                font-size: 24px !important;
+            }
+            .age90-text {
+                font-size: 12.5px !important;
+            }
+            .age90-text strong {
+                font-size: 15.5px !important;
+            }
+            .cov-card {
+                margin-bottom: 10px !important;
+                border-radius: 12px !important;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            .cov-card-header {
+                padding: 7px 14px !important;
+                font-size: 16px !important;
+            }
+            .cov-icon-circle {
+                width: 26px !important;
+                height: 26px !important;
+                font-size: 14px !important;
+            }
+            .green-banner-header {
+                padding: 8px 14px !important;
+            }
+            .green-title-box {
+                font-size: 17px !important;
+            }
+            .age100-badge {
+                padding: 4px 10px !important;
+                font-size: 11px !important;
+            }
+            .age100-badge strong {
+                font-size: 13.5px !important;
+            }
+            .cov-table th {
+                padding: 5px 12px 3px !important;
+                font-size: 11.5px !important;
+            }
+            .cov-table td {
+                padding: 7px 12px !important;
+            }
+            .item-name {
+                font-size: 13px !important;
+                gap: 6px !important;
+            }
+            .item-icon {
+                width: 22px !important;
+                height: 22px !important;
+                font-size: 11.5px !important;
+            }
+            .total-payout-tag {
+                font-size: 11px !important;
+                padding: 1px 6px !important;
+            }
+            .item-amount {
+                font-size: 15px !important;
+            }
+            .item-amount .unit {
+                font-size: 12px !important;
+            }
+            .waiver-row {
+                padding: 8px 14px !important;
+            }
+            .waiver-title {
+                font-size: 13.5px !important;
+            }
+            .waiver-badge {
+                font-size: 11.5px !important;
+                padding: 3px 10px !important;
+            }
+
+            /* 強制將「意外骨折保險金給付比例」與右欄醫療陪伴排在列印的第 2 頁開頭，不切斷 */
+            .bottom-section {
+                page-break-before: always !important;
+                break-before: page !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                grid-template-columns: 1.35fr 0.85fr !important;
+                gap: 16px !important;
+                padding: 12px 0 14px !important;
+            }
+            .fracture-panel,
+            .companion-panel,
+            .bone-card {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .fracture-header {
+                padding: 10px 16px !important;
+            }
+            .fracture-header-title {
+                font-size: 17px !important;
+            }
+            .fracture-header-sub {
+                font-size: 12px !important;
+            }
+            .fracture-body {
+                grid-template-columns: 1fr 115px 1fr !important;
+                padding: 14px !important;
+                gap: 10px !important;
+            }
+            .fracture-col {
+                gap: 8px !important;
+            }
+            .bone-card {
+                padding: 7px 10px !important;
+                border-radius: 10px !important;
+            }
+            .bone-num {
+                width: 22px !important;
+                height: 22px !important;
+                font-size: 12px !important;
+            }
+            .bone-name {
+                font-size: 13.5px !important;
+            }
+            .bone-pct-badge {
+                font-size: 11.5px !important;
+                padding: 1px 6px !important;
+            }
+            .bone-pay-main {
+                font-size: 14.5px !important;
+            }
+            .bone-pay-care {
+                font-size: 10.5px !important;
+            }
+            .skeleton-svg {
+                width: 110px !important;
+                height: 260px !important;
+            }
+            .fracture-footnote {
+                padding: 8px 14px !important;
+                font-size: 11.5px !important;
+                line-height: 1.45 !important;
+            }
+            .companion-panel {
+                gap: 12px !important;
+            }
+            .hospital-def-box {
+                padding: 12px 14px !important;
+                font-size: 12.5px !important;
+                line-height: 1.5 !important;
+            }
+            .companion-card {
+                padding: 16px 14px !important;
+            }
+            .companion-title {
+                font-size: 17px !important;
+                padding: 6px 16px !important;
+                margin-bottom: 10px !important;
+            }
+            .companion-steps {
+                gap: 8px !important;
+                margin: 10px 0 !important;
+            }
+            .c-step {
+                padding: 10px 6px !important;
+            }
+            .c-step-icon {
+                font-size: 24px !important;
+                margin-bottom: 5px !important;
+            }
+            .c-step-tag {
+                font-size: 11.5px !important;
+                margin-bottom: 5px !important;
+            }
+            .c-step-desc {
+                font-size: 11.5px !important;
+            }
+            .companion-footer {
+                font-size: 14px !important;
+                margin-top: 8px !important;
+            }
+            .companion-footer small {
+                font-size: 11.5px !important;
+            }
+            .dm-footer {
+                padding: 10px 16px !important;
+                font-size: 11px !important;
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 8px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="floating-nav">
+    <a href="index.html" class="nav-pill">🏠 回首頁</a>
+    <button class="nav-pill" onclick="window.print()">🖨️ 列印建議書 / 存為 PDF</button>
+</div>
+
+<div class="main-wrapper">
+
+    <!-- 互動輸入控制面板 -->
+    <div class="control-panel">
+        <div class="control-header">
+            <div class="control-title">
+                🛡️ 長享平安終身傷害保險 (SUPA) 保障與保費試算器
+            </div>
+            <span class="control-badge">職業等級 1~4 級享相同費率 ‧ 自動轉帳享 1% 折扣</span>
+        </div>
+
+        <div class="control-grid">
+            <div class="input-group">
+                <label>客戶稱謂 / 姓名</label>
+                <input type="text" id="clientName" value="貴賓" placeholder="請輸入客戶姓名" oninput="updateModel()">
+            </div>
+
+            <div class="input-group">
+                <label>性別</label>
+                <select id="gender" onchange="updateModel()">
+                    <option value="M" selected>男性</option>
+                    <option value="F">女性</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>投保年齡 (<span id="ageRangeHint">50 ~ 80 歲</span>)</label>
+                <div class="stepper-box">
+                    <button type="button" class="stepper-btn" onclick="stepAge(-1)">−</button>
+                    <input type="number" id="age" value="65" min="50" max="80" oninput="updateModel()">
+                    <button type="button" class="stepper-btn" onclick="stepAge(1)">＋</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>繳費年期 <span id="termLockBadge" style="font-size:12px; color:#d32f2f; display:none;">(66歲起僅限10年期)</span></label>
+                <select id="payTerm" onchange="onTermChange()">
+                    <option value="10" selected>10 年期 (50~80歲)</option>
+                    <option value="20" id="optTerm20">20 年期 (50~65歲)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>投保金額 (最高 100 萬元)</label>
+                <div class="stepper-box">
+                    <button type="button" class="stepper-btn" onclick="stepSA(-10)">−</button>
+                    <input type="number" id="saWan" value="100" min="10" max="100" step="10" oninput="updateModel()">
+                    <button type="button" class="stepper-btn" onclick="stepSA(10)">＋</button>
+                </div>
+                <div class="quick-sa-pills">
+                    <button type="button" class="sa-pill" onclick="setSA(30)">30萬</button>
+                    <button type="button" class="sa-pill" onclick="setSA(50)">50萬</button>
+                    <button type="button" class="sa-pill" onclick="setSA(80)">80萬</button>
+                    <button type="button" class="sa-pill active" onclick="setSA(100)">100萬(上限)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DM 視覺展示主體 (對標第一頁並強化視覺階層) -->
+    <div class="dm-sheet">
+
+        <!-- 頂部深藍標題列 -->
+        <div class="dm-banner">
+            <div class="dm-banner-top">
+                <h1>南山人壽長享平安<span class="sub-brand">終身傷害保險 SUPA</span></h1>
+                <span class="dm-code-note">※本文宣需搭配 SUPA 商品簡介 (PA-01-480) 使用</span>
+            </div>
+        </div>
+
+        <!-- 客戶投保資訊與年繳化保費摘要區 -->
+        <div class="summary-banner">
+            <div class="summary-sentence">
+                親愛的 <span class="hl-field" id="dispName">貴賓</span>
+                （保險年齡 <span class="hl-field" id="dispAge">65</span> 歲・<span id="dispGender">男性</span>），
+                投保本商品保險金額 <span class="hl-field" id="dispSA">100</span> 萬元，
+                繳費 <span class="hl-field" id="dispTerm">10</span> 年期 年繳，以 <span class="hl-field">一般件</span> 為例，
+                年繳化保險費 <span class="hl-prem" id="dispRawPrem">36,000</span> 元，
+                以自動轉帳繳費後年繳化保險費 <span class="hl-prem" id="dispDiscPrem">35,640</span> 元
+                <span style="margin-left:auto; font-size:13px; color:#64748b;">單位：新臺幣/元</span>
+            </div>
+
+            <!-- 10年期 vs 20年期 即時對照卡片 -->
+            <div class="prem-compare-bar">
+                <div class="prem-card active" id="cardTerm10" onclick="selectTermCard('10')">
+                    <div class="prem-card-left">
+                        <div class="prem-card-title">📌 繳費 10 年期方案 <span style="font-size:12px; color:#0284c7;" id="rate10Note">(費率 360元/萬)</span></div>
+                        <div class="prem-card-sub">原始年繳 <span id="card10Raw">36,000</span> 元 ｜ 自動轉帳省 <span id="card10Save">360</span> 元/年</div>
+                    </div>
+                    <div class="prem-card-right">
+                        <div class="prem-card-price"><span id="card10Disc">35,640</span> <small style="font-size:13px;">元/年</small></div>
+                        <span class="prem-card-daily">平均每日約 <span id="card10Daily">98</span> 元</span>
+                    </div>
+                </div>
+
+                <div class="prem-card" id="cardTerm20" onclick="selectTermCard('20')">
+                    <div class="prem-card-left">
+                        <div class="prem-card-title">
+                            <span id="card20Icon">📌</span> 繳費 20 年期方案
+                            <span style="font-size:12px; color:#0284c7;" id="rate20Note">(費率 205元/萬)</span>
+                        </div>
+                        <div class="prem-card-sub" id="card20SubText">原始年繳 <span id="card20Raw">20,500</span> 元 ｜ 自動轉帳省 <span id="card20Save">205</span> 元/年</div>
+                    </div>
+                    <div class="prem-card-right" id="card20RightBox">
+                        <div class="prem-card-price"><span id="card20Disc">20,295</span> <small style="font-size:13px;">元/年</small></div>
+                        <span class="prem-card-daily">平均每日約 <span id="card20Daily">56</span> 元</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 四大產品亮點膠囊 -->
+        <div class="feature-badges">
+            <div class="f-badge green">
+                <div class="f-badge-icon">👫</div>
+                <span>50+樂齡專屬</span>
+            </div>
+            <div class="f-badge orange">
+                <div class="f-badge-icon">🦴</div>
+                <span>意外骨折保險金</span>
+            </div>
+            <div class="f-badge blue">
+                <div class="f-badge-icon">➕</div>
+                <span>強化高齡意外保障</span>
+            </div>
+            <div class="f-badge red">
+                <div class="f-badge-icon">🚆</div>
+                <span>加強意外事故防護</span>
+            </div>
+        </div>
+
+        <!-- 主保障內容雙欄對照區 -->
+        <div class="coverage-grid">
+
+            <!-- 左欄：90歲前醫療與骨折保障 -->
+            <div class="left-coverage-col">
+                <div class="age90-notice">
+                    <div class="age90-asterisk">✱</div>
+                    <div class="age90-text">
+                        給付項目限保險年齡 <strong>90歲(含)前</strong> 適用，<br>
+                        累計給付總額最高以保險金額（<span id="dispCap90" style="color:#d32f2f; font-weight:900;">1,000,000</span> 元）為限。
+                    </div>
+                </div>
+
+                <!-- 1. 骨折保障 -->
+                <div class="cov-card theme-blue">
+                    <div class="cov-card-header">
+                        <div class="cov-card-title">
+                            <span class="cov-icon-circle">🦴</span>
+                            骨折保障
+                        </div>
+                        <span style="font-size:13px; font-weight:700; color:#1e40af;">依骨折部位與程度比例給付</span>
+                    </div>
+                    <table class="cov-table">
+                        <thead>
+                            <tr>
+                                <th>給付項目</th>
+                                <th>保障金額</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="item-name">
+                                        🩼 意外骨折保險金 <span class="asterisk-red">＊</span>
+                                    </div>
+                                    <div style="font-size:12px; color:#64748b; margin-left:26px;">保額 × 0.5% ~ 80%（常見部位最高 35%）</div>
+                                </td>
+                                <td class="item-amount">
+                                    <span id="covFracMain">5,000 ~ 350,000</span><span class="unit">元</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="item-name">
+                                        🩹 意外骨折關懷保險金 <span class="asterisk-red">＊</span>
+                                    </div>
+                                    <div style="font-size:12px; color:#64748b; margin-left:26px;">按意外骨折保險金再加計 10% 給付</div>
+                                </td>
+                                <td class="item-amount">
+                                    <span id="covFracCare">500 ~ 35,000</span><span class="unit">元</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 2. 傷害日額 -->
+                <div class="cov-card theme-orange">
+                    <div class="cov-card-header">
+                        <div class="cov-card-title">
+                            <span class="cov-icon-circle">🏥</span>
+                            傷害日額
+                        </div>
+                        <span style="font-size:13px; font-weight:700; color:#92400e;">住院與加護/燒燙傷雙重守護</span>
+                    </div>
+                    <table class="cov-table">
+                        <thead>
+                            <tr>
+                                <th>給付項目</th>
+                                <th>保障金額</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="item-name">
+                                        🛏️ 意外住院日額保險金 <span class="asterisk-red">＊</span> <small style="color:#475569;">(每日)</small>
+                                    </div>
+                                </td>
+                                <td class="item-amount">
+                                    <span id="covDailyHosp">2,000</span><span class="unit">元</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="item-name">
+                                        🚑 加護病房暨燒燙傷中心醫療保險金 <span class="asterisk-red">＊</span> <small style="color:#475569;">(每日)</small>
+                                    </div>
+                                </td>
+                                <td class="item-amount">
+                                    <span id="covDailyICU">2,000</span><span class="unit">元</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 3. 特定醫療 -->
+                <div class="cov-card theme-purple">
+                    <div class="cov-card-header">
+                        <div class="cov-card-title">
+                            <span class="cov-icon-circle">🩺</span>
+                            特定醫療
+                        </div>
+                        <span style="font-size:13px; font-weight:700; color:#6b21a8;">重大手術與交通事故強化補助</span>
+                    </div>
+                    <table class="cov-table">
+                        <thead>
+                            <tr>
+                                <th>給付項目</th>
+                                <th>保障金額</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="item-name">
+                                        🧠 意外內臟或腦損傷手術保險金 <span class="asterisk-red">＊</span>
+                                    </div>
+                                </td>
+                                <td class="item-amount">
+                                    <span id="covSurgery">150,000</span><span class="unit">元</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="item-name">
+                                        🚗 特定交通事故重大創傷保險金 <span class="asterisk-red">＊</span>
+                                    </div>
+                                </td>
+                                <td class="item-amount">
+                                    <span id="covTrauma">150,000</span><span class="unit">元</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 右欄：100歲前意外身故 / 意外失能保障 -->
+            <div class="right-coverage-col">
+                <div class="cov-card theme-green">
+                    <div class="green-banner-header">
+                        <div class="green-title-box">
+                            <span class="cov-icon-circle" style="background:#15803d; width:38px; height:38px;">🛡️</span>
+                            意外身故 / 意外失能
+                        </div>
+                        <div class="age100-badge">
+                            為保險年齡 👑
+                            <strong>100歲(含)前</strong>
+                            享有之保障
+                        </div>
+                    </div>
+
+                    <table class="cov-table">
+                        <thead>
+                            <tr>
+                                <th>給付項目</th>
+                                <th>保障金額</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="item-name">
+                                        <span class="item-icon">👤</span>
+                                        <span>意外身故保險金或喪葬費用保險金</span>
+                                    </div>
+                                </td>
+                                <td class="item-amount">
+                                    <span id="covDeathGen">1,000,000</span><span class="unit">元</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="item-name">
+                                        <span class="item-icon">🚆</span>
+                                        <div>
+                                            大眾運輸意外身故保險金或喪葬費用保險金 <span class="extra-pay-tag">(另給付)</span><br>
+                                            <span class="total-payout-tag">連同一般意外身故共計 <span id="totDeathMass">1,500,000</span> 元</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="item-amount">
+                                    <span id="covDeathMass">500,000</span><span class="unit">元</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="item-name">
+                                        <span class="item-icon">⛰️</span>
+                                        <div>
+                                            天然災害意外身故保險金或喪葬費用保險金 <span class="extra-pay-tag">(另給付)</span><br>
+                                            <span class="total-payout-tag">連同一般意外身故共計 <span id="totDeathNat">1,500,000</span> 元</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="item-amount">
+                                    <span id="covDeathNat">500,000</span><span class="unit">元</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="item-name">
+                                        <span class="item-icon">🚶</span>
+                                        <div>
+                                            行人交通意外身故保險金或喪葬費用保險金 <span class="extra-pay-tag">(另給付)</span><br>
+                                            <span class="total-payout-tag">連同一般意外身故共計 <span id="totDeathPed">1,500,000</span> 元</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="item-amount">
+                                    <span id="covDeathPed">500,000</span><span class="unit">元</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="item-name">
+                                        <span class="item-icon">♿</span>
+                                        <span>意外一至六級失能保險金 <small style="color:#64748b;">(50%~100%)</small></span>
+                                    </div>
+                                </td>
+                                <td class="item-amount">
+                                    <span id="covDisGen">500,000 ~ 1,000,000</span><span class="unit">元</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="item-name">
+                                        <span class="item-icon">💚</span>
+                                        <span>意外一至六級失能心理關懷保險金 <small style="color:#64748b;">(2.5%~5%)</small></span>
+                                    </div>
+                                </td>
+                                <td class="item-amount">
+                                    <span id="covDisCare">25,000 ~ 50,000</span><span class="unit">元</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="item-name">
+                                        <span class="item-icon">🚆</span>
+                                        <span>大眾運輸意外一至六級失能保險金 <span class="extra-pay-tag">(另給付)</span></span>
+                                    </div>
+                                </td>
+                                <td class="item-amount">
+                                    <span id="covDisMass">250,000 ~ 500,000</span><span class="unit">元</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="item-name">
+                                        <span class="item-icon">⛰️</span>
+                                        <span>天然災害意外一至六級失能保險金 <span class="extra-pay-tag">(另給付)</span></span>
+                                    </div>
+                                </td>
+                                <td class="item-amount">
+                                    <span id="covDisNat">250,000 ~ 500,000</span><span class="unit">元</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="item-name">
+                                        <span class="item-icon">🚶</span>
+                                        <span>行人交通意外一至六級失能保險金 <span class="extra-pay-tag">(另給付)</span></span>
+                                    </div>
+                                </td>
+                                <td class="item-amount">
+                                    <span id="covDisPed">250,000 ~ 500,000</span><span class="unit">元</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="waiver-row">
+                        <div class="waiver-title">
+                            <span class="item-icon" style="background:#14532d;">🛡️</span>
+                            意外一至六級失能豁免保險費
+                        </div>
+                        <span class="waiver-badge">免繳續期保費・保障繼續有效</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 下半部：意外骨折保險金給付比例與實際賠付金額 + 醫療陪伴說明 -->
+        <div class="bottom-section">
+
+            <!-- 左下：意外骨折保險金給付比例 (動態換算保額實際理賠數字) -->
+            <div class="fracture-panel">
+                <div class="fracture-header">
+                    <div class="fracture-header-title">
+                        🏃‍♂️ 意外骨折保險金給付比例與實際賠付金額
+                    </div>
+                    <div class="fracture-header-sub">
+                        常見骨折部位試算（保額 <span id="fracHeaderSA">100</span> 萬）
+                    </div>
+                </div>
+
+                <!-- 骨折程度切換列 -->
+                <div class="fracture-toolbar">
+                    <div class="fracture-mode-tabs">
+                        <button type="button" class="f-tab active" id="tabFrac100" onclick="setFractureMode(1, 'tabFrac100')">
+                            開放性骨折 (100%給付)
+                        </button>
+                        <button type="button" class="f-tab" id="tabFrac75" onclick="setFractureMode(0.75, 'tabFrac75')">
+                            閉鎖性・見血復位術 (75%)
+                        </button>
+                        <button type="button" class="f-tab" id="tabFrac25" onclick="setFractureMode(0.25, 'tabFrac25')">
+                            閉鎖性・未手術 (25%)
+                        </button>
+                    </div>
+
+                    <label class="care-toggle-label" title="勾選後一併顯示「意外骨折關懷保險金 (額外10%)」">
+                        <input type="checkbox" id="includeCareCheck" checked onchange="updateModel()">
+                        含骨折關懷金 (+10%)
+                    </label>
+                </div>
+
+                <!-- 1~6 左欄、骨骼圖、7~12 右欄 -->
+                <div class="fracture-body">
+                    <div class="fracture-col" id="fractureColLeft"></div>
+
+                    <div class="skeleton-center">
+                        <svg class="skeleton-svg" viewBox="0 0 120 290" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 簡易人體骨骼剪影與標記點 -->
+                            <!-- 頭顱 (1) -->
+                            <circle cx="60" cy="26" r="18" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+                            <circle cx="53" cy="24" r="3" fill="#0369a1"/>
+                            <circle cx="67" cy="24" r="3" fill="#0369a1"/>
+                            <path d="M54 34 H66" stroke="#0369a1" stroke-width="2" stroke-linecap="round"/>
+                            <!-- 頸椎與脊椎 (9) -->
+                            <line x1="60" y1="44" x2="60" y2="145" stroke="#0284c7" stroke-width="5" stroke-dasharray="4 2"/>
+                            <!-- 鎖骨 (8)與肩胛骨 (7) -->
+                            <path d="M32 56 Q60 62 88 56" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/>
+                            <polygon points="35,60 48,60 43,82" fill="#93c5fd" stroke="#0284c7" stroke-width="1.5"/>
+                            <polygon points="85,60 72,60 77,82" fill="#93c5fd" stroke="#0284c7" stroke-width="1.5"/>
+                            <!-- 肋骨 (2) -->
+                            <ellipse cx="60" cy="82" rx="22" ry="20" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+                            <path d="M40 74 H80 M39 82 H81 M42 90 H78" stroke="#0284c7" stroke-width="2"/>
+                            <!-- 手臂與橈骨/尺骨 (3) -->
+                            <line x1="32" y1="58" x2="22" y2="100" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/>
+                            <line x1="22" y1="100" x2="16" y2="138" stroke="#0284c7" stroke-width="3.5" stroke-linecap="round"/>
+                            <line x1="88" y1="58" x2="98" y2="100" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/>
+                            <line x1="98" y1="100" x2="104" y2="138" stroke="#0284c7" stroke-width="3.5" stroke-linecap="round"/>
+                            <!-- 掌骨(4)與指骨(5) -->
+                            <circle cx="14" cy="146" r="5" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
+                            <circle cx="106" cy="146" r="5" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
+                            <!-- 骨盤 (10) -->
+                            <ellipse cx="60" cy="148" rx="24" ry="13" fill="#bae6fd" stroke="#0284c7" stroke-width="2.5"/>
+                            <!-- 大腿骨頸 (11) & 股骨 (12) -->
+                            <line x1="44" y1="155" x2="42" y2="215" stroke="#0284c7" stroke-width="5" stroke-linecap="round"/>
+                            <line x1="76" y1="155" x2="78" y2="215" stroke="#0284c7" stroke-width="5" stroke-linecap="round"/>
+                            <!-- 膝蓋骨 (6) -->
+                            <circle cx="42" cy="218" r="5.5" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/>
+                            <circle cx="78" cy="218" r="5.5" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/>
+                            <!-- 小腿骨 -->
+                            <line x1="42" y1="224" x2="40" y2="275" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/>
+                            <line x1="78" y1="224" x2="80" y2="275" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/>
+                            <!-- 定位亮點 -->
+                            <circle cx="60" cy="18" r="4" fill="#ef4444"/>
+                            <circle cx="44" cy="156" r="4.5" fill="#ef4444"/>
+                        </svg>
+                    </div>
+
+                    <div class="fracture-col" id="fractureColRight"></div>
+                </div>
+
+                <div class="fracture-footnote">
+                    ※「意外骨折保險金」：如係<strong>開放性骨折</strong>按100%給付；如係<strong>閉鎖性骨折並施行見血復位術</strong>，則按開放性骨折給付金額之 <strong>75%</strong> 給付；如係<strong>閉鎖性骨折但未施行見血復位術</strong>，則按開放性骨折給付金額之 <strong>25%</strong> 給付。<br>
+                    ※ 上方點擊切換按鈕，即可即時查看不同骨折程度對應之實際理賠金額！
+                </div>
+            </div>
+
+            <!-- 右下：住院定義與保障一路陪伴 -->
+            <div class="companion-panel">
+                <div class="hospital-def-box">
+                    📌 本保險所稱「住院」，係指被保險人經醫師診斷其傷害必須入住醫院，且正式辦理住院手續並確實在醫院接受診療者。保險公司辦理理賠作業於需要時會參據醫學專業意見審核被保險人住院之必要性。
+                </div>
+
+                <div class="companion-card">
+                    <div>
+                        <div class="companion-title">
+                            意外來臨，<span>保障一路陪伴</span>
+                        </div>
+                        <div style="font-size:13px; color:#0369a1; font-weight:700; margin-bottom:8px;">
+                            四階段完整防護網・守護樂齡生活品質
+                        </div>
+                    </div>
+
+                    <div class="companion-steps">
+                        <div class="c-step">
+                            <div class="c-step-icon">⚡</div>
+                            <div class="c-step-tag">意外發生</div>
+                            <div class="c-step-desc">生活中<br>突發的意外</div>
+                        </div>
+                        <div class="c-step">
+                            <div class="c-step-icon">🏥</div>
+                            <div class="c-step-tag">醫療/骨折</div>
+                            <div class="c-step-desc">住院治療<br>骨折照護</div>
+                        </div>
+                        <div class="c-step">
+                            <div class="c-step-icon">♿</div>
+                            <div class="c-step-tag">失能</div>
+                            <div class="c-step-desc">1~6級失能<br>持續照顧</div>
+                        </div>
+                        <div class="c-step">
+                            <div class="c-step-icon">🤲</div>
+                            <div class="c-step-tag">身故</div>
+                            <div class="c-step-desc">留愛家人<br>安心守護</div>
+                        </div>
+                    </div>
+
+                    <div class="companion-footer">
+                        —— 從治療、休養，到重大事故風險 ——
+                        <small>提供多層次意外保障</small>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 頁尾資訊 -->
+        <div class="dm-footer">
+            <div><strong>南山人壽保險股份有限公司</strong> ｜ 客戶服務專線：0800-020-060 ｜ www.nanshanlife.com.tw</div>
+            <div>MP-01-1150015e / 2026年10月版（互動試算模組）</div>
+        </div>
+
+    </div>
+
+    <!-- 第二頁完整年繳費率表 (可展開核對) -->
+    <details class="rate-drawer">
+        <summary>
+            <span>📊 點擊展開【第 2 頁：SUPA 年繳費率表（職業等級 1~4 級・每萬元保險金額費率）】</span>
+            <span style="font-size:13px; color:#0284c7;">當前選擇年齡已自動高亮標示 ▼</span>
+        </summary>
+        <div class="rate-table-wrap">
+            <table class="full-rate-table" id="fullRateTable">
+                <thead>
+                    <tr>
+                        <th colspan="3">繳費 10 年期 (50~65歲)</th>
+                        <th colspan="3">繳費 10 年期 (66~80歲)</th>
+                        <th colspan="3">繳費 20 年期 (50~65歲適用)</th>
+                    </tr>
+                    <tr>
+                        <th>年齡</th><th>男</th><th>女</th>
+                        <th>年齡</th><th>男</th><th>女</th>
+                        <th>年齡</th><th>男</th><th>女</th>
+                    </tr>
+                </thead>
+                <tbody id="fullRateTbody"></tbody>
+            </table>
+        </div>
+    </details>
+
+</div>
+
+<script>
+    // 第 2 頁官方精準費率表 (每萬元保額年繳費率，職業等級 1~4 級相同)
+    const RATE_DB = {
+        "10": {
+            "M": {
+                50:330, 51:332, 52:334, 53:336, 54:338, 55:340, 56:342, 57:344, 58:346, 59:348,
+                60:350, 61:352, 62:354, 63:356, 64:358, 65:360, 66:362, 67:364, 68:366, 69:368,
+                70:370, 71:371, 72:372, 73:373, 74:374, 75:375, 76:376, 77:377, 78:378, 79:379, 80:380
+            },
+            "F": {
+                50:435, 51:440, 52:445, 53:450, 54:455, 55:460, 56:464, 57:468, 58:472, 59:476,
+                60:480, 61:482, 62:484, 63:486, 64:488, 65:490, 66:492, 67:494, 68:496, 69:498,
+                70:500, 71:501, 72:502, 73:503, 74:504, 75:505, 76:506, 77:507, 78:508, 79:509, 80:510
+            }
+        },
+        "20": {
+            "M": {
+                50:180, 51:182, 52:184, 53:186, 54:188, 55:190, 56:191, 57:192, 58:193, 59:194,
+                60:195, 61:197, 62:199, 63:201, 64:203, 65:205, 66:206, 67:207, 68:208, 69:209, 70:210
+            },
+            "F": {
+                50:235, 51:238, 52:241, 53:244, 54:247, 55:250, 56:252, 57:254, 58:256, 59:258,
+                60:260, 61:262, 62:264, 63:266, 64:268, 65:270, 66:272, 67:274, 68:276, 69:278, 70:280
+            }
+        }
+    };
+
+    // 12 項常見骨折部位給付比例 (對應 DM 下半部圖表)
+    const FRACTURE_ITEMS = [
+        { id: 1,  name: "頭蓋骨",     pct: 30, col: "left"  },
+        { id: 2,  name: "肋骨",       pct: 8,  col: "left"  },
+        { id: 3,  name: "橈骨或尺骨", pct: 15, col: "left"  },
+        { id: 4,  name: "掌骨",       pct: 8,  col: "left"  },
+        { id: 5,  name: "指骨",       pct: 2,  col: "left"  },
+        { id: 6,  name: "膝蓋骨",     pct: 15, col: "left"  },
+        { id: 7,  name: "肩胛骨",     pct: 20, col: "right" },
+        { id: 8,  name: "鎖骨",       pct: 10, col: "right" },
+        { id: 9,  name: "椎骨",       pct: 25, col: "right" },
+        { id: 10, name: "骨盤",       pct: 25, col: "right" },
+        { id: 11, name: "大腿骨頸",   pct: 35, col: "right" },
+        { id: 12, name: "股骨",       pct: 30, col: "right" }
+    ];
+
+    let currentFractureFactor = 1.0; // 1.0 = 開放性(100%), 0.75 = 閉鎖性手術(75%), 0.25 = 閉鎖性未手術(25%)
+
+    function fmt(num) {
+        return Math.round(num).toLocaleString('zh-TW');
+    }
+
+    function stepAge(delta) {
+        const ageInput = document.getElementById('age');
+        let val = parseInt(ageInput.value, 10) || 65;
+        val = Math.max(50, Math.min(80, val + delta));
+        ageInput.value = val;
+        updateModel();
+    }
+
+    function stepSA(delta) {
+        const saInput = document.getElementById('saWan');
+        let val = parseFloat(saInput.value) || 100;
+        val = Math.max(10, Math.min(100, val + delta));
+        saInput.value = val;
+        syncSAPills(val);
+        updateModel();
+    }
+
+    function setSA(val) {
+        const clamped = Math.max(10, Math.min(100, val));
+        document.getElementById('saWan').value = clamped;
+        syncSAPills(clamped);
+        updateModel();
+    }
+
+    function syncSAPills(val) {
+        document.querySelectorAll('.sa-pill').forEach(btn => {
+            btn.classList.toggle('active', parseInt(btn.textContent, 10) === val);
+        });
+    }
+
+    function onTermChange() {
+        const payTerm = document.getElementById('payTerm').value;
+        const ageInput = document.getElementById('age');
+        let age = parseInt(ageInput.value, 10) || 65;
+        // 66歲(含)以上僅能購買10年期
+        if (payTerm === '20' && age >= 66) {
+            document.getElementById('payTerm').value = '10';
+        }
+        updateModel();
+    }
+
+    function selectTermCard(term) {
+        const age = parseInt(document.getElementById('age').value, 10) || 65;
+        if (term === '20' && age >= 66) {
+            return; // 66歲後鎖定不可點擊切換至20年期
+        }
+        document.getElementById('payTerm').value = term;
+        updateModel();
+    }
+
+    function setFractureMode(factor, tabId) {
+        currentFractureFactor = factor;
+        document.querySelectorAll('.f-tab').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        updateModel();
+    }
+
+    function renderFractureItems(saAmount, includeCare) {
+        const leftCol = document.getElementById('fractureColLeft');
+        const rightCol = document.getElementById('fractureColRight');
+        leftCol.innerHTML = '';
+        rightCol.innerHTML = '';
+
+        FRACTURE_ITEMS.forEach(item => {
+            // 開放性骨折基準金額 = 保額 * (pct / 100)
+            const baseOpenAmt = saAmount * (item.pct / 100);
+            const mainPay = Math.round(baseOpenAmt * currentFractureFactor);
+            const carePay = Math.round(mainPay * 0.10); // 關懷金為意外骨折保險金之 10%
+            const totalPay = includeCare ? (mainPay + carePay) : mainPay;
+
+            const effectivePct = +(item.pct * currentFractureFactor).toFixed(2);
+
+            const card = document.createElement('div');
+            card.className = 'bone-card';
+            card.innerHTML = `
+                <div class="bone-left">
+                    <span class="bone-num">${item.id}</span>
+                    <div>
+                        <div class="bone-name">${item.name}</div>
+                        <span class="bone-pct-badge">${effectivePct}%</span>
+                    </div>
+                </div>
+                <div class="bone-right">
+                    <div class="bone-pay-main">${fmt(totalPay)} <small style="font-size:12px;">元</small></div>
+                    ${includeCare
+                        ? `<span class="bone-pay-care">骨折 ${fmt(mainPay)} + 關懷 ${fmt(carePay)}</span>`
+                        : `<span class="bone-pay-care" style="color:#64748b;">僅計意外骨折保險金</span>`
+                    }
+                </div>
+            `;
+
+            if (item.col === 'left') {
+                leftCol.appendChild(card);
+            } else {
+                rightCol.appendChild(card);
+            }
+        });
+    }
+
+    function renderFullRateTable(activeAge) {
+        const tbody = document.getElementById('fullRateTbody');
+        tbody.innerHTML = '';
+        for (let i = 0; i < 16; i++) {
+            const age1 = 50 + i;      // 50~65
+            const age2 = 66 + i;      // 66~81 (81無)
+            const age3 = 50 + i;      // 20年期 50~65
+            const tr = document.createElement('tr');
+
+            const c1Class = age1 === activeAge ? 'style="background:#fef08a;font-weight:900;color:#b91c1c;"' : '';
+            const c2Class = age2 === activeAge ? 'style="background:#fef08a;font-weight:900;color:#b91c1c;"' : '';
+
+            let html = `
+                <td ${c1Class}>${age1}</td>
+                <td ${c1Class}>${RATE_DB["10"]["M"][age1]}</td>
+                <td ${c1Class}>${RATE_DB["10"]["F"][age1]}</td>
+            `;
+
+            if (age2 <= 80) {
+                html += `
+                    <td ${c2Class}>${age2}</td>
+                    <td ${c2Class}>${RATE_DB["10"]["M"][age2]}</td>
+                    <td ${c2Class}>${RATE_DB["10"]["F"][age2]}</td>
+                `;
+            } else {
+                html += `<td>-</td><td>-</td><td>-</td>`;
+            }
+
+            html += `
+                <td ${c1Class}>${age3}</td>
+                <td ${c1Class}>${RATE_DB["20"]["M"][age3]}</td>
+                <td ${c1Class}>${RATE_DB["20"]["F"][age3]}</td>
+            `;
+            tr.innerHTML = html;
+            tbody.appendChild(tr);
+        }
+    }
+
+    function updateModel() {
+        const clientName = document.getElementById('clientName').value.trim() || '貴賓';
+        const gender = document.getElementById('gender').value;
+        const payTermSelect = document.getElementById('payTerm');
+        const optTerm20 = document.getElementById('optTerm20');
+        const termLockBadge = document.getElementById('termLockBadge');
+        let payTerm = payTermSelect.value;
+        let age = parseInt(document.getElementById('age').value, 10);
+        let saWan = parseFloat(document.getElementById('saWan').value);
+
+        if (isNaN(age) || age < 50) age = 50;
+        if (age > 80) {
+            age = 80;
+            document.getElementById('age').value = 80;
+        }
+
+        // 限制 1：保額最高 100 萬，若輸入超過 100 萬自動校正回 100 萬
+        if (isNaN(saWan) || saWan <= 0) {
+            saWan = 10;
+        } else if (saWan > 100) {
+            saWan = 100;
+            document.getElementById('saWan').value = 100;
+        }
+        syncSAPills(saWan);
+
+        // 限制 2：66歲(含)後只能購買 10 年期，鎖住 20 年期選項與顯示卡片
+        const canBuy20 = age <= 65;
+        if (!canBuy20) {
+            optTerm20.disabled = true;
+            optTerm20.textContent = '20 年期 (66歲起不適用・已鎖定)';
+            termLockBadge.style.display = 'inline';
+            if (payTerm === '20') {
+                payTerm = '10';
+                payTermSelect.value = '10';
+            }
+        } else {
+            optTerm20.disabled = false;
+            optTerm20.textContent = '20 年期 (50~65歲)';
+            termLockBadge.style.display = 'none';
+        }
+
+        const saAmount = saWan * 10000; // 實際保額(元)
+
+        // 計算 10 年期與 20 年期保費
+        const rate10 = RATE_DB["10"][gender][age];
+        const rawPrem10 = Math.round(saWan * rate10);
+        const discPrem10 = Math.round(rawPrem10 * 0.99);
+
+        const rate20 = canBuy20 ? RATE_DB["20"][gender][age] : null;
+        const rawPrem20 = canBuy20 ? Math.round(saWan * rate20) : 0;
+        const discPrem20 = canBuy20 ? Math.round(rawPrem20 * 0.99) : 0;
+
+        const activeRawPrem = payTerm === '10' ? rawPrem10 : rawPrem20;
+        const activeDiscPrem = payTerm === '10' ? discPrem10 : discPrem20;
+
+        // 更新頂部摘要文字
+        document.getElementById('dispName').textContent = clientName;
+        document.getElementById('dispAge').textContent = age;
+        document.getElementById('dispGender').textContent = gender === 'M' ? '男性' : '女性';
+        document.getElementById('dispSA').textContent = fmt(saWan);
+        document.getElementById('dispTerm').textContent = payTerm;
+        document.getElementById('dispRawPrem').textContent = fmt(activeRawPrem);
+        document.getElementById('dispDiscPrem').textContent = fmt(activeDiscPrem);
+
+        // 更新雙年期對照卡
+        const card10 = document.getElementById('cardTerm10');
+        const card20 = document.getElementById('cardTerm20');
+        card10.classList.toggle('active', payTerm === '10');
+        card20.classList.toggle('active', payTerm === '20' && canBuy20);
+        card20.classList.toggle('locked', !canBuy20);
+
+        document.getElementById('rate10Note').textContent = `(費率 ${rate10}元/萬)`;
+        document.getElementById('card10Raw').textContent = fmt(rawPrem10);
+        document.getElementById('card10Save').textContent = fmt(rawPrem10 - discPrem10);
+        document.getElementById('card10Disc').textContent = fmt(discPrem10);
+        document.getElementById('card10Daily').textContent = fmt(Math.round(discPrem10 / 365));
+
+        if (canBuy20) {
+            document.getElementById('card20Icon').textContent = '📌';
+            document.getElementById('rate20Note').textContent = `(費率 ${rate20}元/萬)`;
+            document.getElementById('rate20Note').style.color = '#0284c7';
+            document.getElementById('card20SubText').innerHTML = `原始年繳 <span>${fmt(rawPrem20)}</span> 元 ｜ 自動轉帳省 <span>${fmt(rawPrem20 - discPrem20)}</span> 元/年`;
+            document.getElementById('card20RightBox').style.display = 'block';
+            document.getElementById('card20Disc').textContent = fmt(discPrem20);
+            document.getElementById('card20Daily').textContent = fmt(Math.round(discPrem20 / 365));
+        } else {
+            document.getElementById('card20Icon').textContent = '🔒';
+            document.getElementById('rate20Note').textContent = `(66歲起僅限購買10年期)`;
+            document.getElementById('rate20Note').style.color = '#d32f2f';
+            document.getElementById('card20SubText').textContent = `目前投保年齡 ${age} 歲，已鎖定 20 年期方案（僅限 50~65 歲投保）`;
+            document.getElementById('card20RightBox').style.display = 'none';
+        }
+
+        // 更新左欄：90歲前各項醫療與骨折保障
+        document.getElementById('dispCap90').textContent = fmt(saAmount);
+        document.getElementById('covFracMain').textContent = `${fmt(saAmount * 0.005)} ~ ${fmt(saAmount * 0.35)}`;
+        document.getElementById('covFracCare').textContent = `${fmt(saAmount * 0.0005)} ~ ${fmt(saAmount * 0.035)}`;
+        document.getElementById('covDailyHosp').textContent = fmt(saAmount * 0.002);
+        document.getElementById('covDailyICU').textContent = fmt(saAmount * 0.002);
+        document.getElementById('covSurgery').textContent = fmt(saAmount * 0.15);
+        document.getElementById('covTrauma').textContent = fmt(saAmount * 0.15);
+
+        // 更新右欄：100歲前意外身故與失能保障
+        const deathGen = saAmount * 1.0;
+        const deathExtra = saAmount * 0.5;
+        document.getElementById('covDeathGen').textContent = fmt(deathGen);
+        document.getElementById('covDeathMass').textContent = fmt(deathExtra);
+        document.getElementById('covDeathNat').textContent = fmt(deathExtra);
+        document.getElementById('covDeathPed').textContent = fmt(deathExtra);
+        document.getElementById('totDeathMass').textContent = fmt(deathGen + deathExtra);
+        document.getElementById('totDeathNat').textContent = fmt(deathGen + deathExtra);
+        document.getElementById('totDeathPed').textContent = fmt(deathGen + deathExtra);
+
+        document.getElementById('covDisGen').textContent = `${fmt(saAmount * 0.5)} ~ ${fmt(saAmount * 1.0)}`;
+        document.getElementById('covDisCare').textContent = `${fmt(saAmount * 0.025)} ~ ${fmt(saAmount * 0.05)}`;
+        document.getElementById('covDisMass').textContent = `${fmt(saAmount * 0.25)} ~ ${fmt(saAmount * 0.5)}`;
+        document.getElementById('covDisNat').textContent = `${fmt(saAmount * 0.25)} ~ ${fmt(saAmount * 0.5)}`;
+        document.getElementById('covDisPed').textContent = `${fmt(saAmount * 0.25)} ~ ${fmt(saAmount * 0.5)}`;
+
+        // 更新下半部：12項常見骨折部位與實際賠付金額
+        document.getElementById('fracHeaderSA').textContent = fmt(saWan);
+        const includeCare = document.getElementById('includeCareCheck').checked;
+        renderFractureItems(saAmount, includeCare);
+
+        // 更新下方完整費率表高亮
+        renderFullRateTable(age);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        updateModel();
+    });
+</script>
+
+</body>
+</html>
