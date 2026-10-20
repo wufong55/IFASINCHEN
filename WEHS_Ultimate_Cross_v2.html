@@ -42,13 +42,307 @@
         .tsunami-table { width: 100%; border-collapse: collapse; background: #fff; min-width: 600px; margin-top: 15px;}
         .tsunami-table th, .tsunami-table td { padding: 15px; border: 1px solid #ffeeba; text-align: left; font-size: 18px; line-height: 1.5;}
         .tsunami-table th { background-color: #ffe8a1; color: #856404; text-align: center; font-size: 19px;}
+
+        /* 長壽的詛咒 圖示區塊 */
+        .longevity-curse-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 35px 40px 28px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            font-family: 'PingFang TC', 'Microsoft JhengHei', 'Noto Serif TC', serif;
+        }
+        .curse-header-title {
+            font-size: 42px;
+            font-weight: 900;
+            color: #2b2b2b;
+            margin: 0 0 35px 0;
+            letter-spacing: 3px;
+            font-family: 'Noto Serif TC', 'PMingLiU', 'Songti TC', 'Microsoft JhengHei', serif;
+        }
+        .curse-timeline-wrapper {
+            position: relative;
+            margin: 10px 0 30px 0;
+            padding: 0 10px;
+        }
+        .curse-nodes {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+        }
+        /* 實線與虛線軌道 */
+        .curse-line-solid {
+            position: absolute;
+            top: 56px;
+            left: 12%;
+            width: 38%;
+            height: 4px;
+            background-color: #1a1a1a;
+            z-index: 1;
+        }
+        .curse-line-dashed {
+            position: absolute;
+            top: 56px;
+            left: 50%;
+            width: 38%;
+            height: 0;
+            border-top: 4px dashed #d5d8dc;
+            z-index: 1;
+        }
+        .curse-node {
+            position: relative;
+            z-index: 2;
+            width: 24%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .curse-age {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+        .age-62 { color: #34495e; }
+        .age-75 { color: #111111; }
+        .age-85 { color: #e67e22; }
+
+        .curse-dot {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            margin-bottom: 14px;
+            box-sizing: border-box;
+        }
+        .dot-blue {
+            background-color: #0b5cab;
+            box-shadow: 0 0 0 5px #fff;
+        }
+        .dot-black {
+            background-color: #000000;
+            box-shadow: 0 0 0 5px #fff;
+        }
+        .curse-warn-icon {
+            width: 34px;
+            height: 30px;
+            margin-top: -3px;
+            margin-bottom: 11px;
+            background: #fff;
+            padding: 0 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .curse-desc {
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.45;
+            color: #2c3e50;
+        }
+        .curse-desc.desc-75 {
+            color: #111111;
+        }
+        .curse-desc.desc-85 {
+            color: #d35400;
+        }
+        .curse-quote {
+            text-align: right;
+            font-size: 32px;
+            font-weight: 900;
+            color: #1a1a1a;
+            line-height: 1.4;
+            margin-top: 15px;
+            letter-spacing: 2px;
+            font-family: 'Noto Serif TC', 'PMingLiU', 'Songti TC', 'Microsoft JhengHei', serif;
+        }
         
         /* 黃金交叉分析面板 */
         .cross-analysis { background: #fdfefe; border: 1px solid #e5e8e8; border-radius: 8px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 4px solid #e74c3c;}
-        .cross-analysis h3 { margin-top: 0; color: #c0392b; font-size: 22px;}
+        .cross-header-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+        .cross-analysis h3 { margin: 0; color: #c0392b; font-size: 22px;}
+        .btn-rate-popup {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            width: auto;
+            margin-top: 0;
+            box-shadow: 0 3px 8px rgba(231, 76, 60, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        .btn-rate-popup:hover {
+            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(231, 76, 60, 0.4);
+        }
         .bar-container { width: 100%; background-color: #ecf0f1; border-radius: 6px; margin-bottom: 10px; overflow: hidden; position: relative; height: 38px;}
         .bar-wehs { height: 100%; background-color: #2980b9; text-align: right; line-height: 38px; color: white; padding-right: 15px; font-size: 16px; font-weight: bold; white-space: nowrap; transition: width 1s ease-in-out;}
         .bar-term { height: 100%; background-color: #e74c3c; text-align: right; line-height: 38px; color: white; padding-right: 15px; font-size: 16px; font-weight: bold; white-space: nowrap; transition: width 1s ease-in-out;}
+
+        /* 75-85歲費率表 彈跳視窗 (Modal) */
+        .rate-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            box-sizing: border-box;
+            backdrop-filter: blur(2px);
+        }
+        .rate-modal-card {
+            background: #fff;
+            border-radius: 12px;
+            max-width: 1050px;
+            width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: modalFadeIn 0.25s ease-out;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .rate-modal-header {
+            background: #1b8a82;
+            color: #fff;
+            padding: 14px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .rate-modal-header h4 {
+            margin: 0;
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+        .btn-close-modal {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            font-size: 20px;
+            line-height: 1;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-close-modal:hover {
+            background: rgba(255,255,255,0.35);
+        }
+        .rate-modal-body {
+            padding: 18px 22px 24px;
+            overflow-y: auto;
+        }
+        .rate-unit-note {
+            text-align: right;
+            font-size: 14px;
+            color: #444;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        .rate-table-wrap {
+            overflow-x: auto;
+            border: 2px solid #22b2a6;
+        }
+        .rate-75-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 820px;
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            text-align: center;
+            font-size: 16px;
+        }
+        .rate-75-table th, .rate-75-table td {
+            border: 1px solid #8fd6cf;
+            padding: 8px 6px;
+        }
+        .rate-75-table thead tr:first-child th {
+            background-color: #20b2a6;
+            color: #fff;
+            font-size: 17px;
+            font-weight: bold;
+            padding: 10px 6px;
+            border-color: #fff;
+        }
+        .rate-75-table thead tr:nth-child(2) th {
+            background-color: #82cbc5;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 6px;
+            border-color: #fff;
+        }
+        /* 左上角斜線表頭 */
+        .rate-75-table th.diag-cell {
+            padding: 0;
+            width: 72px;
+            min-width: 72px;
+            background: linear-gradient(to top right, #20b2a6 49%, #ffffff 49.5%, #ffffff 50.5%, #20b2a6 51%);
+            position: relative;
+            color: #fff;
+            font-size: 14px;
+        }
+        .diag-top-right {
+            position: absolute;
+            top: 6px;
+            right: 7px;
+            line-height: 1;
+        }
+        .diag-bottom-left {
+            position: absolute;
+            bottom: 6px;
+            left: 7px;
+            line-height: 1;
+        }
+        .rate-75-table tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        .rate-75-table tbody tr:nth-child(even) {
+            background-color: #eaf6f5;
+        }
+        .rate-75-table tbody tr:hover {
+            background-color: #fff9db;
+        }
+        .rate-75-table td.age-col {
+            color: #20b2a6;
+            font-weight: 800;
+            font-size: 17px;
+            background-color: inherit;
+        }
+        .rate-75-table td {
+            color: #222;
+            font-variant-numeric: tabular-nums;
+        }
+        /* 群組分隔直線加深 */
+        .rate-75-table td.group-divider, .rate-75-table th.group-divider {
+            border-right: 1.5px solid #20b2a6 !important;
+        }
+        .rate-highlight-col {
+            background-color: rgba(231, 76, 60, 0.08) !important;
+            font-weight: bold;
+            color: #c0392b !important;
+        }
 
         .closing-script { background: #fdfefe; border: 1px solid #e5e8e8; padding: 25px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #2c3e50; }
         .closing-script p { font-size: 18px; color: #444; margin-bottom: 0; line-height: 1.8; }
@@ -68,10 +362,16 @@
             .tsunami-alert { overflow-x: auto; }
             .upgrade-content { flex-direction: column; align-items: flex-start; }
             .btn-upgrade { width: 100%; text-align: center; }
+            .longevity-curse-card { padding: 25px 15px 20px; }
+            .curse-header-title { font-size: 30px; margin-bottom: 25px; }
+            .curse-age { font-size: 18px; }
+            .curse-line-solid, .curse-line-dashed { top: 47px; }
+            .curse-desc { font-size: 14px; }
+            .curse-quote { font-size: 22px; }
         }
         @media print {
             button, select, label, .form-row, .upgrade-alert, .btn-rules { display: none !important; }
-            .tsunami-alert, .cross-analysis { page-break-inside: avoid; }
+            .tsunami-alert, .longevity-curse-card, .cross-analysis { page-break-inside: avoid; }
             .cross-analysis { break-before: page; page-break-before: always; }
             .closing-script { page-break-inside: avoid; border: none; padding: 0; margin-top: 20px; border-left: 5px solid #2c3e50; padding-left: 15px;}
             #rulesSection { display: block !important; border: none !important; box-shadow: none !important; margin-top: 30px; page-break-before: always;}
@@ -133,6 +433,58 @@
                     <tr><td><strong>精密微創手術</strong><br>達文西機械手臂手術</td><td style="color:#c0392b; font-weight:bold;">15萬 ~ 30萬元</td><td>讓長輩安心選用傷口小、復原快的高階技術</td></tr>
                     <tr><td><strong>高齡癌症抗戰</strong><br>標靶藥物 / 放射線治療</td><td style="color:#c0392b; font-weight:bold;">標靶 約4萬~20萬/月<br>放射線 30萬~150萬元</td><td>癌症雜費限額放大 1.3 倍，長期抗戰不拖累子女</td></tr>
                 </table>
+            </div>
+        </div>
+
+        <!-- 新增：長壽的詛咒 圖示區塊 -->
+        <div class="longevity-curse-card">
+            <div class="curse-header-title">長壽的詛咒</div>
+            
+            <div class="curse-timeline-wrapper">
+                <div class="curse-line-solid"></div>
+                <div class="curse-line-dashed"></div>
+                
+                <div class="curse-nodes">
+                    <!-- 62歲 -->
+                    <div class="curse-node">
+                        <div class="curse-age age-62">62歲</div>
+                        <div class="curse-dot dot-blue"></div>
+                        <div class="curse-desc">
+                            買定醫療險<br>
+                            (平安健康)
+                        </div>
+                    </div>
+
+                    <!-- 75歲 -->
+                    <div class="curse-node">
+                        <div class="curse-age age-75">75歲</div>
+                        <div class="curse-dot dot-black"></div>
+                        <div class="curse-desc desc-75">
+                            保單滿期<br>
+                            (保障歸零)
+                        </div>
+                    </div>
+
+                    <!-- 85歲 -->
+                    <div class="curse-node">
+                        <div class="curse-age age-85">85歲</div>
+                        <div class="curse-warn-icon">
+                            <svg width="32" height="29" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10.29 1.86L1.82 16.5C1.11 17.73 2 19.27 3.42 19.27H20.36C21.78 19.27 22.67 17.73 21.96 16.5L13.49 1.86C12.78 0.63 11 0.63 10.29 1.86Z" fill="#e66c1f"/>
+                                <rect x="11" y="7" width="1.8" height="6" rx="0.9" fill="#ffffff"/>
+                                <circle cx="11.9" cy="15.8" r="1.1" fill="#ffffff"/>
+                            </svg>
+                        </div>
+                        <div class="curse-desc desc-85">
+                            長壽但「裸奔」
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="curse-quote">
+                「現在沒事，<br>
+                不代表以後沒事。」
             </div>
         </div>
 
@@ -421,7 +773,10 @@
         const termWidth = Math.min((termTotal / Math.max(totalPremium, termTotal)) * 100, 100);
 
         document.getElementById('crossAnalysis').innerHTML = `
-            <h3>📈 保費黃金交叉分析 (對決定期險迷思)</h3>
+            <div class="cross-header-row">
+                <h3>📈 保費黃金交叉分析 (對決定期險迷思)</h3>
+                <button type="button" class="btn-rate-popup" onclick="openRateModal()">📊 點擊查看：75~85歲高齡費率表</button>
+            </div>
             <p style="font-size:18px; color:#555; margin-bottom:15px;">許多人以為定期險較便宜，但若將<b>定期險保額調整為與 WEHS 計畫 ${plan} 相同基準</b> (1HIR ${plan}單位 + 1HSCO A-I型)，逐年累加自然費率至 85 歲，您會發現其高齡階段保費呈指數型飆升：</p>
             <div style="font-size:16px; margin-bottom:5px;"><strong>WEHS 計畫 ${plan} (${term}年總繳，保障終身)</strong></div>
             <div class="bar-container">
@@ -500,10 +855,176 @@
         }
     }
 
+    // 新增：開啟與關閉 75-85歲費率表彈跳視窗
+    function openRateModal() {
+        document.getElementById('rateModalOverlay').style.display = 'flex';
+    }
+
+    function closeRateModal(e) {
+        if (!e || e.target.id === 'rateModalOverlay') {
+            document.getElementById('rateModalOverlay').style.display = 'none';
+        }
+    }
+
+    window.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            document.getElementById('rateModalOverlay').style.display = 'none';
+        }
+    });
+
     window.onload = function() {
         updateAgeOptions();
     };
 </script>
+
+<!-- 75-85歲費率表 彈跳視窗 (Modal) -->
+<div id="rateModalOverlay" class="rate-modal-overlay" onclick="closeRateModal(event)">
+    <div class="rate-modal-card" onclick="event.stopPropagation()">
+        <div class="rate-modal-header">
+            <h4>📊 定期實支實付 (1HSCO) 75~85歲 高齡年繳費率表</h4>
+            <button type="button" class="btn-close-modal" onclick="closeRateModal()" title="關閉">✕</button>
+        </div>
+        <div class="rate-modal-body">
+            <div class="rate-unit-note">單位：新臺幣元</div>
+            <div class="rate-table-wrap">
+                <table class="rate-75-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" class="diag-cell group-divider">
+                                <span class="diag-top-right">型別</span>
+                                <span class="diag-bottom-left">年齡</span>
+                            </th>
+                            <th colspan="2" class="group-divider">A-I 型</th>
+                            <th colspan="2" class="group-divider">A-II 型</th>
+                            <th colspan="2" class="group-divider">A-III 型</th>
+                            <th colspan="2" class="group-divider">B-I 型</th>
+                            <th colspan="2" class="group-divider">B-II 型</th>
+                            <th colspan="2">B-III 型</th>
+                        </tr>
+                        <tr>
+                            <th>男</th>
+                            <th class="group-divider">女</th>
+                            <th>男</th>
+                            <th class="group-divider">女</th>
+                            <th>男</th>
+                            <th class="group-divider">女</th>
+                            <th>男</th>
+                            <th class="group-divider">女</th>
+                            <th>男</th>
+                            <th class="group-divider">女</th>
+                            <th>男</th>
+                            <th>女</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="age-col group-divider">75</td>
+                            <td>41,218</td><td class="group-divider">38,431</td>
+                            <td>37,099</td><td class="group-divider">34,588</td>
+                            <td>33,386</td><td class="group-divider">31,128</td>
+                            <td>11,996</td><td class="group-divider">9,731</td>
+                            <td>11,996</td><td class="group-divider">9,731</td>
+                            <td>11,996</td><td>9,731</td>
+                        </tr>
+                        <tr>
+                            <td class="age-col group-divider">76</td>
+                            <td>42,935</td><td class="group-divider">39,360</td>
+                            <td>38,643</td><td class="group-divider">35,424</td>
+                            <td>34,780</td><td class="group-divider">31,881</td>
+                            <td>42,935</td><td class="group-divider">39,360</td>
+                            <td>38,643</td><td class="group-divider">35,424</td>
+                            <td>34,780</td><td>31,881</td>
+                        </tr>
+                        <tr>
+                            <td class="age-col group-divider">77</td>
+                            <td>44,679</td><td class="group-divider">40,281</td>
+                            <td>40,213</td><td class="group-divider">36,256</td>
+                            <td>36,192</td><td class="group-divider">32,628</td>
+                            <td>44,679</td><td class="group-divider">40,281</td>
+                            <td>40,213</td><td class="group-divider">36,256</td>
+                            <td>36,192</td><td>32,628</td>
+                        </tr>
+                        <tr>
+                            <td class="age-col group-divider">78</td>
+                            <td>46,478</td><td class="group-divider">41,210</td>
+                            <td>41,835</td><td class="group-divider">37,087</td>
+                            <td>37,649</td><td class="group-divider">33,378</td>
+                            <td>46,478</td><td class="group-divider">41,210</td>
+                            <td>41,835</td><td class="group-divider">37,087</td>
+                            <td>37,649</td><td>33,378</td>
+                        </tr>
+                        <tr>
+                            <td class="age-col group-divider">79</td>
+                            <td>48,278</td><td class="group-divider">42,601</td>
+                            <td>43,453</td><td class="group-divider">38,340</td>
+                            <td>39,105</td><td class="group-divider">34,506</td>
+                            <td>48,278</td><td class="group-divider">42,601</td>
+                            <td>43,453</td><td class="group-divider">38,340</td>
+                            <td>39,105</td><td>34,506</td>
+                        </tr>
+                        <tr>
+                            <td class="age-col group-divider">80</td>
+                            <td>50,087</td><td class="group-divider">43,985</td>
+                            <td>45,084</td><td class="group-divider">39,589</td>
+                            <td>40,570</td><td class="group-divider">35,631</td>
+                            <td>50,087</td><td class="group-divider">43,985</td>
+                            <td>45,084</td><td class="group-divider">39,589</td>
+                            <td>40,570</td><td>35,631</td>
+                        </tr>
+                        <tr>
+                            <td class="age-col group-divider">81</td>
+                            <td>54,356</td><td class="group-divider">46,875</td>
+                            <td>48,926</td><td class="group-divider">42,188</td>
+                            <td>44,033</td><td class="group-divider">37,972</td>
+                            <td>54,356</td><td class="group-divider">46,875</td>
+                            <td>48,926</td><td class="group-divider">42,188</td>
+                            <td>44,033</td><td>37,972</td>
+                        </tr>
+                        <tr>
+                            <td class="age-col group-divider">82</td>
+                            <td>58,109</td><td class="group-divider">51,164</td>
+                            <td>52,298</td><td class="group-divider">46,052</td>
+                            <td>47,069</td><td class="group-divider">41,443</td>
+                            <td>58,109</td><td class="group-divider">51,164</td>
+                            <td>52,298</td><td class="group-divider">46,052</td>
+                            <td>47,069</td><td>41,443</td>
+                        </tr>
+                        <tr>
+                            <td class="age-col group-divider">83</td>
+                            <td>62,259</td><td class="group-divider">56,012</td>
+                            <td>56,037</td><td class="group-divider">50,411</td>
+                            <td>50,433</td><td class="group-divider">45,373</td>
+                            <td>62,259</td><td class="group-divider">56,012</td>
+                            <td>56,037</td><td class="group-divider">50,411</td>
+                            <td>50,433</td><td>45,373</td>
+                        </tr>
+                        <tr>
+                            <td class="age-col group-divider">84</td>
+                            <td>66,695</td><td class="group-divider">61,331</td>
+                            <td>60,033</td><td class="group-divider">55,201</td>
+                            <td>54,029</td><td class="group-divider">49,683</td>
+                            <td>66,695</td><td class="group-divider">61,331</td>
+                            <td>60,033</td><td class="group-divider">55,201</td>
+                            <td>54,029</td><td>49,683</td>
+                        </tr>
+                        <tr>
+                            <td class="age-col group-divider">85</td>
+                            <td>71,363</td><td class="group-divider">67,091</td>
+                            <td>64,230</td><td class="group-divider">60,390</td>
+                            <td>57,806</td><td class="group-divider">54,345</td>
+                            <td>71,363</td><td class="group-divider">67,091</td>
+                            <td>64,230</td><td class="group-divider">60,390</td>
+                            <td>57,806</td><td>54,345</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top: 12px; font-size: 15px; color: #c0392b; font-weight: bold; text-align: center;">
+                ⚠️ 光是單張定期實支 (A-I型)，75~85歲這 11 年間總保費就高達 <span style="text-decoration: underline;">59.8萬 (男) / 52.8萬 (女)</span>，且 85 歲後保障立即歸零！
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
