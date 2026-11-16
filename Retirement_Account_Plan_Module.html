@@ -1,0 +1,2566 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <!-- iPad / iOS Safari 與 PWA 全螢幕最佳化設定 -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="退休帳戶計畫">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>退休帳戶計畫 - 視覺化戰略試算模組</title>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <!-- html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    </script>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #ffffff;
+            --bg-page: #f1f5f9;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+
+            /* 退休金三層組成專屬色彩 */
+            --color-labor: #3b82f6;       /* 勞保月退休金：穩健藍 */
+            --color-survival: #10b981;    /* 生存還本金：翡翠綠 */
+            --color-dividend: #f59e0b;    /* 增值回饋分享金：璀璨金 */
+            --color-total: #6366f1;       /* 月退休金總額：靛紫 */
+            --color-target: #ef4444;      /* 城市平均月消費線：警戒紅 */
+
+            /* 三都代表色 */
+            --city-taipei: #e11d48;
+            --city-taichung: #0284c7;
+            --city-kaohsiung: #0d9488;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+            padding-bottom: env(safe-area-inset-bottom);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-text-size-adjust: 100%;
+            overscroll-behavior-y: none;
+        }
+
+        button, label, .city-check-card, .step-pill {
+            touch-action: manipulation;
+        }
+
+        /* 頂部導覽列 */
+        .top-navbar {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #fff;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 3px solid #f59e0b;
+        }
+
+        .brand-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .back-home-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-home-link:hover {
+            background: rgba(255, 255, 255, 0.16);
+            color: #fff;
+        }
+
+        .top-navbar h1 {
+            margin: 0;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-pills {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-pill {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            background: rgba(255, 255, 255, 0.08);
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .step-pill.active {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #fff;
+            border-color: #fbbf24;
+            box-shadow: 0 2px 10px rgba(245, 158, 11, 0.4);
+        }
+
+        .container {
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 24px 16px 60px;
+        }
+
+        /* 頁面切換動畫 */
+        .page-view {
+            display: none;
+            animation: fadeIn 0.35s ease;
+        }
+
+        .page-view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 卡片設計 */
+        .section-card {
+            background: var(--bg-card);
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+        }
+
+        .card-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .step-badge {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: #f59e0b;
+            font-weight: 800;
+            font-size: 0.85rem;
+            padding: 4px 12px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .card-subtitle {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* 第一頁：雙欄圖表佈局 */
+        .charts-two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .chart-box {
+            position: relative;
+            height: 310px;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        /* 三都消費微調列 */
+        .city-edit-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .city-edit-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .city-edit-item label {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .city-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .input-with-unit {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-with-unit input {
+            width: 100%;
+            padding: 8px 38px 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 16px; /* 防止 iPad / iOS Safari 點擊輸入框時自動放大畫面 */
+            font-weight: 700;
+            color: #0f172a;
+            background: #fff;
+        }
+
+        .input-with-unit .unit {
+            position: absolute;
+            right: 10px;
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        /* 勞保說明標籤與預設天花板選擇 */
+        .labor-formula-banner {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-left: 4px solid var(--color-labor);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            color: #1e3a8a;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .ceiling-preset-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: #f8fafc;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .preset-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            color: #334155;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--color-labor);
+            color: var(--color-labor);
+        }
+
+        .preset-btn.active {
+            background: var(--color-labor);
+            color: #fff;
+            border-color: var(--color-labor);
+        }
+
+        /* 匯入建議書區塊 */
+        .import-zone-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .dropzone-box {
+            border: 2px dashed #94a3b8;
+            border-radius: 12px;
+            background: #f8fafc;
+            padding: 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.25s;
+            position: relative;
+        }
+
+        .dropzone-box:hover {
+            border-color: #3b82f6;
+            background: #f0f9ff;
+        }
+
+        .upload-buttons-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .file-btn-wrap {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-btn-wrap input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            font-size: 100px;
+            z-index: 5;
+            cursor: pointer;
+        }
+
+        .btn-primary-upload {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-sample {
+            background: #fff;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-sample:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .proposal-config-panel {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .config-field label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 5px;
+        }
+
+        .config-field input, .config-field select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 16px; /* 防止 iPad / iOS Safari 點擊時自動縮放 */
+            font-weight: 700;
+            color: #0f172a;
+            background: #fff;
+        }
+
+        /* 啟動跳頁大按鈕 */
+        .start-action-bar {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 2px dashed #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .btn-start-calc {
+            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            color: #fff;
+            border: none;
+            padding: 16px 38px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(234, 88, 12, 0.35);
+            transition: all 0.25s;
+            letter-spacing: 1px;
+        }
+
+        .btn-start-calc:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(234, 88, 12, 0.45);
+        }
+
+        /* ================= 第二頁：月退休金試算專頁 ================= */
+        .page2-top-controls {
+            display: grid;
+            grid-template-columns: 1.2fr 1.8fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        /* 三都勾選卡片 */
+        .city-selector-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .city-check-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px 12px;
+            text-align: center;
+            cursor: pointer;
+            background: #fff;
+            transition: all 0.2s;
+            position: relative;
+            user-select: none;
+        }
+
+        .city-check-card:hover {
+            border-color: #94a3b8;
+            transform: translateY(-2px);
+        }
+
+        .city-check-card.selected {
+            border-color: var(--color-target);
+            background: #fef2f2;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.15);
+        }
+
+        .city-check-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #cbd5e1;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: transparent;
+            transition: all 0.2s;
+        }
+
+        .city-check-card.selected .city-check-indicator {
+            background: var(--color-target);
+            border-color: var(--color-target);
+            color: #fff;
+        }
+
+        .city-check-name {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .city-check-amount {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--color-target);
+            margin-top: 4px;
+        }
+
+        .city-check-sub {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* 退休金三支柱設定與顏色圖例卡 */
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .pillar-card {
+            border-radius: 12px;
+            padding: 14px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-top: 5px solid #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .pillar-labor { border-top-color: var(--color-labor); background: #f8fafc; }
+        .pillar-survival { border-top-color: var(--color-survival); background: #f0fdf4; }
+        .pillar-dividend { border-top-color: var(--color-dividend); background: #fffbeb; }
+
+        .pillar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .pillar-title {
+            font-size: 0.9rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .color-swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        .pillar-monthly-val {
+            font-size: 1.35rem;
+            font-weight: 900;
+            margin: 4px 0;
+        }
+
+        .pillar-sub-note {
+            font-size: 0.76rem;
+            color: #64748b;
+        }
+
+        /* 勞保請領年齡快速切換按鈕 */
+        .age-toggle-group {
+            display: inline-flex;
+            border: 1px solid #bfdbfe;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .age-toggle-btn {
+            border: none;
+            background: transparent;
+            color: #475569;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .age-toggle-btn.active {
+            background: var(--color-labor);
+            color: #fff;
+        }
+
+        /* 宣告利率為 0 最差狀況壓力測試橫幅 */
+        .zero-rate-stress-bar {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 12px 18px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            transition: all 0.25s ease;
+        }
+
+        .zero-rate-stress-bar.stress-active {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border-color: #ef4444;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.15);
+        }
+
+        .stress-checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 0.94rem;
+            font-weight: 800;
+            color: #78350f;
+            user-select: none;
+        }
+
+        .zero-rate-stress-bar.stress-active .stress-checkbox-label {
+            color: #991b1b;
+        }
+
+        .stress-badge-pill {
+            font-size: 0.8rem;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: #ffffff;
+            color: #b45309;
+            border: 1px solid #fcd34d;
+        }
+
+        .zero-rate-stress-bar.stress-active .stress-badge-pill {
+            background: #dc2626;
+            color: #ffffff;
+            border-color: #dc2626;
+        }
+
+        /* 總額與缺口/盈餘 KPI 橫幅 */
+        .summary-kpi-banner {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .kpi-box.total-highlight {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            color: #fff;
+            border: none;
+        }
+
+        .kpi-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+
+        .kpi-box.total-highlight .kpi-label {
+            color: #c7d2fe;
+        }
+
+        .kpi-val {
+            font-size: 1.45rem;
+            font-weight: 900;
+        }
+
+        .kpi-sub {
+            font-size: 0.75rem;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        /* 單一年度控制滑桿與圖表區 */
+        .slider-control-bar {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .year-badge-box {
+            min-width: 210px;
+            font-weight: 800;
+            font-size: 1.05rem;
+            color: #0f172a;
+        }
+
+        .slider-flex {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 240px;
+        }
+
+        .slider-flex input[type="range"] {
+            flex: 1;
+            cursor: pointer;
+            accent-color: #4f46e5;
+            height: 8px;
+            border-radius: 4px;
+            touch-action: pan-y;
+        }
+
+        /* iPad 觸控滑桿拇指加大設計 */
+        .slider-flex input[type="range"]::-webkit-slider-thumb {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .btn-step-yr {
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            padding: 8px 14px;
+            min-height: 38px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #334155;
+        }
+
+        .btn-step-yr:hover {
+            background: #e2e8f0;
+        }
+
+        .page2-charts-layout {
+            display: grid;
+            grid-template-columns: 1.85fr 1fr;
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .main-stack-chart-wrap {
+            position: relative;
+            height: 420px;
+            width: 100%;
+        }
+
+        .single-year-compare-wrap {
+            position: relative;
+            height: 270px;
+            width: 100%;
+        }
+
+        /* 組成比例條 */
+        .composition-bar-wrap {
+            margin-top: 16px;
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .comp-progress {
+            height: 22px;
+            border-radius: 11px;
+            overflow: hidden;
+            display: flex;
+            background: #e2e8f0;
+            margin: 10px 0;
+        }
+
+        .comp-seg {
+            height: 100%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 800;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .comp-legend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.84rem;
+        }
+
+        .comp-legend-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+        }
+
+        /* 彈窗 Modal */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-card {
+            background: #fff;
+            border-radius: 14px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 86vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 20px 24px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 14px 24px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        table.data-table th, table.data-table td {
+            border: 1px solid #cbd5e1;
+            padding: 8px;
+            text-align: center;
+        }
+
+        table.data-table th {
+            background: #f1f5f9;
+            position: sticky;
+            top: 0;
+            font-weight: 800;
+        }
+
+        table.data-table input {
+            width: 105px;
+            padding: 6px;
+            text-align: right;
+            border: 1px solid #94a3b8;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        /* 醒目資料來源狀態徽章 */
+        .source-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            border: 1.5px solid #a5b4fc;
+            background: #e0e7ff;
+            color: #3730a3;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            white-space: nowrap;
+        }
+
+        /* iPad 橫向 (1024px~1180px) 與直向 (768px~992px) 專屬響應式最佳化 */
+        @media screen and (max-width: 1180px) {
+            .page2-top-controls {
+                grid-template-columns: 1fr;
+            }
+            .summary-kpi-banner {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+        }
+
+        @media screen and (max-width: 992px) {
+            .charts-two-col,
+            .import-zone-grid,
+            .page2-charts-layout {
+                grid-template-columns: 1fr;
+            }
+            .top-navbar {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+        }
+
+        @media screen and (max-width: 640px) {
+            .city-edit-grid,
+            .city-selector-cards,
+            .pillars-grid,
+            .config-grid,
+            .summary-kpi-banner {
+                grid-template-columns: 1fr;
+            }
+            .top-navbar {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 頂部導覽列 -->
+<header class="top-navbar">
+    <div class="brand-group">
+        <a href="index.html" class="back-home-link">⬅ 返回系統首頁</a>
+        <h1>🏖️ 退休帳戶計畫 <span style="font-size: 0.85rem; font-weight: 600; color: #fbbf24; background: rgba(251, 191, 36, 0.15); padding: 3px 10px; border-radius: 20px;">三都消費對標 × 勞保天花板 × 保單雙金流</span></h1>
+    </div>
+    <div class="step-pills" style="flex-wrap: wrap;">
+        <span class="source-status-badge" id="topNavSourceBadge">📌 目前資料來源：內建退休範本</span>
+        <button class="step-pill active" id="navStep1" onclick="switchPage(1)">STEP 1. 退休現況與匯入建議書</button>
+        <button class="step-pill" id="navStep2" onclick="switchPage(2)">STEP 2. 月退休金組成與總額試算</button>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- ========================================================================= -->
+    <!-- 第一頁：三都月消費圖表 ＋ 勞保月退休金最高金額圖表 ＋ 匯入建議書與開始 -->
+    <!-- ========================================================================= -->
+    <div id="page1" class="page-view active">
+
+        <div class="charts-two-col">
+            <!-- 圖表一：台北、台中、高雄平均月消費金額 -->
+            <div class="section-card" style="margin-bottom: 0;">
+                <div class="card-header-row">
+                    <div>
+                        <div class="card-title-group">
+                            <span class="step-badge">CHART 01</span>
+                            <h2 class="card-title">🏙️ 台北、台中、高雄 平均月消費金額</h2>
+                        </div>
+                        <div class="card-subtitle">依據主計總處家庭收支調查之平均每人每月消費支出基準（可即時微調）</div>
+                    </div>
+                </div>
+
+                <div class="chart-box">
+                    <canvas id="cityExpenseChart"></canvas>
+                </div>
+
+                <div class="city-edit-grid">
+                    <div class="city-edit-item">
+                        <label><span class="city-dot" style="background: var(--city-taipei);"></span> 台北市月消費</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="inputTaipei" value="35000" step="500" oninput="updatePage1Charts()">
+                            <span class="unit">元/月</span>
+                        </div>
+                    </div>
+                    <div class="city-edit-item">
+                        <label><span class="city-dot" style="background: var(--city-taichung);"></span> 台中市月消費</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="inputTaichung" value="27000" step="500" oninput="updatePage1Charts()">
+                            <span class="unit">元/月</span>
+                        </div>
+                    </div>
+                    <div class="city-edit-item">
+                        <label><span class="city-dot" style="background: var(--city-kaohsiung);"></span> 高雄市月消費</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="inputKaohsiung" value="25000" step="500" oninput="updatePage1Charts()">
+                            <span class="unit">元/月</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 圖表二：勞保月退休金的最高金額說明 -->
+            <div class="section-card" style="margin-bottom: 0;">
+                <div class="card-header-row">
+                    <div>
+                        <div class="card-title-group">
+                            <span class="step-badge">CHART 02</span>
+                            <h2 class="card-title">🏛️ 勞保月退休金「最高金額 (天花板)」解析</h2>
+                        </div>
+                        <div class="card-subtitle">最高投保薪資上限 45,800 元 × 年資 × 1.55%（不展延基準 vs. 台北基本消費線）</div>
+                    </div>
+                </div>
+
+                <div class="labor-formula-banner">
+                    <span>📌 <strong>勞保老年年金公式：</strong>最高 60 個月平均投保薪資 (封頂 <strong>$45,800</strong>) × 年資 × 1.55%</span>
+                    <span style="color: #dc2626; font-weight: 800;">⚠️ 即使年資滿 40 年封頂，仍低於台北市基本月消費！</span>
+                </div>
+
+                <div class="chart-box" style="height: 245px;">
+                    <canvas id="laborCeilingChart"></canvas>
+                </div>
+
+                <div class="ceiling-preset-group" style="justify-content: space-between;">
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+                        <span style="font-size: 0.82rem; font-weight: 800; color: #334155;">預設勞保天花板：</span>
+                        <button type="button" class="preset-btn active" onclick="setLaborCeiling(28396, this)">40年封頂 $28,396</button>
+                        <button type="button" class="preset-btn" onclick="setLaborCeiling(24847, this)">35年 $24,847</button>
+                        <button type="button" class="preset-btn" onclick="setLaborCeiling(21297, this)">30年 $21,297</button>
+                        <button type="button" class="preset-btn" onclick="setLaborCeiling(19344, this)">全台平均 $19,344</button>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span style="font-size: 0.82rem; font-weight: 800; color: #1e40af;">勞保起領年齡：</span>
+                        <div class="age-toggle-group">
+                            <button type="button" class="age-toggle-btn" id="p1BtnAge60" onclick="setLaborStartAge(60)">60歲起領</button>
+                            <button type="button" class="age-toggle-btn active" id="p1BtnAge65" onclick="setLaborStartAge(65)">65歲起領</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第三區塊：匯入建議書功能 ＋ 按「開始」跳轉至試算頁 -->
+        <div class="section-card">
+            <div class="card-header-row">
+                <div>
+                    <div class="card-title-group">
+                        <span class="step-badge">STEP 03</span>
+                        <h2 class="card-title">📄 匯入建議書（擷取「生存還本金」與「增值回饋分享金」）</h2>
+                    </div>
+                    <div class="card-subtitle">支援匯入保險公司 PDF 建議書自動解析，或直接選擇範本／設定年度還本與回饋金額</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <span class="source-status-badge" id="step3HeaderSourceBadge">📌 目前資料來源：內建退休範本</span>
+                    <div id="exchangeRateBadge" style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;">
+                        💱 匯率基準：1 USD = 32.50 TWD
+                    </div>
+                </div>
+            </div>
+
+            <div class="import-zone-grid">
+                <!-- 左側：檔案上傳與範本載入 -->
+                <div class="dropzone-box" id="dropzoneBox">
+                    <div style="font-size: 2.6rem;">📥</div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: #0f172a;">匯入保單建議書 (PDF) 或載入退休還本範本</div>
+                    <div style="font-size: 0.86rem; color: #64748b; max-width: 460px;">
+                        系統將自動辨識建議書表格中之<strong>「生存還本保險金」</strong>與<strong>「增值回饋分享金」</strong>，並於下一頁自動換算為每月退休現金流。
+                    </div>
+
+                    <div class="upload-buttons-row" style="margin-top: 8px;">
+                        <div class="file-btn-wrap">
+                            <button type="button" class="btn-primary-upload">📄 選擇建議書 PDF 匯入</button>
+                            <input type="file" id="pdfFileInput" accept=".pdf,application/pdf">
+                        </div>
+                        <button type="button" class="btn-sample" onclick="loadSampleProposal('USD')">💵 載入美元雙金流建議書範本</button>
+                        <button type="button" class="btn-sample" onclick="loadSampleProposal('TWD')">🏦 載入台幣還本建議書範本</button>
+                        <button type="button" class="btn-sample" onclick="openModal()" style="border-color: #6366f1; color: #4f46e5;">✏️ 檢視/編輯歷年明細</button>
+                    </div>
+
+                    <div id="importStatusBanner" style="margin-top: 10px; padding: 8px 16px; border-radius: 8px; background: #e0f2fe; color: #0369a1; font-size: 0.88rem; font-weight: 700; width: 100%;">
+                        ✅ 已預載標準退休建議書範本（可隨時上傳您的 PDF 建議書覆蓋或右側直接調整金額）
+                    </div>
+                </div>
+
+                <!-- 右側：建議書匯入結果摘要 與 備用手動設定 -->
+                <div class="proposal-config-panel">
+                    <div>
+                        <div style="font-size: 0.96rem; font-weight: 800; color: #0f172a; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+                            <span>📊 建議書數據摘要與幣別匯率</span>
+                            <span id="dataSourceBadge" style="background: #e0e7ff; color: #3730a3; padding: 3px 10px; border-radius: 12px; font-size: 0.76rem; font-weight: 800;">📌 來源：內建退休範本（匯入 PDF 後自動以 PDF 為準）</span>
+                        </div>
+                        <div style="font-size: 0.78rem; color: #64748b; margin-bottom: 12px;">
+                            💡 <strong>無須手動填寫：</strong>匯入 PDF 建議書後，系統會<strong>直接採用 PDF 內的歷年明細</strong>（不會被下方欄位覆蓋）；下方欄位僅供「未帶 PDF 時快速模擬」或「調整美元匯率」使用。
+                        </div>
+
+                        <div class="config-grid">
+                            <div class="config-field">
+                                <label>保單計價幣別 <span id="policyCurrencyTag" style="color: #1d4ed8; font-size: 0.75rem;">(自動辨識)</span></label>
+                                <select id="policyCurrency" onchange="onCurrencyOrRateChange()">
+                                    <option value="TWD">新臺幣 (TWD)</option>
+                                    <option value="USD">美元 (USD)</option>
+                                </select>
+                            </div>
+                            <div class="config-field">
+                                <label>美元兌台幣匯率 (USD/TWD)</label>
+                                <input type="number" id="usdRateInput" value="32.50" step="0.1" oninput="onCurrencyOrRateChange()">
+                            </div>
+                            <div class="config-field">
+                                <label>投保年齡 / 預計退休年齡</label>
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <input type="number" id="startAgeInput" value="55" min="15" max="80" title="投保年齡" oninput="onProposalParamChange()">
+                                    <span style="font-weight: 700; color: #64748b;">→</span>
+                                    <input type="number" id="retireAgeInput" value="65" min="50" max="95" title="退休開始領取年齡" oninput="onProposalParamChange()">
+                                </div>
+                            </div>
+                            <div class="config-field">
+                                <label>繳費年期 (無 PDF 時模擬用)</label>
+                                <select id="paymentTermInput" onchange="onProposalParamChange()">
+                                    <option value="6" selected>6 年期</option>
+                                    <option value="10">10 年期</option>
+                                    <option value="15">15 年期</option>
+                                    <option value="20">20 年期</option>
+                                </select>
+                            </div>
+                            <div class="config-field">
+                                <label style="color: #047857;">🟢 生存還本金 (年領代表值/原幣)</label>
+                                <input type="number" id="annualSurvivalInput" value="120000" step="1000" oninput="onProposalParamChange()">
+                            </div>
+                            <div class="config-field">
+                                <label style="color: #b45309;">🟠 增值回饋分享金 (年領代表值/原幣)</label>
+                                <input type="number" id="annualDividendInput" value="84000" step="1000" oninput="onProposalParamChange()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="monthlyPreviewStrip" style="margin-top: 14px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; font-size: 0.86rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                        <span>📊 退休後保單折合月領預覽：</span>
+                        <span>
+                            <strong style="color: var(--color-survival);">生存還本 $<span id="previewMonthlySurvival">10,000</span>/月</strong> ＋
+                            <strong style="color: var(--color-dividend);">增值回饋 $<span id="previewMonthlyDividend">7,000</span>/月</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部：開始按鈕（跳轉第二頁） -->
+            <div class="start-action-bar">
+                <div style="font-size: 0.92rem; color: #475569;">
+                    💡 確認上方三都消費基準、勞保天花板金額與建議書匯入資料後，點擊右側<strong>「開始」</strong>按鈕進入月退休金組成試算頁。
+                </div>
+                <button type="button" class="btn-start-calc" onclick="goToPage2()">
+                    🚀 開始試算月退休金 (跳轉下一頁) ➔
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 第二頁：月退休金額試算專頁（城市三選一 ＋ 勞保天花板 ＋ 生存還本金 ＋ 增值回饋分享金） -->
+    <!-- ========================================================================= -->
+    <div id="page2" class="page-view">
+
+        <div id="page2CaptureArea" style="background: var(--bg-page); padding: 4px;">
+
+            <!-- 頂部控制：左選城市（三選一），右調三層退休金支柱 -->
+            <div class="page2-top-controls">
+
+                <!-- 1. 勾選三個城市其中之一 -->
+                <div class="section-card" style="margin-bottom: 0; padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: #0f172a;">
+                            📍 1. 勾選退休居住城市 (對標平均月消費)
+                        </h3>
+                        <span style="font-size: 0.78rem; color: #ef4444; font-weight: 700;">● 紅虛線目標基準</span>
+                    </div>
+
+                    <div class="city-selector-cards">
+                        <div class="city-check-card selected" id="cityCard_taipei" onclick="selectCity('taipei')">
+                            <div class="city-check-indicator">✓</div>
+                            <div class="city-check-name">台北市</div>
+                            <div class="city-check-amount" id="p2CityAmt_taipei">$35,000</div>
+                            <div class="city-check-sub">平均月消費</div>
+                        </div>
+
+                        <div class="city-check-card" id="cityCard_taichung" onclick="selectCity('taichung')">
+                            <div class="city-check-indicator">✓</div>
+                            <div class="city-check-name">台中市</div>
+                            <div class="city-check-amount" id="p2CityAmt_taichung">$27,000</div>
+                            <div class="city-check-sub">平均月消費</div>
+                        </div>
+
+                        <div class="city-check-card" id="cityCard_kaohsiung" onclick="selectCity('kaohsiung')">
+                            <div class="city-check-indicator">✓</div>
+                            <div class="city-check-name">高雄市</div>
+                            <div class="city-check-amount" id="p2CityAmt_kaohsiung">$25,000</div>
+                            <div class="city-check-sub">平均月消費</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 三大退休金組成來源（不同顏色呈現與勾選/微調） -->
+                <div class="section-card" style="margin-bottom: 0; padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: #0f172a;">
+                            🎨 2. 月退休金三大組成來源 (可勾選開關或微調金額)
+                        </h3>
+                        <div style="display: flex; gap: 8px;" data-html2canvas-ignore>
+                            <button type="button" class="btn-step-yr" onclick="openModal()" style="font-size: 0.8rem;">🔍 建議書年度明細</button>
+                            <button type="button" class="btn-step-yr" onclick="exportPage2Image()" style="background: #4f46e5; color: #fff; border-color: #4f46e5; font-size: 0.8rem;">📷 匯出試算圖檔</button>
+                            <button type="button" class="btn-step-yr" onclick="switchPage(1)" style="font-size: 0.8rem;">⬅ 返回前頁</button>
+                        </div>
+                    </div>
+
+                    <div class="pillars-grid">
+                        <!-- 1. 最底層：勞保月退休金 -->
+                        <div class="pillar-card pillar-labor">
+                            <div class="pillar-header">
+                                <label class="pillar-title" style="cursor: pointer; color: #1d4ed8;">
+                                    <input type="checkbox" id="chkLabor" checked onchange="updatePage2()">
+                                    <span class="color-swatch" style="background: var(--color-labor);"></span>
+                                    勞保月退休金
+                                </label>
+                                <span style="font-size: 0.7rem; background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-weight: 700;">最底層基石</span>
+                            </div>
+                            <div class="input-with-unit" style="margin: 4px 0;">
+                                <input type="number" id="p2LaborInput" value="28396" step="500" oninput="onLaborInputPage2()">
+                                <span class="unit">元/月</span>
+                            </div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px; margin-top: 6px; flex-wrap: wrap;">
+                                <span class="pillar-sub-note" style="font-weight: 700; color: #1e3a8a;">開始顯示年齡：</span>
+                                <div style="display: flex; align-items: center; gap: 4px;">
+                                    <div class="age-toggle-group">
+                                        <button type="button" class="age-toggle-btn" id="p2BtnAge60" onclick="setLaborStartAge(60)">60歲</button>
+                                        <button type="button" class="age-toggle-btn active" id="p2BtnAge65" onclick="setLaborStartAge(65)">65歲</button>
+                                    </div>
+                                    <input type="number" id="p2LaborStartAgeInput" value="65" min="50" max="80" title="自訂勞保開始顯示年齡" oninput="setLaborStartAge(this.value)" style="width: 48px; padding: 2px 4px; border: 1px solid #93c5fd; border-radius: 4px; font-size: 0.78rem; font-weight: 800; text-align: center; color: #1e3a8a;">
+                                    <span style="font-size: 0.72rem; color: #64748b;">歲</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. 中層：建議書 生存還本金 -->
+                        <div class="pillar-card pillar-survival">
+                            <div class="pillar-header">
+                                <label class="pillar-title" style="cursor: pointer; color: #047857;">
+                                    <input type="checkbox" id="chkSurvival" checked onchange="updatePage2()">
+                                    <span class="color-swatch" style="background: var(--color-survival);"></span>
+                                    生存還本金
+                                </label>
+                                <span style="font-size: 0.7rem; background: #d1fae5; color: #065f46; padding: 2px 6px; border-radius: 4px; font-weight: 700;">中層‧契約保證</span>
+                            </div>
+                            <div class="pillar-monthly-val" style="color: var(--color-survival);" id="p2SurvivalMonthlyDisplay">$10,000</div>
+                            <div class="pillar-sub-note" id="p2SurvivalAnnualNote">建議書年領 $120,000 ÷ 12月</div>
+                        </div>
+
+                        <!-- 3. 最頂層：建議書 增值回饋分享金 -->
+                        <div class="pillar-card pillar-dividend" id="pillarCardDividend">
+                            <div class="pillar-header">
+                                <label class="pillar-title" style="cursor: pointer; color: #b45309;">
+                                    <input type="checkbox" id="chkDividend" checked onchange="onDividendCheckChange()">
+                                    <span class="color-swatch" style="background: var(--color-dividend);"></span>
+                                    增值回饋分享金
+                                </label>
+                                <span id="dividendBadgeTag" style="font-size: 0.7rem; background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; font-weight: 700;">頂層‧宣告增益</span>
+                            </div>
+                            <div class="pillar-monthly-val" style="color: var(--color-dividend);" id="p2DividendMonthlyDisplay">$7,000</div>
+                            <div class="pillar-sub-note" id="p2DividendAnnualNote">建議書年領 $84,000 ÷ 12月</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 壓力測試勾選橫幅：把增值回饋分享金拿掉，呈現最差狀況宣告利率為 0 時 -->
+            <div class="zero-rate-stress-bar" id="zeroRateStressBar">
+                <label class="stress-checkbox-label">
+                    <input type="checkbox" id="chkZeroRateStress" onchange="onZeroRateStressToggle()" style="width: 19px; height: 19px; accent-color: #dc2626; cursor: pointer;">
+                    <span>⚠️ <strong>極端壓力測試（最差狀況：假設宣告利率為 0%）：</strong>勾選後將「增值回饋分享金」拿掉，僅呈現【最底層：勞保退休金 ＋ 中層：保證生存還本金】</span>
+                </label>
+                <span class="stress-badge-pill" id="stressStatusPill">🟢 正常試算模式（含增值回饋分享金）</span>
+            </div>
+
+            <!-- 五大核心數據 KPI 橫幅 -->
+            <div class="summary-kpi-banner">
+                <div class="kpi-box" style="border-bottom: 4px solid var(--color-labor);">
+                    <div class="kpi-label">🟦 勞保月退休金</div>
+                    <div class="kpi-val" style="color: var(--color-labor);" id="kpiLabor">$28,396</div>
+                    <div class="kpi-sub" id="kpiLaborPct" style="color: #64748b;">佔總額 62.5%</div>
+                </div>
+                <div class="kpi-box" style="border-bottom: 4px solid var(--color-survival);">
+                    <div class="kpi-label">🟩 建議書生存還本 (月)</div>
+                    <div class="kpi-val" style="color: var(--color-survival);" id="kpiSurvival">$10,000</div>
+                    <div class="kpi-sub" id="kpiSurvivalPct" style="color: #64748b;">佔總額 22.0%</div>
+                </div>
+                <div class="kpi-box" style="border-bottom: 4px solid var(--color-dividend);">
+                    <div class="kpi-label">🟧 增值回饋分享金 (月)</div>
+                    <div class="kpi-val" style="color: var(--color-dividend);" id="kpiDividend">$7,000</div>
+                    <div class="kpi-sub" id="kpiDividendPct" style="color: #64748b;">佔總額 15.4%</div>
+                </div>
+                <div class="kpi-box total-highlight">
+                    <div class="kpi-label">👑 每月退休金總額</div>
+                    <div class="kpi-val" style="color: #fbbf24;" id="kpiTotal">$45,396</div>
+                    <div class="kpi-sub" id="kpiAnnualTotal" style="color: #e0e7ff;">折合年領總額 $544,752</div>
+                </div>
+                <div class="kpi-box" id="kpiGapBox" style="border-bottom: 4px solid #10b981;">
+                    <div class="kpi-label" id="kpiGapTitle">🎯 對標台北市月消費 ($35,000)</div>
+                    <div class="kpi-val" id="kpiGapVal" style="color: #10b981;">+$10,396</div>
+                    <div class="kpi-sub" id="kpiGapStatus" style="color: #059669;">✅ 每月充裕盈餘 (達標率 130%)</div>
+                </div>
+            </div>
+
+            <!-- 圖表主區域：保單年度滑桿 ＋ 歷年堆疊長條圖 ＋ 當年度細部結構對比圖 -->
+            <div class="section-card" style="margin-bottom: 0;">
+                <div class="slider-control-bar">
+                    <div class="year-badge-box">
+                        📅 檢視年度：第 <span id="dispPolicyYear" style="color: #4f46e5; font-size: 1.3rem;">10</span> 保單年度
+                        <span style="background: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 6px; font-size: 0.9rem; margin-left: 4px;">
+                            <span id="dispPolicyAge">65</span> 歲
+                        </span>
+                    </div>
+
+                    <div class="slider-flex" data-html2canvas-ignore>
+                        <button type="button" class="btn-step-yr" onclick="stepYear(-1)">◀ -1年</button>
+                        <input type="range" id="policyYearSlider" min="1" max="35" value="10" oninput="onYearSliderChange(this.value)">
+                        <button type="button" class="btn-step-yr" onclick="stepYear(1)">+1年 ▶</button>
+                    </div>
+
+                    <div style="font-size: 0.85rem; color: #475569; font-weight: 700;">
+                        💡 拖曳滑桿可檢視不同年齡之「勞保＋生存還本＋增值回饋」月退休金堆疊變化
+                    </div>
+                </div>
+
+                <div class="page2-charts-layout">
+                    <!-- 左圖：歷年/各年齡月退休金組成堆疊圖 -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+                            <div style="font-weight: 800; font-size: 1.05rem; color: #0f172a;">
+                                📊 歷年每月退休金組成堆疊圖 vs. <span id="chartCityNameTitle" style="color: var(--color-target);">台北市</span>平均月消費線
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="source-status-badge" id="page2SourceBadge">📌 目前資料來源：內建退休範本</span>
+                                <span style="font-size: 0.8rem; color: #64748b;">單位：新臺幣 (元 / 月)</span>
+                            </div>
+                        </div>
+                        <div class="main-stack-chart-wrap">
+                            <canvas id="stackedTimelineChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 右圖：當年度月消費 vs. 月退休金組成與總額對比 -->
+                    <div style="display: flex; flex-direction: column; justify-content: space-between; border-left: 2px dashed #e2e8f0; padding-left: 20px;">
+                        <div>
+                            <div style="font-weight: 800; font-size: 1.02rem; color: #0f172a; margin-bottom: 10px; text-align: center;">
+                                🎯 <span id="singleChartAgeTitle">65 歲 (第10年)</span> 月退總額 vs. 城市月消費
+                            </div>
+                            <div class="single-year-compare-wrap">
+                                <canvas id="singleYearCompareChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="composition-bar-wrap">
+                            <div style="font-size: 0.85rem; font-weight: 800; color: #334155; display: flex; justify-content: space-between;">
+                                <span>🎨 月退休金三色組成比例</span>
+                                <span id="compTotalBadge" style="color: #4f46e5;">總額 $45,396 / 月</span>
+                            </div>
+
+                            <div class="comp-progress">
+                                <div class="comp-seg" id="barSegLabor" style="background: var(--color-labor); width: 62%;">62%</div>
+                                <div class="comp-seg" id="barSegSurvival" style="background: var(--color-survival); width: 22%;">22%</div>
+                                <div class="comp-seg" id="barSegDividend" style="background: var(--color-dividend); width: 16%;">16%</div>
+                            </div>
+
+                            <div class="comp-legend-list">
+                                <div class="comp-legend-item">
+                                    <span><span class="color-swatch" style="background: var(--color-labor);"></span> 勞保月退休金</span>
+                                    <span style="color: var(--color-labor);" id="legendValLabor">$28,396 / 月</span>
+                                </div>
+                                <div class="comp-legend-item">
+                                    <span><span class="color-swatch" style="background: var(--color-survival);"></span> 建議書 - 生存還本金</span>
+                                    <span style="color: var(--color-survival);" id="legendValSurvival">$10,000 / 月</span>
+                                </div>
+                                <div class="comp-legend-item">
+                                    <span><span class="color-swatch" style="background: var(--color-dividend);"></span> 建議書 - 增值回饋分享金</span>
+                                    <span style="color: var(--color-dividend);" id="legendValDividend">$7,000 / 月</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #f1f5f9; font-size: 0.78rem; color: #94a3b8; text-align: center;">
+                    ※ 本試算圖表僅供退休財務規劃參考。勞保老年年金金額依實際投保薪資與年資計算；保單之「生存還本金」依保單條款約定給付，「增值回饋分享金」係假設宣告利率維持不變之試算值，非保證給付項目。
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- 建議書歷年明細檢視與手動編輯 Modal -->
+<div class="modal-backdrop" id="detailModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <div>
+                <h3 style="margin: 0; font-size: 1.15rem; color: #0f172a;">📋 建議書歷年「生存還本金」與「增值回饋分享金」明細表</h3>
+                <div style="font-size: 0.8rem; color: #64748b;">可針對個別保單年度微調年領金額（原幣），系統將自動除以 12 換算每月退休金</div>
+            </div>
+            <button type="button" onclick="closeModal()" style="background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #64748b;">✕</button>
+        </div>
+        <div class="modal-body">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>保單年度</th>
+                        <th>保險年齡</th>
+                        <th>生存還本金 (年領/原幣)</th>
+                        <th>增值回饋分享金 (年領/原幣)</th>
+                        <th>折合台幣月領「生存還本」</th>
+                        <th>折合台幣月領「增值回饋」</th>
+                    </tr>
+                </thead>
+                <tbody id="detailTableBody"></tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-sample" onclick="closeModal()">取消</button>
+            <button type="button" class="btn-primary-upload" onclick="saveModalDetails()">💾 儲存明細並更新圖表</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 註冊 ChartDataLabels 套件
+    Chart.register(ChartDataLabels);
+
+    // 全域狀態管理
+    const state = {
+        cities: {
+            taipei:    { name: '台北市', amount: 35000, color: '#e11d48' },
+            taichung:  { name: '台中市', amount: 27000, color: '#0284c7' },
+            kaohsiung: { name: '高雄市', amount: 25000, color: '#0d9488' }
+        },
+        selectedCityKey: 'taipei',
+        laborCeiling: 28396, // 預設勞保天花板 (45800 * 40年 * 1.55% = 28396)
+        laborStartAge: 65,   // 勞保退休金開始顯示年齡 (預設 65 歲，可切換 60 歲或自訂)
+        currency: 'TWD',
+        usdRate: 32.50,
+        startAge: 55,
+        retireAge: 65,
+        paymentTerm: 6,
+        annualSurvivalBase: 120000,
+        annualDividendBase: 84000,
+        selectedYearIndex: 9, // 預設第10保單年度 (65歲)
+        yearlyData: [] // { year, age, survivalAnnual, dividendAnnual }
+    };
+
+    let cityChartInstance = null;
+    let laborChartInstance = null;
+    let stackedTimelineChartInstance = null;
+    let singleYearChartInstance = null;
+
+    // 自動抓取最新美元匯率
+    async function fetchLiveExchangeRate() {
+        try {
+            const res = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+            const data = await res.json();
+            if (data && data.rates && data.rates.TWD) {
+                state.usdRate = parseFloat(data.rates.TWD.toFixed(2));
+                document.getElementById('usdRateInput').value = state.usdRate;
+                document.getElementById('exchangeRateBadge').innerHTML = `💱 即時匯率基準：1 USD = ${state.usdRate.toFixed(2)} TWD`;
+                updateMonthlyPreview();
+            }
+        } catch (err) {
+            console.log('使用預設匯率 32.50');
+        }
+    }
+
+    // 根據參數生成 35 年建議書明細資料
+    function buildYearlyDataFromBase() {
+        const rows = [];
+        const totalYears = 35;
+        for (let y = 1; y <= totalYears; y++) {
+            const age = state.startAge + y - 1;
+            let survival = 0;
+            let dividend = 0;
+
+            // 繳費期間與退休年齡後的還本與增值回饋成長邏輯
+            if (age >= state.retireAge || y > state.paymentTerm) {
+                survival = state.annualSurvivalBase;
+                // 增值回饋分享金隨保單年度微幅遞增或穩定領取
+                const growthFactor = 1 + Math.max(0, y - state.paymentTerm - 1) * 0.015;
+                dividend = Math.round(state.annualDividendBase * growthFactor);
+            } else {
+                // 繳費期間部分還本險種亦有小額生存金或第7年起開始領取
+                survival = 0;
+                dividend = 0;
+            }
+
+            rows.push({
+                year: y,
+                age: age,
+                survivalAnnual: survival,
+                dividendAnnual: dividend
+            });
+        }
+        state.yearlyData = rows;
+
+        // 將預設檢視年度對齊退休年齡
+        const retireIdx = rows.findIndex(r => r.age >= state.retireAge);
+        if (retireIdx >= 0) {
+            state.selectedYearIndex = retireIdx;
+            document.getElementById('policyYearSlider').value = retireIdx + 1;
+        }
+        document.getElementById('policyYearSlider').max = rows.length;
+    }
+
+    // ================= 第一頁圖表初始化與更新 =================
+    function renderPage1Charts() {
+        state.cities.taipei.amount = parseInt(document.getElementById('inputTaipei').value) || 35000;
+        state.cities.taichung.amount = parseInt(document.getElementById('inputTaichung').value) || 27000;
+        state.cities.kaohsiung.amount = parseInt(document.getElementById('inputKaohsiung').value) || 25000;
+
+        // 1. 三都月消費圖表
+        const ctxCity = document.getElementById('cityExpenseChart').getContext('2d');
+        if (cityChartInstance) cityChartInstance.destroy();
+
+        cityChartInstance = new Chart(ctxCity, {
+            type: 'bar',
+            data: {
+                labels: ['台北市 (Taipei)', '台中市 (Taichung)', '高雄市 (Kaohsiung)'],
+                datasets: [{
+                    label: '平均每人每月消費金額 (元)',
+                    data: [
+                        state.cities.taipei.amount,
+                        state.cities.taichung.amount,
+                        state.cities.kaohsiung.amount
+                    ],
+                    backgroundColor: [
+                        'rgba(225, 29, 72, 0.85)',
+                        'rgba(2, 132, 199, 0.85)',
+                        'rgba(13, 148, 136, 0.85)'
+                    ],
+                    borderColor: ['#be123c', '#0369a1', '#0f766e'],
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    barPercentage: 0.55
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: '#0f172a',
+                        font: { weight: 'bold', size: 13 },
+                        formatter: (val) => '$' + val.toLocaleString() + ' /月'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => ` 平均月消費：$${ctx.raw.toLocaleString()} 元 (年支出約 $${(ctx.raw * 12).toLocaleString()} 元)`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: Math.max(42000, state.cities.taipei.amount * 1.2),
+                        ticks: {
+                            callback: (v) => '$' + v.toLocaleString()
+                        },
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { weight: 'bold', size: 13 } }
+                    }
+                }
+            }
+        });
+
+        // 2. 勞保月退休金最高金額圖表
+        const ctxLabor = document.getElementById('laborCeilingChart').getContext('2d');
+        if (laborChartInstance) laborChartInstance.destroy();
+
+        const taipeiLine = state.cities.taipei.amount;
+
+        laborChartInstance = new Chart(ctxLabor, {
+            type: 'bar',
+            data: {
+                labels: [
+                    '全台平均實領\n(多數勞工現況)',
+                    '最高薪資 × 30年\n(天花板基準)',
+                    '最高薪資 × 35年\n(資深勞工上限)',
+                    '最高薪資 × 40年\n(極限天花板)'
+                ],
+                datasets: [
+                    {
+                        type: 'line',
+                        label: '台北市平均月消費基準線',
+                        data: [taipeiLine, taipeiLine, taipeiLine, taipeiLine],
+                        borderColor: '#ef4444',
+                        borderWidth: 2.5,
+                        borderDash: [6, 4],
+                        pointRadius: 3,
+                        pointBackgroundColor: '#ef4444',
+                        datalabels: {
+                            display: (ctx) => ctx.dataIndex === 0,
+                            align: 'bottom',
+                            anchor: 'start',
+                            backgroundColor: '#fef2f2',
+                            borderColor: '#ef4444',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            color: '#dc2626',
+                            font: { weight: 'bold', size: 11 },
+                            formatter: () => `台北月消費 $${taipeiLine.toLocaleString()}`
+                        }
+                    },
+                    {
+                        type: 'bar',
+                        label: '勞保老年年金月領金額 (元)',
+                        data: [19344, 21297, 24847, 28396],
+                        backgroundColor: [
+                            'rgba(148, 163, 184, 0.75)',
+                            'rgba(96, 165, 250, 0.85)',
+                            'rgba(59, 130, 246, 0.88)',
+                            'rgba(29, 78, 216, 0.92)'
+                        ],
+                        borderColor: ['#64748b', '#3b82f6', '#2563eb', '#1e40af'],
+                        borderWidth: 2,
+                        borderRadius: 6,
+                        barPercentage: 0.55,
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            color: '#1e3a8a',
+                            font: { weight: 'bold', size: 12 },
+                            formatter: (val) => '$' + val.toLocaleString()
+                        }
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => ` ${ctx.dataset.label}: $${ctx.raw.toLocaleString()} 元/月`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: Math.max(40000, taipeiLine * 1.18),
+                        ticks: { callback: (v) => '$' + v.toLocaleString() },
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { weight: 'bold', size: 11 } }
+                    }
+                }
+            }
+        });
+
+        // 同步更新第二頁城市卡片上的顯示金額
+        document.getElementById('p2CityAmt_taipei').innerText = '$' + state.cities.taipei.amount.toLocaleString();
+        document.getElementById('p2CityAmt_taichung').innerText = '$' + state.cities.taichung.amount.toLocaleString();
+        document.getElementById('p2CityAmt_kaohsiung').innerText = '$' + state.cities.kaohsiung.amount.toLocaleString();
+    }
+
+    function updatePage1Charts() {
+        renderPage1Charts();
+        if (document.getElementById('page2').classList.contains('active')) {
+            updatePage2();
+        }
+    }
+
+    function setLaborCeiling(val, btnEl) {
+        state.laborCeiling = val;
+        document.getElementById('p2LaborInput').value = val;
+        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+        if (btnEl) btnEl.classList.add('active');
+        updatePage2();
+    }
+
+    // 同步更新頁面上所有右上角「資料來源標籤」
+    function updateAllSourceBadges(mode, customText) {
+        const badgeIds = ['topNavSourceBadge', 'step3HeaderSourceBadge', 'page2SourceBadge', 'dataSourceBadge'];
+        let bg = '#e0e7ff', color = '#3730a3', border = '#a5b4fc', text = customText || '📌 資料來源：內建退休範本';
+
+        if (mode === 'pdf') {
+            bg = '#dcfce7';
+            color = '#15803d';
+            border = '#86efac';
+            text = customText || '🔒 資料來源：已匯入 PDF 建議書';
+        } else if (mode === 'manual') {
+            bg = '#fef3c7';
+            color = '#92400e';
+            border = '#fcd34d';
+            text = customText || '📝 資料來源：右側手動參數模擬';
+        } else if (mode === 'sample') {
+            bg = '#e0e7ff';
+            color = '#3730a3';
+            border = '#a5b4fc';
+            text = customText || '📌 資料來源：內建退休範本';
+        }
+
+        badgeIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.innerText = text;
+                el.style.background = bg;
+                el.style.color = color;
+                el.style.borderColor = border;
+            }
+        });
+    }
+
+    // ================= 建議書參數與範本載入 =================
+    // 僅變更幣別或匯率時：只更新換算匯率，不覆蓋已匯入之 PDF 歷年明細
+    function onCurrencyOrRateChange() {
+        state.currency = document.getElementById('policyCurrency').value;
+        state.usdRate = parseFloat(document.getElementById('usdRateInput').value) || 32.5;
+
+        const tag = document.getElementById('policyCurrencyTag');
+        if (state.currency === 'USD') {
+            tag.innerText = `(USD 匯率 ${state.usdRate})`;
+            tag.style.color = '#15803d';
+        } else {
+            tag.innerText = '(TWD 計價)';
+            tag.style.color = '#1d4ed8';
+        }
+
+        updateMonthlyPreview();
+        if (document.getElementById('page2').classList.contains('active')) {
+            updatePage2();
+        }
+    }
+
+    // 當手動修改右側模擬參數時：切換為手動參數模擬模式
+    function onProposalParamChange(isFromSample = false, sampleLabel = '') {
+        state.isPdfImported = false;
+        state.currency = document.getElementById('policyCurrency').value;
+        state.usdRate = parseFloat(document.getElementById('usdRateInput').value) || 32.5;
+        state.startAge = parseInt(document.getElementById('startAgeInput').value) || 55;
+        state.retireAge = parseInt(document.getElementById('retireAgeInput').value) || 65;
+        state.paymentTerm = parseInt(document.getElementById('paymentTermInput').value) || 6;
+        state.annualSurvivalBase = parseFloat(document.getElementById('annualSurvivalInput').value) || 0;
+        state.annualDividendBase = parseFloat(document.getElementById('annualDividendInput').value) || 0;
+
+        if (isFromSample === true) {
+            updateAllSourceBadges('sample', sampleLabel || '📌 資料來源：內建退休範本');
+        } else {
+            updateAllSourceBadges('manual', '📝 資料來源：右側手動參數模擬');
+        }
+
+        onCurrencyOrRateChange();
+        buildYearlyDataFromBase();
+        updateMonthlyPreview();
+    }
+
+    function updateMonthlyPreview() {
+        const fx = state.currency === 'USD' ? state.usdRate : 1;
+        const monthlySurvivalTwd = Math.round((state.annualSurvivalBase * fx) / 12);
+        const monthlyDividendTwd = Math.round((state.annualDividendBase * fx) / 12);
+
+        document.getElementById('previewMonthlySurvival').innerText = monthlySurvivalTwd.toLocaleString();
+        document.getElementById('previewMonthlyDividend').innerText = monthlyDividendTwd.toLocaleString();
+    }
+
+    function loadSampleProposal(type) {
+        if (type === 'USD') {
+            document.getElementById('policyCurrency').value = 'USD';
+            document.getElementById('startAgeInput').value = 55;
+            document.getElementById('retireAgeInput').value = 65;
+            document.getElementById('paymentTermInput').value = '6';
+            document.getElementById('annualSurvivalInput').value = 4200;  // 每年 4,200 美元生存還本
+            document.getElementById('annualDividendInput').value = 2800;  // 每年 2,800 美元增值回饋
+            document.getElementById('importStatusBanner').innerHTML = `✅ 已載入【美元還本雙金流建議書範本】：年領生存還本金 $4,200 USD ＋ 增值回饋分享金 $2,800 USD`;
+            onProposalParamChange(true, '📌 資料來源：美元建議書範本');
+        } else {
+            document.getElementById('policyCurrency').value = 'TWD';
+            document.getElementById('startAgeInput').value = 55;
+            document.getElementById('retireAgeInput').value = 65;
+            document.getElementById('paymentTermInput').value = '6';
+            document.getElementById('annualSurvivalInput').value = 120000; // 每年 12 萬生存還本
+            document.getElementById('annualDividendInput').value = 84000;  // 每年 8.4 萬增值回饋
+            document.getElementById('importStatusBanner').innerHTML = `✅ 已載入【台幣退休還本建議書範本】：年領生存還本金 $120,000 元 ＋ 增值回饋分享金 $84,000 元`;
+            onProposalParamChange(true, '📌 資料來源：台幣建議書範本');
+        }
+    }
+
+    // ================= 真實 PDF 建議書解析功能 =================
+    document.getElementById('pdfFileInput').addEventListener('change', async (e) => {
+        if (e.target.files.length === 0) return;
+        const file = e.target.files[0];
+        const banner = document.getElementById('importStatusBanner');
+        banner.style.background = '#fef3c7';
+        banner.style.color = '#92400e';
+        banner.innerHTML = `🔄 正在解析建議書「${file.name}」中之生存還本金與增值回饋分享金...`;
+
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const typedarray = new Uint8Array(arrayBuffer);
+            const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
+
+            let fullText = '';
+            let parsedRows = [];
+            let detectedStartAge = state.startAge;
+            let detectedCurrency = 'TWD';
+
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                const page = await pdf.getPage(pageNum);
+                const textContent = await page.getTextContent();
+                const items = textContent.items;
+
+                const pageStr = items.map(i => i.str).join(' ');
+                fullText += pageStr + '\n';
+
+                if (/美元|USD|美金/.test(pageStr)) {
+                    detectedCurrency = 'USD';
+                }
+                const ageMatch = pageStr.match(/(?:保\s*險\s*)?年\s*齡\s*[:：]?\s*(\d{1,2})\s*歲?/);
+                if (ageMatch) {
+                    detectedStartAge = parseInt(ageMatch[1]);
+                }
+
+                // 依 Y 座標分行解析表格
+                items.sort((a, b) => {
+                    const yDiff = b.transform[5] - a.transform[5];
+                    if (Math.abs(yDiff) > 7) return yDiff;
+                    return a.transform[4] - b.transform[4];
+                });
+
+                let lines = [];
+                let currY = null;
+                let currLine = [];
+                for (const item of items) {
+                    const y = item.transform[5];
+                    const str = item.str.trim();
+                    if (!str) continue;
+                    if (currY === null || Math.abs(y - currY) > 7) {
+                        if (currLine.length > 0) lines.push(currLine.join(' '));
+                        currLine = [str];
+                        currY = y;
+                    } else {
+                        currLine.push(str);
+                    }
+                }
+                if (currLine.length > 0) lines.push(currLine.join(' '));
+
+                for (const line of lines) {
+                    const tokens = line.replace(/,/g, '').trim().split(/\s+/);
+                    if (tokens.length >= 5) {
+                        const yVal = parseInt(tokens[0]);
+                        const ageVal = parseInt(tokens[1]);
+                        if (
+                            !isNaN(yVal) && !isNaN(ageVal) &&
+                            yVal === parsedRows.length + 1 &&
+                            ageVal > 0 && ageVal <= 115
+                        ) {
+                            const nums = tokens.slice(2)
+                                .map(t => (t === '-' || t === '─' ? 0 : parseInt(t.replace(/[^0-9]/g, '')) || 0));
+                            // 從建議書各欄推測「生存還本金」與「增值回饋分享金」
+                            // 一般還本型建議書：保單年度 | 年齡 | 應繳保費 | 生存還本金 | 保單價值/解約金 | 增值回饋分享金 ...
+                            let survivalVal = nums[1] || 0;
+                            let dividendVal = nums[3] || nums[2] || 0;
+                            parsedRows.push({
+                                year: yVal,
+                                age: ageVal,
+                                survivalAnnual: survivalVal,
+                                dividendAnnual: dividendVal
+                            });
+                        }
+                    }
+                }
+            }
+
+            document.getElementById('policyCurrency').value = detectedCurrency;
+            document.getElementById('startAgeInput').value = detectedStartAge;
+
+            if (parsedRows.length >= 6) {
+                state.isPdfImported = true;
+                state.yearlyData = parsedRows;
+                const sampleRow = parsedRows.find(r => r.survivalAnnual > 0 || r.dividendAnnual > 0) || parsedRows[Math.min(10, parsedRows.length - 1)];
+                if (sampleRow) {
+                    state.annualSurvivalBase = sampleRow.survivalAnnual;
+                    state.annualDividendBase = sampleRow.dividendAnnual;
+                    state.retireAge = sampleRow.age;
+                    document.getElementById('annualSurvivalInput').value = sampleRow.survivalAnnual;
+                    document.getElementById('annualDividendInput').value = sampleRow.dividendAnnual;
+                    document.getElementById('retireAgeInput').value = sampleRow.age;
+                }
+                document.getElementById('policyYearSlider').max = parsedRows.length;
+                onCurrencyOrRateChange();
+                updateAllSourceBadges('pdf', `🔒 資料來源：已匯入 PDF (${parsedRows.length}年明細)`);
+                banner.style.background = '#dcfce7';
+                banner.style.color = '#15803d';
+                banner.innerHTML = `✅ 成功解析 PDF「${file.name}」（共擷取 ${parsedRows.length} 個保單年度明細，已直接鎖定採用 PDF 資料，無須手動填寫右側參數！）`;
+            } else {
+                onProposalParamChange();
+                banner.style.background = '#e0f2fe';
+                banner.style.color = '#0369a1';
+                banner.innerHTML = `ℹ️ 已讀取「${file.name}」（投保年齡 ${detectedStartAge} 歲，${detectedCurrency} 計價），請確認右側生存還本與增值回饋年領金額後按「開始」！`;
+            }
+        } catch (err) {
+            console.error(err);
+            banner.style.background = '#fee2e2';
+            banner.style.color = '#b91c1c';
+            banner.innerHTML = `⚠️ PDF 解析遇到格式差異，已保留右側建議書參數設定，您可直接微調數值或按「開始」進行試算。`;
+        }
+    });
+
+    // ================= 跳頁與第二頁互動邏輯 =================
+    function switchPage(pageNum) {
+        document.getElementById('page1').classList.toggle('active', pageNum === 1);
+        document.getElementById('page2').classList.toggle('active', pageNum === 2);
+        document.getElementById('navStep1').classList.toggle('active', pageNum === 1);
+        document.getElementById('navStep2').classList.toggle('active', pageNum === 2);
+
+        if (pageNum === 1) {
+            renderPage1Charts();
+        } else {
+            updatePage2();
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToPage2() {
+        switchPage(2);
+    }
+
+    function selectCity(cityKey) {
+        state.selectedCityKey = cityKey;
+        ['taipei', 'taichung', 'kaohsiung'].forEach(k => {
+            document.getElementById('cityCard_' + k).classList.toggle('selected', k === cityKey);
+        });
+        updatePage2();
+    }
+
+    function onLaborInputPage2() {
+        state.laborCeiling = parseInt(document.getElementById('p2LaborInput').value) || 0;
+        updatePage2();
+    }
+
+    // 設定勞保退休金開始請領/顯示年齡 (支援 60 歲、65 歲快速切換或自訂年齡)
+    function setLaborStartAge(ageVal) {
+        const parsed = parseInt(ageVal);
+        if (isNaN(parsed) || parsed < 50 || parsed > 85) return;
+        state.laborStartAge = parsed;
+
+        const inputEl = document.getElementById('p2LaborStartAgeInput');
+        if (inputEl && parseInt(inputEl.value) !== parsed) {
+            inputEl.value = parsed;
+        }
+
+        ['p1BtnAge60', 'p2BtnAge60'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('active', parsed === 60);
+        });
+        ['p1BtnAge65', 'p2BtnAge65'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('active', parsed === 65);
+        });
+
+        updatePage2();
+    }
+
+    // 勾選/取消「最差狀況：宣告利率為 0% (拿掉增值回饋分享金)」壓力測試
+    function onZeroRateStressToggle() {
+        const isZeroStress = document.getElementById('chkZeroRateStress').checked;
+        document.getElementById('chkDividend').checked = !isZeroStress;
+        syncStressBannerUI();
+        updatePage2();
+    }
+
+    // 當直接勾選/取消上方「增值回饋分享金」卡片時同步壓力測試橫幅
+    function onDividendCheckChange() {
+        const includeDividend = document.getElementById('chkDividend').checked;
+        document.getElementById('chkZeroRateStress').checked = !includeDividend;
+        syncStressBannerUI();
+        updatePage2();
+    }
+
+    function syncStressBannerUI() {
+        const isZeroStress = document.getElementById('chkZeroRateStress').checked;
+        const bar = document.getElementById('zeroRateStressBar');
+        const pill = document.getElementById('stressStatusPill');
+        const badge = document.getElementById('dividendBadgeTag');
+        const card = document.getElementById('pillarCardDividend');
+
+        if (isZeroStress) {
+            bar.classList.add('stress-active');
+            pill.innerText = '🔴 壓力測試中：宣告利率 = 0%（已拿掉增值回饋分享金）';
+            badge.innerText = '宣告利率=0% (已排除)';
+            badge.style.background = '#fee2e2';
+            badge.style.color = '#b91c1c';
+            card.style.opacity = '0.68';
+        } else {
+            bar.classList.remove('stress-active');
+            pill.innerText = '🟢 正常試算模式（含增值回饋分享金）';
+            badge.innerText = '頂層‧宣告增益';
+            badge.style.background = '#fef3c7';
+            badge.style.color = '#92400e';
+            card.style.opacity = '1';
+        }
+    }
+
+    function onYearSliderChange(val) {
+        state.selectedYearIndex = Math.max(0, Math.min(state.yearlyData.length - 1, parseInt(val) - 1));
+        updatePage2();
+    }
+
+    function stepYear(delta) {
+        const slider = document.getElementById('policyYearSlider');
+        const nextVal = Math.max(1, Math.min(state.yearlyData.length, parseInt(slider.value) + delta));
+        slider.value = nextVal;
+        onYearSliderChange(nextVal);
+    }
+
+    // 計算單一保單年度之月退休金三層組成 (皆換算為台幣/月)
+    // 勞保退休金僅在達到設定之開始年齡 (60或65歲) 後才計入顯示
+    function getMonthlyBreakdownAtRow(row) {
+        const fx = state.currency === 'USD' ? state.usdRate : 1;
+        const includeLabor = document.getElementById('chkLabor').checked;
+        const includeSurvival = document.getElementById('chkSurvival').checked;
+        const includeDividend = document.getElementById('chkDividend').checked;
+
+        const isLaborAgeReached = row.age >= state.laborStartAge;
+        const laborMonthly = (includeLabor && isLaborAgeReached) ? state.laborCeiling : 0;
+        const survivalMonthly = includeSurvival ? Math.round((row.survivalAnnual * fx) / 12) : 0;
+        const dividendMonthly = includeDividend ? Math.round((row.dividendAnnual * fx) / 12) : 0;
+        const totalMonthly = laborMonthly + survivalMonthly + dividendMonthly;
+
+        return { laborMonthly, survivalMonthly, dividendMonthly, totalMonthly, isLaborAgeReached };
+    }
+
+    // 更新第二頁所有面板與雙圖表
+    function updatePage2() {
+        if (state.yearlyData.length === 0) buildYearlyDataFromBase();
+
+        const currRow = state.yearlyData[state.selectedYearIndex] || state.yearlyData[0];
+        const fx = state.currency === 'USD' ? state.usdRate : 1;
+        const currSym = state.currency === 'USD' ? 'USD ' : '$';
+        const includeDividend = document.getElementById('chkDividend').checked;
+
+        // 更新上方三支柱卡片顯示
+        const rawSurvivalMonthly = Math.round((currRow.survivalAnnual * fx) / 12);
+        const rawDividendMonthly = Math.round((currRow.dividendAnnual * fx) / 12);
+
+        document.getElementById('p2SurvivalMonthlyDisplay').innerText = `$${rawSurvivalMonthly.toLocaleString()} /月`;
+        const divDisplayEl = document.getElementById('p2DividendMonthlyDisplay');
+        if (includeDividend) {
+            divDisplayEl.innerHTML = `$${rawDividendMonthly.toLocaleString()} /月`;
+        } else {
+            divDisplayEl.innerHTML = `<span style="text-decoration: line-through; color: #94a3b8; font-size: 0.95rem;">$${rawDividendMonthly.toLocaleString()}</span> <span style="color: #dc2626;">$0 /月</span>`;
+        }
+
+        if (state.currency === 'USD') {
+            document.getElementById('p2SurvivalAnnualNote').innerText = `年領 ${currSym}${currRow.survivalAnnual.toLocaleString()} × 匯率 ${state.usdRate} ÷ 12月`;
+            document.getElementById('p2DividendAnnualNote').innerText = includeDividend
+                ? `年領 ${currSym}${currRow.dividendAnnual.toLocaleString()} × 匯率 ${state.usdRate} ÷ 12月`
+                : `⚠️ 模擬最差狀況：宣告利率 = 0% (不計入增值回饋)`;
+        } else {
+            document.getElementById('p2SurvivalAnnualNote').innerText = `建議書年領 $${currRow.survivalAnnual.toLocaleString()} ÷ 12月`;
+            document.getElementById('p2DividendAnnualNote').innerText = includeDividend
+                ? `建議書年領 $${currRow.dividendAnnual.toLocaleString()} ÷ 12月`
+                : `⚠️ 模擬最差狀況：宣告利率 = 0% (不計入增值回饋)`;
+        }
+
+        // 計算當前選定年度的月退組成
+        const { laborMonthly, survivalMonthly, dividendMonthly, totalMonthly, isLaborAgeReached } = getMonthlyBreakdownAtRow(currRow);
+        const cityObj = state.cities[state.selectedCityKey];
+        const targetExpense = cityObj.amount;
+        const diff = totalMonthly - targetExpense;
+        const achieveRate = targetExpense > 0 ? Math.round((totalMonthly / targetExpense) * 100) : 100;
+
+        const pctLabor = totalMonthly > 0 ? ((laborMonthly / totalMonthly) * 100).toFixed(1) : '0.0';
+        const pctSurvival = totalMonthly > 0 ? ((survivalMonthly / totalMonthly) * 100).toFixed(1) : '0.0';
+        const pctDividend = totalMonthly > 0 ? ((dividendMonthly / totalMonthly) * 100).toFixed(1) : '0.0';
+
+        // 更新 KPI 橫幅
+        document.getElementById('kpiLabor').innerText = '$' + laborMonthly.toLocaleString();
+        document.getElementById('kpiLaborPct').innerText = isLaborAgeReached
+            ? `佔總額 ${pctLabor}% (${state.laborStartAge}歲起領)`
+            : `未達 ${state.laborStartAge} 歲起領年齡 ($0)`;
+
+        document.getElementById('kpiSurvival').innerText = '$' + survivalMonthly.toLocaleString();
+        document.getElementById('kpiSurvivalPct').innerText = `佔總額 ${pctSurvival}%`;
+
+        document.getElementById('kpiDividend').innerText = '$' + dividendMonthly.toLocaleString();
+        document.getElementById('kpiDividendPct').innerText = includeDividend
+            ? `佔總額 ${pctDividend}%`
+            : `宣告利率=0% (已拿掉)`;
+
+        document.getElementById('kpiTotal').innerText = '$' + totalMonthly.toLocaleString();
+        document.getElementById('kpiAnnualTotal').innerText = `折合年領總額 $${(totalMonthly * 12).toLocaleString()}`;
+
+        document.getElementById('kpiGapTitle').innerText = `🎯 對標${cityObj.name}月消費 ($${targetExpense.toLocaleString()})`;
+        const gapBox = document.getElementById('kpiGapBox');
+        const gapValEl = document.getElementById('kpiGapVal');
+        const gapStatusEl = document.getElementById('kpiGapStatus');
+
+        if (diff >= 0) {
+            gapBox.style.borderBottomColor = '#10b981';
+            gapValEl.style.color = '#10b981';
+            gapValEl.innerText = '+$' + diff.toLocaleString();
+            gapStatusEl.style.color = '#059669';
+            gapStatusEl.innerText = `✅ 每月充裕盈餘 (達標率 ${achieveRate}%)`;
+        } else {
+            gapBox.style.borderBottomColor = '#ef4444';
+            gapValEl.style.color = '#ef4444';
+            gapValEl.innerText = '-$' + Math.abs(diff).toLocaleString();
+            gapStatusEl.style.color = '#dc2626';
+            gapStatusEl.innerText = `⚠️ 尚有月退缺口 (達標率 ${achieveRate}%)`;
+        }
+
+        // 更新滑桿文字與組成比例條
+        document.getElementById('dispPolicyYear').innerText = currRow.year;
+        document.getElementById('dispPolicyAge').innerText = currRow.age;
+        document.getElementById('chartCityNameTitle').innerText = cityObj.name;
+        document.getElementById('singleChartAgeTitle').innerText = `${currRow.age} 歲 (第 ${currRow.year} 年)`;
+        document.getElementById('compTotalBadge').innerText = `總額 $${totalMonthly.toLocaleString()} / 月`;
+
+        const segL = document.getElementById('barSegLabor');
+        const segS = document.getElementById('barSegSurvival');
+        const segD = document.getElementById('barSegDividend');
+        segL.style.width = `${pctLabor}%`;
+        segL.innerText = parseFloat(pctLabor) >= 10 ? `${Math.round(pctLabor)}%` : '';
+        segS.style.width = `${pctSurvival}%`;
+        segS.innerText = parseFloat(pctSurvival) >= 10 ? `${Math.round(pctSurvival)}%` : '';
+        segD.style.width = `${pctDividend}%`;
+        segD.innerText = parseFloat(pctDividend) >= 10 ? `${Math.round(pctDividend)}%` : '';
+
+        document.getElementById('legendValLabor').innerText = `$${laborMonthly.toLocaleString()} / 月 (${pctLabor}%)`;
+        document.getElementById('legendValSurvival').innerText = `$${survivalMonthly.toLocaleString()} / 月 (${pctSurvival}%)`;
+        document.getElementById('legendValDividend').innerText = `$${dividendMonthly.toLocaleString()} / 月 (${pctDividend}%)`;
+
+        renderPage2Charts(currRow, cityObj, { laborMonthly, survivalMonthly, dividendMonthly, totalMonthly });
+    }
+
+    // 繪製第二頁：左圖（歷年堆疊長條圖）＋ 右圖（單一年度結構 vs 城市消費對比圖）
+    function renderPage2Charts(currRow, cityObj, currBreakdown) {
+        // 篩選退休階段或顯示完整年度 (此處顯示所有年度並標示選中年度)
+        const labels = state.yearlyData.map(r => `${r.age}歲\n(第${r.year}年)`);
+        const laborArr = [];
+        const survivalArr = [];
+        const dividendArr = [];
+        const cityTargetArr = [];
+
+        state.yearlyData.forEach(r => {
+            const b = getMonthlyBreakdownAtRow(r);
+            laborArr.push(b.laborMonthly);
+            survivalArr.push(b.survivalMonthly);
+            dividendArr.push(b.dividendMonthly);
+            cityTargetArr.push(cityObj.amount);
+        });
+
+        // 高亮當前滑桿選中年度的邊框插件
+        const highlightSelectedYearPlugin = {
+            id: 'highlightSelectedYear',
+            afterDatasetsDraw(chart) {
+                const idx = state.selectedYearIndex;
+                const meta0 = chart.getDatasetMeta(1); // 勞保 bar dataset
+                if (!meta0 || !meta0.data || !meta0.data[idx]) return;
+                const bar = meta0.data[idx];
+                const ctx = chart.ctx;
+                ctx.save();
+                ctx.strokeStyle = '#4f46e5';
+                ctx.lineWidth = 2.5;
+                ctx.setLineDash([4, 3]);
+                const halfW = (bar.width || 16) / 2 + 4;
+                ctx.strokeRect(
+                    bar.x - halfW,
+                    chart.scales.y.top,
+                    halfW * 2,
+                    chart.scales.y.bottom - chart.scales.y.top
+                );
+                ctx.restore();
+            }
+        };
+
+        const ctxTimeline = document.getElementById('stackedTimelineChart').getContext('2d');
+        if (stackedTimelineChartInstance) stackedTimelineChartInstance.destroy();
+
+        const maxStackVal = Math.max(
+            cityObj.amount * 1.25,
+            ...state.yearlyData.map(r => getMonthlyBreakdownAtRow(r).totalMonthly * 1.18)
+        );
+
+        stackedTimelineChartInstance = new Chart(ctxTimeline, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        type: 'line',
+                        label: `${cityObj.name}平均月消費 ($${cityObj.amount.toLocaleString()})`,
+                        data: cityTargetArr,
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        borderWidth: 3,
+                        borderDash: [6, 4],
+                        pointRadius: 0,
+                        order: 0,
+                        datalabels: {
+                            display: (ctx) => ctx.dataIndex === state.yearlyData.length - 1,
+                            align: 'top',
+                            anchor: 'end',
+                            backgroundColor: '#ef4444',
+                            color: '#fff',
+                            borderRadius: 4,
+                            padding: { top: 2, bottom: 2, left: 6, right: 6 },
+                            font: { weight: 'bold', size: 11 },
+                            formatter: () => `${cityObj.name}月消費 $${cityObj.amount.toLocaleString()}`
+                        }
+                    },
+                    {
+                        // 1. 最底層：勞保月退休金 (從 60 或 65 歲起顯示)
+                        label: `勞保月退休金 (${state.laborStartAge}歲起)`,
+                        data: laborArr,
+                        backgroundColor: '#3b82f6',
+                        stack: 'retireStack',
+                        order: 1,
+                        borderRadius: (ctx) => {
+                            const i = ctx.dataIndex;
+                            return (survivalArr[i] === 0 && dividendArr[i] === 0) ? { topLeft: 4, topRight: 4 } : 0;
+                        },
+                        datalabels: { display: false }
+                    },
+                    {
+                        // 2. 中層：建議書 - 生存還本金 (月)
+                        label: '建議書 - 生存還本金 (月)',
+                        data: survivalArr,
+                        backgroundColor: '#10b981',
+                        stack: 'retireStack',
+                        order: 1,
+                        borderRadius: (ctx) => {
+                            const i = ctx.dataIndex;
+                            return dividendArr[i] === 0 ? { topLeft: 4, topRight: 4 } : 0;
+                        },
+                        datalabels: { display: false }
+                    },
+                    {
+                        // 3. 最頂層：建議書 - 增值回饋分享金 (月)
+                        label: '建議書 - 增值回饋分享金 (月)',
+                        data: dividendArr,
+                        backgroundColor: '#f59e0b',
+                        stack: 'retireStack',
+                        borderRadius: { topLeft: 4, topRight: 4 },
+                        order: 1,
+                        datalabels: {
+                            display: (ctx) => {
+                                const i = ctx.dataIndex;
+                                const tot = laborArr[i] + survivalArr[i] + dividendArr[i];
+                                return tot > 0 && (i === state.selectedYearIndex || i % 5 === 0);
+                            },
+                            anchor: 'end',
+                            align: 'top',
+                            color: (ctx) => ctx.dataIndex === state.selectedYearIndex ? '#4f46e5' : '#334155',
+                            font: (ctx) => ({
+                                weight: 'bold',
+                                size: ctx.dataIndex === state.selectedYearIndex ? 12 : 10
+                            }),
+                            formatter: (val, ctx) => {
+                                const i = ctx.dataIndex;
+                                const tot = laborArr[i] + survivalArr[i] + dividendArr[i];
+                                return '$' + (tot / 1000).toFixed(1) + 'k';
+                            }
+                        }
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                onClick: (evt, elements) => {
+                    if (elements && elements.length > 0) {
+                        const clickedIndex = elements[0].index;
+                        state.selectedYearIndex = clickedIndex;
+                        document.getElementById('policyYearSlider').value = clickedIndex + 1;
+                        updatePage2();
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { usePointStyle: true, padding: 16, font: { weight: 'bold', size: 12 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            footer: (items) => {
+                                const idx = items[0].dataIndex;
+                                const tot = laborArr[idx] + survivalArr[idx] + dividendArr[idx];
+                                const gap = tot - cityObj.amount;
+                                return `━━━━━━━━━━━━━━\n👑 月退休金總額：$${tot.toLocaleString()} 元/月\n📍 與${cityObj.name}消費差額：${gap >= 0 ? '+' : ''}$${gap.toLocaleString()} 元`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: { display: false },
+                        ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 12, font: { size: 11 } }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        max: maxStackVal,
+                        ticks: { callback: (v) => '$' + v.toLocaleString() },
+                        grid: { color: '#f1f5f9' }
+                    }
+                },
+                animation: { duration: 200 }
+            },
+            plugins: [highlightSelectedYearPlugin]
+        });
+
+        // 右圖：當年度「所選城市月消費」 vs 「月退休金組成與總額」堆疊對比圖
+        const ctxSingle = document.getElementById('singleYearCompareChart').getContext('2d');
+        if (singleYearChartInstance) singleYearChartInstance.destroy();
+
+        const singleMax = Math.max(cityObj.amount, currBreakdown.totalMonthly) * 1.25;
+
+        singleYearChartInstance = new Chart(ctxSingle, {
+            type: 'bar',
+            data: {
+                labels: [`${cityObj.name}\n平均月消費`, `月退休金\n組成與總額`],
+                datasets: [
+                    {
+                        label: `${cityObj.name}平均月消費`,
+                        data: [cityObj.amount, 0],
+                        backgroundColor: 'rgba(239, 68, 68, 0.85)',
+                        borderColor: '#dc2626',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        stack: 'compareStack',
+                        barPercentage: 0.52,
+                        datalabels: {
+                            display: (ctx) => ctx.dataIndex === 0 && ctx.raw > 0,
+                            anchor: 'end',
+                            align: 'top',
+                            color: '#dc2626',
+                            font: { weight: 'bold', size: 13 },
+                            formatter: (v) => '$' + v.toLocaleString()
+                        }
+                    },
+                    {
+                        label: '勞保月退休金',
+                        data: [0, currBreakdown.laborMonthly],
+                        backgroundColor: '#3b82f6',
+                        borderRadius: (currBreakdown.survivalMonthly === 0 && currBreakdown.dividendMonthly === 0) ? { topLeft: 8, topRight: 8 } : 0,
+                        stack: 'compareStack',
+                        barPercentage: 0.52,
+                        datalabels: {
+                            display: (ctx) => ctx.dataIndex === 1 && ctx.raw >= 3000,
+                            anchor: 'center',
+                            align: 'center',
+                            color: '#fff',
+                            font: { weight: 'bold', size: 11 },
+                            formatter: (v) => '勞保 $' + v.toLocaleString()
+                        }
+                    },
+                    {
+                        label: '生存還本金(月)',
+                        data: [0, currBreakdown.survivalMonthly],
+                        backgroundColor: '#10b981',
+                        borderRadius: currBreakdown.dividendMonthly === 0 ? { topLeft: 8, topRight: 8 } : 0,
+                        stack: 'compareStack',
+                        barPercentage: 0.52,
+                        datalabels: {
+                            display: (ctx) => ctx.dataIndex === 1 && ctx.raw >= 2500,
+                            anchor: 'center',
+                            align: 'center',
+                            color: '#fff',
+                            font: { weight: 'bold', size: 11 },
+                            formatter: (v) => '還本 $' + v.toLocaleString()
+                        }
+                    },
+                    {
+                        label: '增值回饋金(月)',
+                        data: [0, currBreakdown.dividendMonthly],
+                        backgroundColor: '#f59e0b',
+                        borderRadius: { topLeft: 8, topRight: 8 },
+                        stack: 'compareStack',
+                        barPercentage: 0.52,
+                        datalabels: {
+                            display: (ctx) => ctx.dataIndex === 1,
+                            anchor: 'end',
+                            align: 'top',
+                            color: '#312e81',
+                            font: { weight: '900', size: 13 },
+                            formatter: () => '總額 $' + currBreakdown.totalMonthly.toLocaleString()
+                        }
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => ctx.raw > 0 ? ` ${ctx.dataset.label}: $${ctx.raw.toLocaleString()} 元/月` : null
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: { display: false },
+                        ticks: { font: { weight: 'bold', size: 12 } }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        max: singleMax,
+                        ticks: { callback: (v) => '$' + v.toLocaleString() },
+                        grid: { color: '#f1f5f9' }
+                    }
+                },
+                animation: { duration: 200 }
+            }
+        });
+    }
+
+    // ================= 歷年明細 Modal 檢視與編輯 =================
+    function openModal() {
+        const tbody = document.getElementById('detailTableBody');
+        tbody.innerHTML = '';
+        const fx = state.currency === 'USD' ? state.usdRate : 1;
+
+        state.yearlyData.forEach((row, i) => {
+            const mSurv = Math.round((row.survivalAnnual * fx) / 12);
+            const mDiv = Math.round((row.dividendAnnual * fx) / 12);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>第 ${row.year} 年</td>
+                <td><input type="number" id="m_age_${i}" value="${row.age}" style="width: 65px;"> 歲</td>
+                <td><input type="number" id="m_surv_${i}" value="${row.survivalAnnual}"></td>
+                <td><input type="number" id="m_div_${i}" value="${row.dividendAnnual}"></td>
+                <td style="color: var(--color-survival); font-weight: 700;">$${mSurv.toLocaleString()} /月</td>
+                <td style="color: var(--color-dividend); font-weight: 700;">$${mDiv.toLocaleString()} /月</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('detailModal').style.display = 'none';
+    }
+
+    function saveModalDetails() {
+        state.yearlyData.forEach((row, i) => {
+            row.age = parseInt(document.getElementById(`m_age_${i}`).value) || row.age;
+            row.survivalAnnual = parseFloat(document.getElementById(`m_surv_${i}`).value) || 0;
+            row.dividendAnnual = parseFloat(document.getElementById(`m_div_${i}`).value) || 0;
+        });
+        closeModal();
+        updatePage2();
+    }
+
+    // 匯出第二頁試算報告圖檔
+    function exportPage2Image() {
+        const area = document.getElementById('page2CaptureArea');
+        html2canvas(area, {
+            scale: 2,
+            backgroundColor: '#f1f5f9',
+            useCORS: true
+        }).then(canvas => {
+            const cityObj = state.cities[state.selectedCityKey];
+            const currRow = state.yearlyData[state.selectedYearIndex];
+            const link = document.createElement('a');
+            link.download = `退休帳戶計畫_${cityObj.name}_${currRow.age}歲月退試算.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    }
+
+    // 初始化啟動
+    window.addEventListener('DOMContentLoaded', () => {
+        buildYearlyDataFromBase();
+        updateMonthlyPreview();
+        renderPage1Charts();
+        fetchLiveExchangeRate();
+    });
+</script>
+
+</body>
+</html>
