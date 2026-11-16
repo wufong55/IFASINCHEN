@@ -473,13 +473,19 @@
             gap: 16px;
         }
 
+        .start-action-buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
         .btn-start-calc {
             background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
             color: #fff;
             border: none;
-            padding: 16px 38px;
+            padding: 14px 26px;
             border-radius: 12px;
-            font-size: 1.2rem;
+            font-size: 1.12rem;
             font-weight: 800;
             cursor: pointer;
             display: inline-flex;
@@ -487,12 +493,36 @@
             gap: 12px;
             box-shadow: 0 8px 25px rgba(234, 88, 12, 0.35);
             transition: all 0.25s;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            text-align: left;
         }
 
         .btn-start-calc:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 30px rgba(234, 88, 12, 0.45);
+        }
+
+        .btn-start-travel {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: #fff;
+            border: none;
+            padding: 14px 26px;
+            border-radius: 12px;
+            font-size: 1.12rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(2, 132, 199, 0.35);
+            transition: all 0.25s;
+            letter-spacing: 0.5px;
+            text-align: left;
+        }
+
+        .btn-start-travel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(2, 132, 199, 0.45);
         }
 
         /* ================= 第二頁：月退休金試算專頁 ================= */
@@ -1016,7 +1046,398 @@
                 align-items: flex-start;
             }
         }
-    </style>
+    
+        /* ================= STEP 3 出國旅遊專屬樣式 ================= */
+        .travel-person-pill-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 20px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .travel-person-btn {
+            background: none;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .travel-person-btn.active {
+            background: #0284c7;
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+        }
+
+        .travel-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-top: 14px;
+        }
+
+        .travel-metric-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px 18px;
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .travel-metric-card.highlight {
+            background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 100%);
+            border-color: #c7d2fe;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.12);
+        }
+
+        .tm-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .tm-title {
+            font-size: 0.86rem;
+            font-weight: 800;
+            color: #334155;
+        }
+
+        .tm-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .tm-val-twd {
+            font-size: 1.55rem;
+            font-weight: 900;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            margin-bottom: 4px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .tm-val-orig {
+            font-size: 0.78rem;
+            color: #64748b;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* 旅遊夢想清單結算條 */
+        .travel-bucket-summary-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 14px 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08);
+        }
+
+        .tb-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tb-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .tb-val {
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: #0f172a;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .tb-divider {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #94a3b8;
+        }
+
+        .tb-item.progress-box {
+            min-width: 200px;
+            flex: 1;
+        }
+
+        .tb-progress-bg {
+            background: #e2e8f0;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .tb-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        /* 目的地卡片網格 */
+        .travel-filter-tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .t-filter-btn {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .t-filter-btn:hover {
+            border-color: #0284c7;
+            color: #0284c7;
+        }
+
+        .t-filter-btn.active {
+            background: #0284c7;
+            border-color: #0284c7;
+            color: #fff;
+        }
+
+        .travel-destinations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .travel-card {
+            background: #fff;
+            border-radius: 14px;
+            border: 2px solid #e2e8f0;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .travel-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+        }
+
+        .travel-card.affordable {
+            border-color: #86efac;
+            background: linear-gradient(to bottom, #f0fdf4 0%, #ffffff 100%);
+        }
+
+        .travel-card.selected {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+        }
+
+        .tc-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tc-flag-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tc-flag {
+            font-size: 1.8rem;
+            line-height: 1;
+        }
+
+        .tc-name {
+            font-size: 1.02rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.25;
+        }
+
+        .tc-country {
+            font-size: 0.76rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .tc-badge-tier {
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .tc-desc {
+            font-size: 0.8rem;
+            color: #475569;
+            line-height: 1.45;
+            margin-bottom: 12px;
+            flex: 1;
+        }
+
+        .tc-highlight-tag {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #334155;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .tc-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-top: 1px dashed #e2e8f0;
+            padding-top: 10px;
+            margin-bottom: 12px;
+        }
+
+        .tc-price-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 700;
+        }
+
+        .tc-price-val {
+            font-size: 1.22rem;
+            font-weight: 900;
+            color: #0f172a;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .tc-times-badge {
+            font-size: 0.78rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tc-action-btn {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.84rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tc-action-btn:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .tc-action-btn.selected {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+
+        /* 退休圓夢四格看板 */
+        .travel-lifetime-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .tls-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .tls-title {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .tls-num {
+            font-size: 1.25rem;
+            font-weight: 900;
+            margin-bottom: 2px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .tls-sub {
+            font-size: 0.68rem;
+            color: #94a3b8;
+        }
+
+        /* 已選行程膠囊 */
+        .selected-trip-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 10px;
+            border-radius: 14px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border: 1px solid #bae6fd;
+        }
+
+        .selected-trip-remove {
+            cursor: pointer;
+            color: #0284c7;
+            font-weight: 900;
+            margin-left: 2px;
+        }
+
+        .selected-trip-remove:hover {
+            color: #ef4444;
+        }
+</style>
 </head>
 <body>
 
@@ -1030,6 +1451,7 @@
         <span class="source-status-badge" id="topNavSourceBadge">📌 目前資料來源：內建退休範本</span>
         <button class="step-pill active" id="navStep1" onclick="switchPage(1)">STEP 1. 退休現況與匯入建議書</button>
         <button class="step-pill" id="navStep2" onclick="switchPage(2)">STEP 2. 月退休金組成與總額試算</button>
+        <button class="step-pill" id="navStep3" onclick="switchPage(3)">STEP 3. 每年領取金額與出國旅遊對照 ✈️</button>
     </div>
 </header>
 
@@ -1128,7 +1550,7 @@
                 <div>
                     <div class="card-title-group">
                         <span class="step-badge">STEP 03</span>
-                        <h2 class="card-title">📄 匯入建議書</h2>
+                        <h2 class="card-title">📄 匯入建議書（擷取「生存還本金」與「增值回饋分享金」）</h2>
                     </div>
                     <div class="card-subtitle">支援匯入保險公司 PDF 建議書自動解析，或直接選擇範本／設定年度還本與回饋金額</div>
                 </div>
@@ -1227,12 +1649,34 @@
 
             <!-- 底部：開始按鈕（跳轉第二頁） -->
             <div class="start-action-bar">
-                <div style="font-size: 0.92rem; color: #475569;">
-                    💡 確認上方三都消費基準、勞保天花板金額與建議書匯入資料後，點擊右側<strong>「開始」</strong>按鈕進入月退休金組成試算頁。
+                <div>
+                    <div style="font-size: 0.98rem; font-weight: 800; color: #0f172a; margin-bottom: 4px;">
+                        🎯 規劃數據已備妥！請選擇您要與客戶展開互動的試算功能磚：
+                    </div>
+                    <div style="font-size: 0.82rem; color: #64748b;">
+                        💡 兩大模組隨時可自由互相切換，數據全自動同步連動，無須重新設定。
+                    </div>
                 </div>
-                <button type="button" class="btn-start-calc" onclick="goToPage2()">
-                    🚀 開始試算月退休金 (跳轉下一頁) ➔
-                </button>
+                <div class="start-action-buttons">
+                    <button type="button" class="btn-start-calc" onclick="goToPage2()">
+                        <div style="font-size: 1.6rem; line-height: 1;">📊</div>
+                        <div>
+                            <div>開始試算月退休金 ➔</div>
+                            <div style="font-size: 0.72rem; font-weight: 600; opacity: 0.9; margin-top: 2px;">
+                                城市消費對標 × 勞保天花板 × 月退休金組成
+                            </div>
+                        </div>
+                    </button>
+                    <button type="button" class="btn-start-travel" onclick="goToPage3()">
+                        <div style="font-size: 1.6rem; line-height: 1;">✈️</div>
+                        <div>
+                            <div>出國旅遊夢想金試算 ➔</div>
+                            <div style="font-size: 0.72rem; font-weight: 600; opacity: 0.9; margin-top: 2px;">
+                                每年生存還本＋增值回饋 × 全球 18 國旅費
+                            </div>
+                        </div>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -1244,6 +1688,21 @@
     <div id="page2" class="page-view">
 
         <div id="page2CaptureArea" style="background: var(--bg-page); padding: 4px;">
+
+            <!-- 第二頁頂部快速切換橫幅 (支援隨時跳轉 STEP 3) -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 18px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; box-shadow: 0 2px 8px rgba(15,23,42,0.04);">
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <span class="step-badge" style="background: #4f46e5; color: #fff;">STEP 2</span>
+                    <span style="font-size: 1rem; font-weight: 800; color: #0f172a;">📊 月退休金組成與總額試算</span>
+                    <span id="page2SourceBadge" style="background: #e0e7ff; color: #3730a3; padding: 3px 10px; border-radius: 12px; font-size: 0.76rem; font-weight: 800;">🔒 資料來源：內建退休範本</span>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <button type="button" class="btn-step-yr" onclick="switchPage(1)" style="font-size: 0.82rem; padding: 6px 12px;">⬅ STEP 1</button>
+                    <button type="button" class="btn-step-yr" onclick="switchPage(3)" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #fff; border: none; font-size: 0.85rem; font-weight: 800; padding: 7px 16px; box-shadow: 0 3px 10px rgba(2, 132, 199, 0.35);">
+                        ✈️ 隨時切換至 STEP 3 出國旅遊試算 ➔
+                    </button>
+                </div>
+            </div>
 
             <!-- 頂部控制：左選城市（三選一），右調三層退休金支柱 -->
             <div class="page2-top-controls">
@@ -1477,6 +1936,15 @@
                 <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #f1f5f9; font-size: 0.78rem; color: #94a3b8; text-align: center;">
                     ※ 本試算圖表僅供退休財務規劃參考。勞保老年年金金額依實際投保薪資與年資計算；保單之「生存還本金」依保單條款約定給付，「增值回饋分享金」係假設宣告利率維持不變之試算值，非保證給付項目。
                 </div>
+
+                <!-- 第二頁底部導覽與跳頁按鈕 -->
+                <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                    <button type="button" class="btn-step-yr" onclick="switchPage(1)" style="font-size: 0.9rem; padding: 10px 18px;">⬅ 返回 STEP 1 退休現況</button>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button type="button" class="btn-step-yr" onclick="exportPage2Image()" style="background: #4f46e5; color: #fff; border-color: #4f46e5; font-size: 0.9rem; padding: 10px 18px;">📷 匯出本頁月退休金試算圖檔</button>
+                        <button type="button" class="btn-step-yr" onclick="switchPage(3)" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #fff; border: none; font-size: 0.95rem; font-weight: 800; padding: 10px 22px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);">✈️ 前往 STEP 3：出國旅遊夢想金試算 ➡</button>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -1484,6 +1952,284 @@
     </div>
 
 </div>
+
+
+    <!-- ========================================================================= -->
+    <!-- 第三頁：每年領取金額 (生存還本 ＋ 增值回饋) 對應出國旅遊各國旅費試算 -->
+    <!-- ========================================================================= -->
+    <div id="page3" class="page-view">
+        <div id="page3CaptureArea" style="background: var(--bg-page); padding: 4px;">
+
+            <!-- STEP 3 頂部控制與年度選擇器 -->
+            <div class="section-card" style="padding: 20px 24px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="step-badge" style="background: #0284c7; color: #fff;">STEP 3</span>
+                            <h2 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #0f172a;">
+                                ✈️ 每年領取金額 ✕ 出國旅遊各國旅費試算
+                            </h2>
+                        </div>
+                        <div style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">
+                            將建議書每年產生的「保證生存還本金 (C+D)」與「增值回饋分享金 (A@)」轉化為全球出國旅遊圓夢基金！
+                        </div>
+                    </div>
+                    <!-- 右側來源標籤、快速切換STEP2與出遊人數切換 -->
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <button type="button" class="btn-step-yr" onclick="switchPage(2)" style="background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%); color: #fff; border: none; font-size: 0.85rem; font-weight: 800; padding: 7px 16px; box-shadow: 0 3px 10px rgba(234, 88, 12, 0.35);">
+                            📊 隨時切換至 STEP 2 月退休金試算 ➔
+                        </button>
+                        <span id="page3SourceBadge" style="background: #e0e7ff; color: #3730a3; padding: 5px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 800;">
+                            🔒 資料來源：內建退休範本
+                        </span>
+                        <!-- 出遊人數切換：單人 / 雙人 -->
+                        <div class="travel-person-pill-group">
+                            <span style="font-size: 0.82rem; font-weight: 700; color: #475569;">出遊模式：</span>
+                            <button type="button" class="travel-person-btn active" id="btnPerson1" onclick="setTravelPersonCount(1)">👤 單人自由行</button>
+                            <button type="button" class="travel-person-btn" id="btnPerson2" onclick="setTravelPersonCount(2)">👥 雙人同行 (攜伴)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 年齡/年度滑桿控制器 -->
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 18px; margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
+                        <span style="font-size: 0.92rem; font-weight: 800; color: #0f172a;">
+                            📅 選擇檢視之保單年度 / 年齡：<span id="p3YearLabel" style="color: #0284c7; font-size: 1.15rem; font-weight: 900;">第 20 保單年度 (65 歲)</span>
+                        </span>
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                            <button type="button" class="btn-step-yr" onclick="stepTravelYear(-1)" style="font-size: 0.8rem; padding: 4px 10px;">◀ -1年</button>
+                            <button type="button" class="btn-step-yr" onclick="setTravelAge(60)" style="font-size: 0.8rem; padding: 4px 10px;">60歲</button>
+                            <button type="button" class="btn-step-yr" onclick="setTravelAge(65)" style="font-size: 0.8rem; padding: 4px 10px; font-weight: 800; border-color: #0284c7; color: #0284c7;">65歲退休</button>
+                            <button type="button" class="btn-step-yr" onclick="setTravelAge(70)" style="font-size: 0.8rem; padding: 4px 10px;">70歲</button>
+                            <button type="button" class="btn-step-yr" onclick="setTravelAge(75)" style="font-size: 0.8rem; padding: 4px 10px;">75歲</button>
+                            <button type="button" class="btn-step-yr" onclick="stepTravelYear(1)" style="font-size: 0.8rem; padding: 4px 10px;">+1年 ▶</button>
+                        </div>
+                    </div>
+                    <input type="range" id="travelYearSlider" min="1" max="55" value="20" oninput="onTravelSliderInput(this.value)" style="width: 100%; accent-color: #0284c7; cursor: pointer;">
+                </div>
+
+                <!-- 當前年度領取金額三項大指標卡片 -->
+                <div class="travel-metrics-grid">
+                    <!-- 指標 1：保證生存還本金 -->
+                    <div class="travel-metric-card" style="border-left: 4px solid var(--color-survival);">
+                        <div class="tm-header">
+                            <span class="tm-title">🌿 保證生存還本金 (C+D)</span>
+                            <span class="tm-badge" id="p3SurvBadge" style="background: #e0f2fe; color: #0369a1;">定期給付・本利逐年還本 (至百歲本金領完)</span>
+                        </div>
+                        <div class="tm-val-twd" id="p3SurvTwd">$200,168 <span style="font-size: 0.8rem; font-weight: 600;">TWD / 年</span></div>
+                        <div class="tm-val-orig" id="p3SurvOrig">約 USD $6,159 (C:$4,800 + D:$1,359)</div>
+                    </div>
+
+                    <!-- 指標 2：增值回饋分享金 -->
+                    <div class="travel-metric-card" style="border-left: 4px solid var(--color-dividend);">
+                        <div class="tm-header">
+                            <span class="tm-title">✨ 增值回饋分享金 (A@)</span>
+                            <span class="tm-badge" id="p3DivBadge" style="background: #fef3c7; color: #92400e;">現金給付 (@)</span>
+                        </div>
+                        <div class="tm-val-twd" id="p3DivTwd" style="color: #b45309;">$92,235 <span style="font-size: 0.8rem; font-weight: 600;">TWD / 年</span></div>
+                        <div class="tm-val-orig" id="p3DivOrig">約 USD $2,838@</div>
+                    </div>
+
+                    <!-- 指標 3：年度領取總額 (出國旅遊基金) -->
+                    <div class="travel-metric-card highlight" style="border-left: 4px solid #6366f1;">
+                        <div class="tm-header">
+                            <span class="tm-title" style="color: #4338ca;">✈️ 該年度出國旅遊基金總額</span>
+                            <span class="tm-badge" style="background: #e0e7ff; color: #3730a3;">每年源源不絕</span>
+                        </div>
+                        <div class="tm-val-twd" id="p3TotalTwd" style="color: #4338ca; font-size: 1.85rem; font-weight: 900;">$292,403 <span style="font-size: 0.85rem; font-weight: 700;">TWD / 年</span></div>
+                        <div class="tm-val-orig" id="p3TotalOrig" style="color: #4338ca;">合計 USD $8,997 (折合約 $24,367 /月)</div>
+                    </div>
+                </div>
+
+                <!-- 宣告利率=0% 壓力測試橫幅 -->
+                <div style="margin-top: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; background: #fffbeb; border: 1px solid #fde68a; padding: 10px 16px; border-radius: 8px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.85rem; color: #92400e; font-weight: 700;">
+                        <input type="checkbox" id="chkTravelZeroStress" onchange="onTravelZeroStressToggle()" style="width: 17px; height: 17px; accent-color: #dc2626; cursor: pointer;">
+                        <span>⚠️ 最差狀況測試（假設宣告利率為 0%）：將「增值回饋分享金」扣除，僅以「保證生存還本金」計算旅遊基金</span>
+                    </label>
+                    <span id="p3StressNote" style="font-size: 0.8rem; color: #047857; font-weight: 700;">
+                        💡 即使宣告利率為0%，每年仍有保證還本金，足夠全額出國暢遊！
+                    </span>
+                </div>
+            </div>
+
+            <!-- 互動面板：年度自選旅遊計畫 (Bucket List Planner) -->
+            <div class="section-card" style="padding: 20px 24px; margin-bottom: 20px; border: 2px solid #38bdf8; background: linear-gradient(to bottom, #f0f9ff 0%, #ffffff 100%);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 1.3rem;">🧳</span>
+                            <h3 style="margin: 0; font-size: 1.12rem; font-weight: 800; color: #0369a1;">
+                                我的「年度出國旅遊計畫」夢想清單組合試算
+                            </h3>
+                        </div>
+                        <div style="font-size: 0.82rem; color: #0284c7; margin-top: 2px;">
+                            在下方各國行程點擊「＋加入清單」，即可即時試算年度領取金支付旅費後的結餘購物金！
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <button type="button" class="btn-step-yr" onclick="applyRecommendedItinerary()" style="background: #0284c7; color: #fff; border-color: #0284c7; font-size: 0.8rem;">✨ 帶入熱門精選組合</button>
+                        <button type="button" class="btn-step-yr" onclick="clearTravelSelection()" style="font-size: 0.8rem;">🗑️ 清空清單</button>
+                    </div>
+                </div>
+
+                <!-- 夢想清單結算條 (Summary Bar) -->
+                <div class="travel-bucket-summary-box">
+                    <div class="tb-item">
+                        <span class="tb-label">年度旅遊基金 (保單領取)</span>
+                        <span class="tb-val" id="tbFundTotal">$292,403</span>
+                    </div>
+                    <div class="tb-divider">－</div>
+                    <div class="tb-item">
+                        <span class="tb-label">自選行程總旅費 (<span id="tbTripCount">0</span> 趟)</span>
+                        <span class="tb-val" id="tbExpenseTotal" style="color: #e11d48;">$0</span>
+                    </div>
+                    <div class="tb-divider">＝</div>
+                    <div class="tb-item">
+                        <span class="tb-label">年度自由零用購物金 (結餘)</span>
+                        <span class="tb-val" id="tbBalanceTotal" style="color: #059669;">+$292,403</span>
+                    </div>
+                    <div class="tb-item progress-box">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.76rem; font-weight: 700; color: #475569; margin-bottom: 4px;">
+                            <span>保單旅費覆蓋率</span>
+                            <span id="tbCoverageRate" style="color: #059669; font-weight: 800;">100% 全額達標</span>
+                        </div>
+                        <div class="tb-progress-bg">
+                            <div class="tb-progress-bar" id="tbProgressBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 已勾選的行程標籤膠囊群 -->
+                <div id="selectedTripsPillContainer" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;">
+                    <!-- 動態渲染已選行程 -->
+                </div>
+            </div>
+
+            <!-- 全球熱門目的地對應矩陣 (4 大等級區塊) -->
+            <div class="section-card" style="padding: 22px 24px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 1.3rem;">🗺️</span>
+                            <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #0f172a;">
+                                全球熱門出國旅遊行程 ✕ 旅費預算對應矩陣
+                            </h3>
+                        </div>
+                        <div style="font-size: 0.82rem; color: #64748b; margin-top: 3px;">
+                            綠色邊框卡片代表「本年度保單領取金足夠全額支付」；標示次數代表以整年領取金可成行的出國趟數！
+                        </div>
+                    </div>
+                    <!-- 篩選分頁切換按鈕 -->
+                    <div class="travel-filter-tabs">
+                        <button type="button" class="t-filter-btn active" onclick="filterTravelCards('all', this)">全部行程 (18)</button>
+                        <button type="button" class="t-filter-btn" onclick="filterTravelCards('tier1', this)">🌸 輕奢快閃 (2~4萬)</button>
+                        <button type="button" class="t-filter-btn" onclick="filterTravelCards('tier2', this)">🍁 亞洲精緻 (5~7萬)</button>
+                        <button type="button" class="t-filter-btn" onclick="filterTravelCards('tier3', this)">🏰 歐美紐澳 (10~16萬)</button>
+                        <button type="button" class="t-filter-btn" onclick="filterTravelCards('tier4', this)">🌌 極致奢華 (18~26萬+)</button>
+                    </div>
+                </div>
+
+                <!-- 目的地卡片網格 -->
+                <div class="travel-destinations-grid" id="travelDestinationsGrid">
+                    <!-- 由 JavaScript 動態生成卡片 -->
+                </div>
+            </div>
+
+            <!-- 圖表區：歷年旅遊基金走勢 ＋ 退休出國圓夢累計統計 -->
+            <div class="charts-two-col" style="margin-bottom: 20px;">
+                <!-- 圖表 1：歷年出國旅遊基金走勢圖 (Stacked Bar) -->
+                <div class="section-card" style="margin-bottom: 0;">
+                    <div class="card-header-row">
+                        <div>
+                            <div class="card-title-group">
+                                <span class="step-badge" style="background: #0284c7; color: #fff;">CHART 03</span>
+                                <h3 class="card-title">📈 歷年出國旅遊基金走勢與出國門檻線</h3>
+                            </div>
+                            <div class="card-subtitle">
+                                呈現歷年領取金額 (生存還本翡翠綠 ＋ 增值回饋璀璨金) 與出國旅遊等級門檻
+                            </div>
+                        </div>
+                    </div>
+                    <div style="height: 340px; position: relative;">
+                        <canvas id="travelBudgetChart"></canvas>
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 16px; margin-top: 12px; font-size: 0.8rem; font-weight: 700; flex-wrap: wrap;">
+                        <span><span class="color-swatch" style="background: var(--color-survival);"></span> 生存還本金 (C+D)</span>
+                        <span><span class="color-swatch" style="background: var(--color-dividend);"></span> 增值回饋分享金 (A@)</span>
+                        <span style="color: #ef4444;">--- 日本門檻 ($5.5萬)</span>
+                        <span style="color: #6366f1;">--- 歐洲門檻 ($13.5萬)</span>
+                    </div>
+                </div>
+
+                <!-- 圖表 2：退休圓夢累計統計看板與夢想比例圖 -->
+                <div class="section-card" style="margin-bottom: 0;">
+                    <div class="card-header-row">
+                        <div>
+                            <div class="card-title-group">
+                                <span class="step-badge" style="background: #6366f1; color: #fff;">MILESTONE</span>
+                                <h3 class="card-title">🌍 退休 20 年出國圓夢累計成果</h3>
+                            </div>
+                            <div class="card-subtitle" id="tlsCardSubtitle">
+                                試算 65 歲至 85 歲期間，由保單提供之累計出國旅遊圓夢基金（※ <strong>ARUE 樂享百歲</strong>為定期給付型，逐年給付還本金與增值收益，<strong>領到最後本金會隨年度領完</strong>，將資產在百歲前充分發揮出國旅遊與退休生活價值）
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 統計看板四格 -->
+                    <div class="travel-lifetime-stat-grid">
+                        <div class="tls-card">
+                            <div class="tls-title">20 年累計出國旅遊基金</div>
+                            <div class="tls-num" id="tlsTotalFund" style="color: #4338ca;">$5,848,000</div>
+                            <div class="tls-sub" id="tlsSubPrincipal">定期逐年本利給付・<strong>領到最後本金領完</strong> (百歲前充分圓夢)</div>
+                        </div>
+                        <div class="tls-card">
+                            <div class="tls-title">可兌換日本 / 關西之旅</div>
+                            <div class="tls-num" id="tlsJapanTrips" style="color: #0284c7;">100 趟</div>
+                            <div class="tls-sub">相當於每年可出國暢遊 5 趟</div>
+                        </div>
+                        <div class="tls-card">
+                            <div class="tls-title">可兌換德瑞 / 奧捷歐美遊</div>
+                            <div class="tls-num" id="tlsEuropeTrips" style="color: #0d9488;">43 趟</div>
+                            <div class="tls-sub">相當於每年可飛 2 趟長程深度遊</div>
+                        </div>
+                        <div class="tls-card">
+                            <div class="tls-title">可兌換極光 / 瑞士名峰</div>
+                            <div class="tls-num" id="tlsAuroraTrips" style="color: #b45309;">28 趟</div>
+                            <div class="tls-sub">一輩子必去的頂級圓夢之旅</div>
+                        </div>
+                    </div>
+
+                    <!-- 圓餅圖：圓夢旅遊推薦配比 -->
+                    <div style="height: 180px; position: relative; margin-top: 14px;">
+                        <canvas id="travelLifetimeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部操作按鈕與免責聲明 -->
+            <div class="section-card" style="padding: 18px 24px; margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                    <button type="button" class="btn-step-yr" onclick="switchPage(2)" style="font-size: 0.9rem; padding: 10px 20px;">
+                        ⬅ 返回 STEP 2 月退休金試算
+                    </button>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button type="button" class="btn-step-yr" onclick="switchPage(1)" style="font-size: 0.9rem; padding: 10px 20px;">
+                            ⬅ 返回 STEP 1 建議書設定
+                        </button>
+                        <button type="button" class="btn-step-yr" onclick="exportPage3Image()" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #fff; border: none; font-size: 0.95rem; font-weight: 800; padding: 12px 24px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);">
+                            📷 匯出本頁出國旅遊規劃圖檔
+                        </button>
+                    </div>
+                </div>
+                <div style="margin-top: 14px; font-size: 0.78rem; color: #94a3b8; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 10px;">
+                    ※ 旅費數據為各國代表性團體與自由行市場參考均價，包含主要機票、住宿、熱門門票與部分餐食，實際支出將依出發淡旺季、匯率浮動與個人消費習慣而異。保單各年度領取金額依保單條款約定給付與實際宣告利率為準。
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 
 <!-- 建議書歷年明細檢視與手動編輯 Modal -->
 <div class="modal-backdrop" id="detailModal">
@@ -1542,13 +2288,292 @@
         annualSurvivalBase: 120000,
         annualDividendBase: 84000,
         selectedYearIndex: 9, // 預設第10保單年度 (65歲)
-        yearlyData: [] // { year, age, survivalC, survivalD, survivalAnnual, dividendAnnual, rawDivStr }
+        yearlyData: [], // { year, age, survivalC, survivalD, survivalAnnual, dividendAnnual, rawDivStr }
+        travelPersonCount: 1, // 1 = 單人成行, 2 = 雙人同行 (旅費加倍)
+        selectedTrips: ['kansai', 'central_europe'], // 預設自選行程組合
+        travelFilter: 'all',
+        policyCode: '10ARUE3' // 'all', 'tier1', 'tier2', 'tier3', 'tier4'
     };
 
     let cityChartInstance = null;
     let laborChartInstance = null;
     let stackedTimelineChartInstance = null;
     let singleYearChartInstance = null;
+    let travelBudgetChartInstance = null;
+    let travelLifetimeChartInstance = null;
+
+    // =========================================================================
+    // 全球熱門出國旅遊行程與旅費資料庫 (4 大預算等級，精選 18 個經典行程)
+    // =========================================================================
+    const travelDestinations = [
+        // 等級 1：輕奢快閃渡假 / 東南亞海島 (2.5萬 ~ 4萬 TWD / 人)
+        {
+            id: 'okinawa',
+            tier: 'tier1',
+            tierName: '🌸 輕奢快閃',
+            country: '日本沖繩',
+            flag: '🇯🇵',
+            title: '沖繩無敵海景渡假 (4日)',
+            desc: '全包式濱海渡假村、美麗海水族館、古宇利大橋、海鮮美食漫遊',
+            cost: 32000,
+            days: 4,
+            region: '東北亞',
+            highlight: '短程飛行直達・極致放鬆'
+        },
+        {
+            id: 'bangkok',
+            tier: 'tier1',
+            tierName: '🌸 輕奢快閃',
+            country: '泰國曼谷/清邁',
+            flag: '🇹🇭',
+            title: '泰國頂級SPA慢活 (5日)',
+            desc: '五星文華東方下午茶、泰式精油舒壓芳療、夜市米其林美食慢活',
+            cost: 35000,
+            days: 5,
+            region: '東南亞',
+            highlight: '五星飯店享受・頂級SPA'
+        },
+        {
+            id: 'phuquoc',
+            tier: 'tier1',
+            tierName: '🌸 輕奢快閃',
+            country: '越南富國島',
+            flag: '🇻🇳',
+            title: '富國島海島私人Villa (5日)',
+            desc: '免簽證海島、跨海纜車、野生動物園、沙灘落日海鮮晚宴',
+            cost: 33000,
+            days: 5,
+            region: '東南亞',
+            highlight: '免簽海島・頂級渡假村'
+        },
+        {
+            id: 'seoul',
+            tier: 'tier1',
+            tierName: '🌸 輕奢快閃',
+            country: '韓國首爾/釜山',
+            flag: '🇰🇷',
+            title: '首爾釜山賞櫻楓溫泉 (5日)',
+            desc: '米其林韓定食、韓屋村漫步、釜山海雲台無敵海景列車與溫泉水療',
+            cost: 36000,
+            days: 5,
+            region: '東北亞',
+            highlight: '四季賞景・精緻韓味'
+        },
+
+        // 等級 2：亞洲精緻暢遊 / 雙人同遊首選 (5萬 ~ 7.5萬 TWD / 人)
+        {
+            id: 'tokyo',
+            tier: 'tier2',
+            tierName: '🍁 亞洲精緻',
+            country: '日本東京/富士山',
+            flag: '🇯🇵',
+            title: '東京晴空塔富士山賞景 (5日)',
+            desc: '河口湖溫泉旅宿遠眺富士山、銀座購物、米其林懷石料理',
+            cost: 55000,
+            days: 5,
+            region: '東北亞',
+            highlight: '富士山絕景・溫泉名湯'
+        },
+        {
+            id: 'kansai',
+            tier: 'tier2',
+            tierName: '🍁 亞洲精緻',
+            country: '日本關西京阪神',
+            flag: '🇯🇵',
+            title: '京都古都慢活嵐山溫泉 (5日)',
+            desc: '清水寺嵐山嵯峨野小火車、宇治抹茶品茗、有馬古溫泉一泊二食',
+            cost: 58000,
+            days: 5,
+            region: '東北亞',
+            highlight: '古都風華・一泊二食名湯'
+        },
+        {
+            id: 'hokkaido',
+            tier: 'tier2',
+            tierName: '🍁 亞洲精緻',
+            country: '日本北海道',
+            flag: '🇯🇵',
+            title: '北海道三大蟹雪景溫泉 (5日)',
+            desc: '小樽運河漫步、函館百萬夜景、登別地獄谷、三大名蟹吃到飽饗宴',
+            cost: 68000,
+            days: 5,
+            region: '東北亞',
+            highlight: '三大蟹盛宴・百萬夜景'
+        },
+        {
+            id: 'bali',
+            tier: 'tier2',
+            tierName: '🍁 亞洲精緻',
+            country: '印尼峇里島',
+            flag: '🇮🇩',
+            title: '峇里島私人泳池Villa (5日)',
+            desc: '烏布森林景觀獨立泳池別墅、山林景觀下午茶、熱石深層舒壓SPA',
+            cost: 52000,
+            days: 5,
+            region: '東南亞',
+            highlight: '私人泳池別墅・身心療癒'
+        },
+        {
+            id: 'singapore',
+            tier: 'tier2',
+            tierName: '🍁 亞洲精緻',
+            country: '新加坡',
+            flag: '🇸🇬',
+            title: '新加坡金沙無邊際高空 (4日)',
+            desc: '濱海灣金沙無邊際高空泳池、濱海灣花園超級樹光影秀、星級盛宴',
+            cost: 48000,
+            days: 4,
+            region: '東南亞',
+            highlight: '金沙地標・無邊際高空泳池'
+        },
+
+        // 等級 3：歐美紐澳長程深度探索 (10萬 ~ 16萬 TWD / 人)
+        {
+            id: 'central_europe',
+            tier: 'tier3',
+            tierName: '🏰 歐美深度',
+            country: '德瑞奧捷',
+            flag: '🇦🇹',
+            title: '德瑞奧捷中歐童話城堡 (10日)',
+            desc: '新天鵝堡、哈修塔特湖畔仙境、布拉格查理大橋晨曦漫步、國王湖巡船',
+            cost: 135000,
+            days: 10,
+            region: '歐洲',
+            highlight: '哈修塔特仙境・童話古堡'
+        },
+        {
+            id: 'france_italy',
+            tier: 'tier3',
+            tierName: '🏰 歐美深度',
+            country: '西歐法義',
+            flag: '🇫🇷',
+            title: '浪漫法蘭西與義大利藝術 (10日)',
+            desc: '羅浮宮專家導覽、威尼斯貢多拉遊船、佛羅倫斯文藝復興、巴黎鐵塔晚宴',
+            cost: 145000,
+            days: 10,
+            region: '歐洲',
+            highlight: '世界藝術殿堂・浪漫花都'
+        },
+        {
+            id: 'australia',
+            tier: 'tier3',
+            tierName: '🏰 歐美深度',
+            country: '澳洲雪梨',
+            flag: '🇦🇺',
+            title: '澳洲雪梨歌劇院大堡礁 (9日)',
+            desc: '雪梨港豪華遊船晚宴、藍山國家公園纜車、凱恩斯大堡礁直升機鳥瞰',
+            cost: 118000,
+            days: 9,
+            region: '紐澳',
+            highlight: '世界自然遺產・大堡礁'
+        },
+        {
+            id: 'new_zealand',
+            tier: 'tier3',
+            tierName: '🏰 歐美深度',
+            country: '紐西蘭',
+            flag: '🇳🇿',
+            title: '紐西蘭南北島純淨峽灣 (10日)',
+            desc: '米佛峽灣冰河巡航、皇后鎮景觀包廂纜車、魔戒哈比屯電影場景',
+            cost: 155000,
+            days: 10,
+            region: '紐澳',
+            highlight: '第八大奇蹟・純淨自然'
+        },
+        {
+            id: 'usa_west',
+            tier: 'tier3',
+            tierName: '🏰 歐美深度',
+            country: '美國西岸',
+            flag: '🇺🇸',
+            title: '美西國家公園與大峽谷 (10日)',
+            desc: '大峽谷巨型直升機導覽、羚羊峽谷夢幻光影、拉斯維加斯五星饗宴',
+            cost: 128000,
+            days: 10,
+            region: '美洲',
+            highlight: '鬼斧神工大峽谷・陽光加州'
+        },
+        {
+            id: 'turkey',
+            tier: 'tier3',
+            tierName: '🏰 歐美深度',
+            country: '土耳其',
+            flag: '🇹🇷',
+            title: '土耳其卡帕多奇亞熱氣球 (11日)',
+            desc: '清晨卡帕多奇亞熱氣球飛行、棉堡石灰棚溫泉、伊斯坦堡藍色清真寺',
+            cost: 98000,
+            days: 11,
+            region: '中東歐',
+            highlight: '夢幻熱氣球昇空・世界遺產'
+        },
+
+        // 等級 4：極致奢華 / 環球極地圓夢 (18萬 ~ 26萬+ TWD / 人)
+        {
+            id: 'switzerland',
+            tier: 'tier4',
+            tierName: '🌌 極致奢華',
+            country: '瑞士名峰',
+            flag: '🇨🇭',
+            title: '瑞士景觀火車三大名峰 (11日)',
+            desc: '冰河列車頭等艙、少女峰全景纜車、馬特洪峰策馬特黃金日出景緻',
+            cost: 195000,
+            days: 11,
+            region: '歐洲',
+            highlight: '全景景觀列車・阿爾卑斯之巔'
+        },
+        {
+            id: 'nordic_aurora',
+            tier: 'tier4',
+            tierName: '🌌 極致奢華',
+            country: '北歐芬蘭/挪威',
+            flag: '🇫🇮',
+            title: '北歐極光芬蘭玻璃屋 (11日)',
+            desc: '入住全景玻璃屋夜賞歐若拉極光、聖誕老人村、挪威索納峽灣巡航',
+            cost: 210000,
+            days: 11,
+            region: '歐洲',
+            highlight: '一生必看綠色極光・玻璃屋'
+        },
+        {
+            id: 'maldives',
+            tier: 'tier4',
+            tierName: '🌌 極致奢華',
+            country: '馬爾地夫',
+            flag: '🇲🇻',
+            title: '馬爾地夫水上豪華別墅 (6日)',
+            desc: '頂級奢華水上屋溜滑梯、水下餐廳星級晚宴、印度洋無敵漸層海景',
+            cost: 185000,
+            days: 6,
+            region: '海島',
+            highlight: '頂級水上Villa・水下餐廳'
+        },
+        {
+            id: 'cruise',
+            tier: 'tier4',
+            tierName: '🌌 極致奢華',
+            country: '地中海/阿拉斯加',
+            flag: '🚢',
+            title: '頂級豪華遊輪陽台套房 (12日)',
+            desc: '私人陽台海景套房、海上百老匯劇院、24小時頂級管家與米其林主廚盛宴',
+            cost: 190000,
+            days: 12,
+            region: '頂級郵輪',
+            highlight: '移動的海上宮殿・免換飯店'
+        },
+        {
+            id: 'kenya',
+            tier: 'tier4',
+            tierName: '🌌 極致奢華',
+            country: '東非肯亞',
+            flag: '🇰🇪',
+            title: '東非肯亞動物大遷徙 (10日)',
+            desc: '馬賽馬拉四驅敞篷獵遊、追尋非洲五霸、百萬角馬跨河壯景、奢華帳篷營地',
+            cost: 260000,
+            days: 10,
+            region: '非洲',
+            highlight: '世界自然奇景・野生動物大遷徙'
+        }
+    ];
 
     // 自動抓取最新美元匯率
     async function fetchLiveExchangeRate() {
@@ -1786,7 +2811,7 @@
 
     // 同步更新頁面上所有右上角「資料來源標籤」
     function updateAllSourceBadges(mode, customText) {
-        const badgeIds = ['topNavSourceBadge', 'step3HeaderSourceBadge', 'page2SourceBadge', 'dataSourceBadge'];
+        const badgeIds = ['topNavSourceBadge', 'step3HeaderSourceBadge', 'page2SourceBadge', 'dataSourceBadge', 'page3SourceBadge'];
         let bg = '#e0e7ff', color = '#3730a3', border = '#a5b4fc', text = customText || '📌 資料來源：內建退休範本';
 
         if (mode === 'pdf') {
@@ -1835,6 +2860,10 @@
         updateMonthlyPreview();
         if (document.getElementById('page2').classList.contains('active')) {
             updatePage2();
+        }
+        if (document.getElementById('page3') && document.getElementById('page3').classList.contains('active')) {
+            updatePage3();
+            renderPage3Charts();
         }
     }
 
@@ -1983,11 +3012,12 @@
         return rows;
     }
 
-    function applyParsedProposalRows(parsedRows, detectedCurrency, detectedStartAge, sourceTitle, bannerMsg) {
+    function applyParsedProposalRows(parsedRows, detectedCurrency, detectedStartAge, sourceTitle, bannerMsg, policyCode) {
         state.isPdfImported = true;
         state.currency = detectedCurrency;
         state.startAge = detectedStartAge;
         state.yearlyData = parsedRows;
+        state.policyCode = policyCode || state.policyCode || '10ARUE3';
 
         document.getElementById('policyCurrency').value = detectedCurrency;
         document.getElementById('startAgeInput').value = detectedStartAge;
@@ -2000,8 +3030,15 @@
 
         state.selectedYearIndex = targetIdx;
         const slider = document.getElementById('policyYearSlider');
-        slider.max = parsedRows.length;
-        slider.value = targetIdx + 1;
+        if (slider) {
+            slider.max = parsedRows.length;
+            slider.value = targetIdx + 1;
+        }
+        const tSlider = document.getElementById('travelYearSlider');
+        if (tSlider) {
+            tSlider.max = parsedRows.length;
+            tSlider.value = targetIdx + 1;
+        }
 
         const refRow = parsedRows[targetIdx] || firstPayoutRow || parsedRows[0];
         if (refRow) {
@@ -2016,6 +3053,10 @@
 
         onCurrencyOrRateChange();
         updateAllSourceBadges('pdf', sourceTitle);
+        if (document.getElementById('page3') && document.getElementById('page3').classList.contains('active')) {
+            updatePage3();
+            renderPage3Charts();
+        }
         const banner = document.getElementById('importStatusBanner');
         banner.style.background = '#dcfce7';
         banner.style.color = '#15803d';
@@ -2023,14 +3064,16 @@
     }
 
     function loadSampleProposal(type) {
+        state.policyCode = type;
         if (type === '10ARUE3') {
             const rows = getBuiltInProposalRows('10ARUE3');
             applyParsedProposalRows(
                 rows,
                 'USD',
                 46,
-                '🔒 資料來源：樂享百歲 10ARUE3 (55年明細)',
-                '✅ 已載入【南山人壽樂享百歲 10ARUE3 建議書】：第19年(64歲)起生存還本 C=$4,800 + D=$1,359 (合計 $6,159 USD)，增值回饋僅列有 @ 之現金給付 ($2,889@ 起)'
+                '🔒 資料來源：樂享百歲 10ARUE3 (定期給付・本金領完)',
+                '✅ 已自動判讀為【南山人壽樂享百歲 10ARUE3（定期給付型・本利逐年還本至百歲本金領完）】：第19年(64歲)起生存還本 C=$4,800 + D=$1,359 (合計 $6,159 USD)，增值回饋僅列有 @ 之現金給付 ($2,889@ 起)',
+                '10ARUE3'
             );
         } else if (type === '10AUALE') {
             const rows = getBuiltInProposalRows('10AUALE');
@@ -2038,8 +3081,9 @@
                 rows,
                 'USD',
                 46,
-                '🔒 資料來源：年年發 10AUALE (65年明細)',
-                '✅ 已載入【南山人壽年年發 10AUALE 建議書】：第6年(51歲)起領取 @ 增值回饋 ($1,345@ 起) 與生存還本 (第10年起 C=$2,500 + D=$75 = $2,575 USD)'
+                '🔒 資料來源：年年發 10AUALE (終身保本・保額保留)',
+                '✅ 已自動判讀為【南山人壽年年發 10AUALE（終身保本型・保額持續保留傳承）】：第6年(51歲)起領取 @ 增值回饋 ($1,345@ 起) 與生存還本 (第10年起 C=$2,500 + D=$75 = $2,575 USD)',
+                '10AUALE'
             );
         } else {
             document.getElementById('policyCurrency').value = 'TWD';
@@ -2072,6 +3116,13 @@
             let detectedCurrency = 'TWD';
             let detectedPolicyCode = '';
 
+            // 先從檔名自動預判商品代號 (ARUE 樂享百歲 或 AUALE 年年發)
+            if (/ARUE|樂享百歲/i.test(file.name)) {
+                detectedPolicyCode = '10ARUE3';
+            } else if (/AUALE|年年發/i.test(file.name)) {
+                detectedPolicyCode = '10AUALE';
+            }
+
             const parseTokenNum = (tok) => {
                 if (!tok || tok === '-' || tok === '─') return 0;
                 return parseInt(tok.replace(/[^0-9]/g, ''), 10) || 0;
@@ -2091,9 +3142,18 @@
                 if (ageMatch) {
                     detectedStartAge = parseInt(ageMatch[1], 10);
                 }
-                const codeMatch = pageStr.match(/\b(\d{1,2}[A-Z]{3,6}\d?)\b/);
-                if (codeMatch && !detectedPolicyCode) {
-                    detectedPolicyCode = codeMatch[1];
+                // 從內文高優先級自動識別商品代號與名稱
+                if (!detectedPolicyCode) {
+                    if (/ARUE|樂享百歲/i.test(pageStr)) {
+                        detectedPolicyCode = '10ARUE3';
+                    } else if (/AUALE|年年發/i.test(pageStr)) {
+                        detectedPolicyCode = '10AUALE';
+                    } else {
+                        const codeMatch = pageStr.match(/\b(\d{1,2}[A-Z]{3,6}\d?)\b/);
+                        if (codeMatch) {
+                            detectedPolicyCode = codeMatch[1];
+                        }
+                    }
                 }
 
                 // 1. 先過濾有效文字區塊，並嚴格依 Y 軸由上而下排序
@@ -2117,82 +3177,106 @@
                     row.items.push(it);
                 }
 
-                // 3. 每一列內部嚴格依 X 軸由左至右排序，確保欄位順序 100% 不錯位
-                const lines = rowClusters.map(r => {
+                // 3. 逐列處理：同時採用「精確 X 軸欄位座標分箱 (X-binning)」與「Token 陣列索引雙重校驗」
+                for (const r of rowClusters) {
                     r.items.sort((a, b) => a.x - b.x);
-                    return r.items.map(i => i.str).join(' ');
-                });
+                    if (r.items.length === 0) continue;
 
-                for (const rawLine of lines) {
-                    // 正規化：
-                    // (a) 合併千分位逗號被空白拆開的數字，如 "108, 900" -> "108900"
-                    // (b) 確保數字尾巴的 @ 或 # 緊黏數字，如 "2,889 @" -> "2889@"
-                    // (c) 將所有表格破折號 (─, ━, —, –, －) 轉為獨立的 " - " token
+                    // 找出年度與年齡 (通常為前兩個 X 最小的項目)
+                    const firstStr = r.items[0].str.trim();
+                    const secondStr = r.items[1] ? r.items[1].str.trim() : '';
+
+                    if (!/^\d+$/.test(firstStr)) continue;
+                    const yVal = parseInt(firstStr, 10);
+                    if (yVal !== parsedRows.length + 1) continue;
+
+                    let ageVal = parseInt(secondStr, 10);
+                    if (isNaN(ageVal) || ageVal <= 0 || ageVal > 120) {
+                        // 若第二項非年齡，尋找前四個項目中合理的年齡
+                        for (let k = 1; k < Math.min(4, r.items.length); k++) {
+                            const val = parseInt(r.items[k].str.trim(), 10);
+                            if (val >= 15 && val <= 110) { ageVal = val; break; }
+                        }
+                    }
+                    if (isNaN(ageVal) || ageVal <= 0) continue;
+
+                    // -----------------------------------------------------------------
+                    // 核心規則 1：增值回饋分享金 (A) - 僅列金額數字最後有「@」之現金給付！
+                    // X-座標分箱範圍約 125 ~ 195
+                    // -----------------------------------------------------------------
+                    const aItems = r.items.filter(it => it.x >= 125 && it.x < 195);
+                    const aStr = aItems.map(it => it.str).join('').trim();
+                    const hasAtX = /[@＠]/.test(aStr);
+                    let divNumX = parseTokenNum(aStr);
+                    let dividendVal = hasAtX ? divNumX : 0;
+
+                    // -----------------------------------------------------------------
+                    // 核心規則 2：生存還本金要抓 C + D 欄位金額！
+                    // (C) 基本保額對應之金額：X 座標約 300 ~ 360
+                    // (D) 累計增額繳清保額對應金額：X 座標約 360 ~ 415
+                    // -----------------------------------------------------------------
+                    const cItems = r.items.filter(it => it.x >= 300 && it.x < 360);
+                    const cStr = cItems.map(it => it.str).join('').trim();
+                    let survivalC = parseTokenNum(cStr);
+
+                    const dItems = r.items.filter(it => it.x >= 360 && it.x < 415);
+                    const dStr = dItems.map(it => it.str).join('').trim();
+                    let survivalD = parseTokenNum(dStr);
+
+                    // 備用機制：若 X 座標未抓到生存還本金，使用 Token 陣列輔助解析
+                    const rawLine = r.items.map(i => i.str).join(' ');
                     let normLine = rawLine
                         .replace(/(\d)\s*,\s*(?=\d)/g, '$1')
                         .replace(/(\d)\s*,\s*(?=\d)/g, '$1')
                         .replace(/(\d)\s*([@#＠＃])/g, '$1$2')
                         .replace(/[─━—–－]+/g, ' - ');
-
                     const tokens = normLine.trim().split(/\s+/);
 
-                    // 南山建議書「增值回饋分享金利益彙整表」每列共有 15 個欄位：
-                    // [0]保單年度 [1]保險年齡 [2]累積保費
-                    // [3]增值回饋當年度金額(A) [4]儲存生息(B) [5]累計增額繳清基本保額
-                    // [6]生存還本-基本保額對應(C) [7]生存還本-累計增額繳清對應(D) [8]生存還本累計(C+D)
-                    // [9]身故(E) [10]身故(F) [11]身故合計
-                    // [12]解約(G) [13]解約(H) [14]解約合計
-                    if (tokens.length >= 12 && /^\d+$/.test(tokens[0]) && /^\d+$/.test(tokens[1])) {
-                        const yVal = parseInt(tokens[0], 10);
-                        const ageVal = parseInt(tokens[1], 10);
-
-                        if (
-                            yVal === parsedRows.length + 1 &&
-                            ageVal > 0 && ageVal <= 120
-                        ) {
-                            const divTokenA = tokens[3]; // (A) 當年度增值回饋分享金
-                            const hasAt = /[@＠]/.test(divTokenA);
-                            const rawDivNum = parseTokenNum(divTokenA);
-                            // 關鍵規則：增值回饋分享金必須尾巴有 @ (代表現金給付) 才能列入月退休金！
-                            const dividendVal = hasAt ? rawDivNum : 0;
-
-                            let survivalC = 0;
-                            let survivalD = 0;
-
-                            if (tokens.length >= 14) {
-                                // 標準 15 欄格式：tokens[6] 為 (C)基本保額還本，tokens[7] 為 (D)累計增額繳清還本
-                                survivalC = parseTokenNum(tokens[6]);
-                                survivalD = parseTokenNum(tokens[7]);
-                            } else {
-                                // 若為無增額繳清欄之簡化表格
-                                survivalC = parseTokenNum(tokens[5]);
-                                survivalD = 0;
-                            }
-
-                            parsedRows.push({
-                                year: yVal,
-                                age: ageVal,
-                                survivalC: survivalC,
-                                survivalD: survivalD,
-                                survivalAnnual: survivalC + survivalD,
-                                dividendAnnual: dividendVal,
-                                rawDivStr: hasAt ? `${rawDivNum.toLocaleString()}@` : (rawDivNum > 0 ? `${rawDivNum.toLocaleString()} (無@不計)` : '─')
-                            });
+                    if (tokens.length >= 14 && survivalC === 0 && survivalD === 0) {
+                        const tokA = tokens[3];
+                        if (/[@＠]/.test(tokA)) {
+                            dividendVal = parseTokenNum(tokA);
+                            divNumX = dividendVal;
                         }
+                        survivalC = parseTokenNum(tokens[6]);
+                        survivalD = parseTokenNum(tokens[7]);
                     }
+
+                    const survivalAnnual = survivalC + survivalD;
+                    const finalDivStr = (hasAtX || /[@＠]/.test(tokens[3] || ''))
+                        ? `${(dividendVal).toLocaleString()}@`
+                        : (divNumX > 0 ? `${divNumX.toLocaleString()} (無@不計)` : '─');
+
+                    parsedRows.push({
+                        year: yVal,
+                        age: ageVal,
+                        survivalC: survivalC,
+                        survivalD: survivalD,
+                        survivalAnnual: survivalAnnual,
+                        dividendAnnual: dividendVal,
+                        rawDivStr: finalDivStr
+                    });
                 }
             }
 
             if (parsedRows.length >= 5) {
-                const codeLabel = detectedPolicyCode ? ` ${detectedPolicyCode}` : '';
+                const isArue = /ARUE|樂享百歲/i.test(detectedPolicyCode || file.name);
+                const isAuale = /AUALE|年年發/i.test(detectedPolicyCode || file.name);
+                const prodBadge = isArue 
+                    ? '【南山人壽樂享百歲 10ARUE3（定期給付型・本利逐年還本至百歲本金領完）】'
+                    : (isAuale ? '【南山人壽年年發 10AUALE（終身保本型・保額持續保留傳承）】' : `【建議書 ${detectedPolicyCode}】`);
+
+                const codeLabel = isArue ? ' 樂享百歲 (10ARUE3・本金領完)' : (isAuale ? ' 年年發 (10AUALE・終身保本)' : (detectedPolicyCode ? ` ${detectedPolicyCode}` : ''));
                 const firstCashDivRow = parsedRows.find(r => r.dividendAnnual > 0);
                 const firstSurvRow = parsedRows.find(r => r.survivalAnnual > 0);
+                
                 applyParsedProposalRows(
                     parsedRows,
                     detectedCurrency,
                     detectedStartAge,
-                    `🔒 資料來源：已匯入 PDF${codeLabel} (${parsedRows.length}年明細)`,
-                    `✅ 成功解析 PDF「${file.name}」${codeLabel}（共 ${parsedRows.length} 年明細｜生存還本自 ${firstSurvRow ? firstSurvRow.age + '歲(第' + firstSurvRow.year + '年)' : '--'} 起領，@增值回饋自 ${firstCashDivRow ? firstCashDivRow.age + '歲(第' + firstCashDivRow.year + '年)' : '--'} 起領）`
+                    `🔒 資料來源：${codeLabel} (${parsedRows.length}年明細)`,
+                    `✅ 系統已自動判讀為 ${prodBadge}（共 ${parsedRows.length} 年明細｜生存還本自 ${firstSurvRow ? firstSurvRow.age + '歲(第' + firstSurvRow.year + '年)' : '--'} 起領，@增值回饋自 ${firstCashDivRow ? firstCashDivRow.age + '歲(第' + firstCashDivRow.year + '年)' : '--'} 起領）`,
+                    detectedPolicyCode || (isArue ? '10ARUE3' : (isAuale ? '10AUALE' : ''))
                 );
             } else {
                 onProposalParamChange();
@@ -2212,19 +3296,28 @@
     function switchPage(pageNum) {
         document.getElementById('page1').classList.toggle('active', pageNum === 1);
         document.getElementById('page2').classList.toggle('active', pageNum === 2);
+        document.getElementById('page3').classList.toggle('active', pageNum === 3);
         document.getElementById('navStep1').classList.toggle('active', pageNum === 1);
         document.getElementById('navStep2').classList.toggle('active', pageNum === 2);
+        document.getElementById('navStep3').classList.toggle('active', pageNum === 3);
 
         if (pageNum === 1) {
             renderPage1Charts();
-        } else {
+        } else if (pageNum === 2) {
             updatePage2();
+        } else if (pageNum === 3) {
+            updatePage3();
+            renderPage3Charts();
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function goToPage2() {
         switchPage(2);
+    }
+
+    function goToPage3() {
+        switchPage(3);
     }
 
     function selectCity(cityKey) {
@@ -2314,7 +3407,12 @@
 
     function onYearSliderChange(val) {
         state.selectedYearIndex = Math.max(0, Math.min(state.yearlyData.length - 1, parseInt(val) - 1));
+        const tSlider = document.getElementById('travelYearSlider');
+        if (tSlider) tSlider.value = val;
         updatePage2();
+        if (document.getElementById('page3') && document.getElementById('page3').classList.contains('active')) {
+            updatePage3();
+        }
     }
 
     function stepYear(delta) {
@@ -2808,6 +3906,10 @@
         });
         closeModal();
         updatePage2();
+        if (document.getElementById('page3') && document.getElementById('page3').classList.contains('active')) {
+            updatePage3();
+            renderPage3Charts();
+        }
     }
 
     // 匯出第二頁試算報告圖檔
@@ -2828,6 +3930,560 @@
     }
 
     // 初始化啟動（預設預載 10ARUE3 樂享百歲建議書）
+    
+    // =========================================================================
+    // 第三頁：每年領取金額 (生存還本 ＋ 增值回饋) 對應出國旅遊各國旅費核心邏輯
+    // =========================================================================
+
+    // 切換出遊人數 (1人單人自由行 或 2人雙人同行)
+    function setTravelPersonCount(n) {
+        state.travelPersonCount = n;
+        const b1 = document.getElementById('btnPerson1');
+        const b2 = document.getElementById('btnPerson2');
+        if (b1) b1.classList.toggle('active', n === 1);
+        if (b2) b2.classList.toggle('active', n === 2);
+        updatePage3();
+        renderPage3Charts();
+    }
+
+    // 第三頁滑桿拖動事件
+    function onTravelSliderInput(val) {
+        state.selectedYearIndex = Math.max(0, Math.min(state.yearlyData.length - 1, parseInt(val, 10) - 1));
+        const pSlider = document.getElementById('policyYearSlider');
+        if (pSlider) pSlider.value = val;
+        updatePage3();
+        if (document.getElementById('page2').classList.contains('active')) {
+            updatePage2();
+        }
+    }
+
+    // 第三頁微調年度 (加減1年)
+    function stepTravelYear(delta) {
+        const slider = document.getElementById('travelYearSlider');
+        if (!slider) return;
+        const nextVal = Math.max(1, Math.min(state.yearlyData.length, parseInt(slider.value, 10) + delta));
+        slider.value = nextVal;
+        onTravelSliderInput(nextVal);
+    }
+
+    // 第三頁快速定位至特定年齡 (如 60歲、65歲、70歲、75歲)
+    function setTravelAge(targetAge) {
+        if (!state.yearlyData || state.yearlyData.length === 0) return;
+        const idx = state.yearlyData.findIndex(r => r.age === targetAge);
+        if (idx >= 0) {
+            state.selectedYearIndex = idx;
+            const tSlider = document.getElementById('travelYearSlider');
+            if (tSlider) tSlider.value = idx + 1;
+            const pSlider = document.getElementById('policyYearSlider');
+            if (pSlider) pSlider.value = idx + 1;
+            updatePage3();
+            if (document.getElementById('page2').classList.contains('active')) {
+                updatePage2();
+            }
+        }
+    }
+
+    // 第三頁宣告利率為0%壓力測試切換
+    function onTravelZeroStressToggle() {
+        const isStress = document.getElementById('chkTravelZeroStress').checked;
+        const p2Stress = document.getElementById('chkZeroRateStress');
+        if (p2Stress) {
+            p2Stress.checked = isStress;
+            document.getElementById('chkDividend').checked = !isStress;
+            syncStressBannerUI();
+        }
+        updatePage3();
+        renderPage3Charts();
+    }
+
+    // 篩選行程等級 (全部、tier1、tier2、tier3、tier4)
+    function filterTravelCards(tier, btn) {
+        state.travelFilter = tier;
+        document.querySelectorAll('.t-filter-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        if (!state.yearlyData || state.yearlyData.length === 0) return;
+        const row = state.yearlyData[state.selectedYearIndex] || state.yearlyData[0];
+        const fx = state.currency === 'USD' ? state.usdRate : 1;
+        const isStress = document.getElementById('chkTravelZeroStress') ? document.getElementById('chkTravelZeroStress').checked : false;
+        const effSurv = getEffectiveSurvivalAnnual(row);
+        const divAnn = isStress ? 0 : row.dividendAnnual;
+        const totalTwd = Math.round((effSurv + divAnn) * fx);
+        renderTravelCards(totalTwd);
+    }
+
+    // 加入或移出自選旅遊清單
+    function toggleTravelTrip(destId) {
+        const idx = state.selectedTrips.indexOf(destId);
+        if (idx >= 0) {
+            state.selectedTrips.splice(idx, 1);
+        } else {
+            state.selectedTrips.push(destId);
+        }
+        updatePage3();
+    }
+
+    // 一鍵帶入精選推薦組合
+    function applyRecommendedItinerary() {
+        state.selectedTrips = ['kansai', 'central_europe'];
+        updatePage3();
+    }
+
+    // 清空自選清單
+    function clearTravelSelection() {
+        state.selectedTrips = [];
+        updatePage3();
+    }
+
+    // 更新第三頁所有數據與 UI
+    function updatePage3() {
+        if (!state.yearlyData || state.yearlyData.length === 0) return;
+        const row = state.yearlyData[state.selectedYearIndex] || state.yearlyData[0];
+        const fx = state.currency === 'USD' ? state.usdRate : 1;
+        const isStress = document.getElementById('chkTravelZeroStress') ? document.getElementById('chkTravelZeroStress').checked : false;
+
+        // 生存還本金 (C+D) 與 增值回饋分享金 (A@)
+        const effSurvAnnual = getEffectiveSurvivalAnnual(row);
+        const divAnnual = isStress ? 0 : row.dividendAnnual;
+        const totalAnnualOrig = effSurvAnnual + divAnnual;
+
+        // 換算為新臺幣
+        const survTwd = Math.round(effSurvAnnual * fx);
+        const divTwd = Math.round(divAnnual * fx);
+        const totalTwd = survTwd + divTwd;
+
+        // 1. 同步滑桿與年齡標籤
+        const tSlider = document.getElementById('travelYearSlider');
+        if (tSlider) {
+            tSlider.max = state.yearlyData.length;
+            tSlider.value = state.selectedYearIndex + 1;
+        }
+        const lbl = document.getElementById('p3YearLabel');
+        if (lbl) {
+            lbl.innerText = `第 ${row.year} 保單年度 (${row.age} 歲)`;
+        }
+
+        // 2. 更新三大金流指標卡片
+        const cVal = (row.survivalC !== undefined) ? row.survivalC : row.survivalAnnual;
+        const dVal = (row.survivalD !== undefined) ? row.survivalD : 0;
+        const origCurr = state.currency;
+
+        const p3SurvTwd = document.getElementById('p3SurvTwd');
+        if (p3SurvTwd) {
+            p3SurvTwd.innerHTML = `$${survTwd.toLocaleString()} <span style="font-size: 0.8rem; font-weight: 600;">TWD / 年</span>`;
+        }
+        const p3SurvOrig = document.getElementById('p3SurvOrig');
+        if (p3SurvOrig) {
+            p3SurvOrig.innerText = (origCurr === 'USD')
+                ? `約 USD $${effSurvAnnual.toLocaleString()} (C:$${cVal.toLocaleString()} + D:$${dVal.toLocaleString()})`
+                : `保證給付項目 (C+D)`;
+        }
+
+        const isArue = !state.policyCode || state.policyCode.toUpperCase().includes('ARUE');
+        const survBadge = document.getElementById('p3SurvBadge');
+        if (survBadge) {
+            if (isArue) {
+                survBadge.innerText = '定期給付・本利逐年還本 (至百歲本金領完)';
+                survBadge.style.background = '#e0f2fe';
+                survBadge.style.color = '#0369a1';
+            } else {
+                survBadge.innerText = '終身保證・定期給付 (保額持續保留)';
+                survBadge.style.background = '#ecfdf5';
+                survBadge.style.color = '#065f46';
+            }
+        }
+
+        const p3DivTwd = document.getElementById('p3DivTwd');
+        if (p3DivTwd) {
+            p3DivTwd.innerHTML = `$${divTwd.toLocaleString()} <span style="font-size: 0.8rem; font-weight: 600;">TWD / 年</span>`;
+        }
+        const p3DivOrig = document.getElementById('p3DivOrig');
+        if (p3DivOrig) {
+            p3DivOrig.innerText = (origCurr === 'USD')
+                ? (isStress ? '⚠️ 最差狀況宣告利率=0% (未計入)' : `約 USD $${divAnnual.toLocaleString()}@`)
+                : (isStress ? '⚠️ 宣告利率=0%' : `現金給付項目`);
+        }
+
+        const p3TotalTwd = document.getElementById('p3TotalTwd');
+        if (p3TotalTwd) {
+            p3TotalTwd.innerHTML = `$${totalTwd.toLocaleString()} <span style="font-size: 0.85rem; font-weight: 700;">TWD / 年</span>`;
+        }
+        const p3TotalOrig = document.getElementById('p3TotalOrig');
+        if (p3TotalOrig) {
+            p3TotalOrig.innerText = (origCurr === 'USD')
+                ? `合計 USD $${totalAnnualOrig.toLocaleString()} (折合約 NT$ ${Math.round(totalTwd / 12).toLocaleString()} / 月)`
+                : `折合約 NT$ ${Math.round(totalTwd / 12).toLocaleString()} / 月`;
+        }
+
+        const stressNote = document.getElementById('p3StressNote');
+        if (stressNote) {
+            stressNote.innerHTML = isStress
+                ? `⚠️ <strong>極端壓力測試啟動中：</strong>僅以保證生存還本金 $${survTwd.toLocaleString()} 元計算旅費，完全剔除增值回饋！`
+                : `💡 即使宣告利率為0%，每年仍有保證還本金 $${survTwd.toLocaleString()} 元，足夠每年出國暢遊！`;
+        }
+
+        // 3. 渲染目的地行程卡片與自選清單
+        renderTravelCards(totalTwd);
+        updateTravelBucketUI(totalTwd);
+
+        // 4. 更新 20 年累計出國圓夢數據
+        updateLifetimeTravelStats(fx);
+    }
+
+    // 渲染各國行程卡片
+    function renderTravelCards(totalTwd) {
+        const grid = document.getElementById('travelDestinationsGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+
+        const personCount = state.travelPersonCount;
+        const currentFilter = state.travelFilter;
+
+        const filtered = (currentFilter === 'all')
+            ? travelDestinations
+            : travelDestinations.filter(d => d.tier === currentFilter);
+
+        filtered.forEach(dest => {
+            const tripCost = dest.cost * personCount;
+            const isAffordable = totalTwd >= tripCost;
+            const isSelected = state.selectedTrips.includes(dest.id);
+            const times = (totalTwd > 0) ? (totalTwd / tripCost) : 0;
+
+            const card = document.createElement('div');
+            card.className = `travel-card ${isAffordable ? 'affordable' : ''} ${isSelected ? 'selected' : ''}`;
+
+            let tierColorBg = '#f1f5f9', tierColorText = '#475569';
+            if (dest.tier === 'tier1') { tierColorBg = '#ecfdf5'; tierColorText = '#065f46'; }
+            else if (dest.tier === 'tier2') { tierColorBg = '#e0f2fe'; tierColorText = '#0369a1'; }
+            else if (dest.tier === 'tier3') { tierColorBg = '#e0e7ff'; tierColorText = '#3730a3'; }
+            else if (dest.tier === 'tier4') { tierColorBg = '#fef3c7'; tierColorText = '#92400e'; }
+
+            let timesHtml = '';
+            if (totalTwd === 0) {
+                timesHtml = `<span class="tc-times-badge" style="background: #f1f5f9; color: #64748b;">尚未開始領取</span>`;
+            } else if (isAffordable) {
+                if (times >= 2) {
+                    timesHtml = `<span class="tc-times-badge" style="background: #dcfce7; color: #15803d;">✈️ 每年可去 <strong>${times.toFixed(1)}</strong> 趟！</span>`;
+                } else {
+                    const balance = totalTwd - tripCost;
+                    timesHtml = `<span class="tc-times-badge" style="background: #dcfce7; color: #15803d;">✅ 全額支付 1 趟 (餘 $${balance.toLocaleString()})</span>`;
+                }
+            } else {
+                const cov = Math.round((totalTwd / tripCost) * 100);
+                timesHtml = `<span class="tc-times-badge" style="background: #fee2e2; color: #b91c1c;">保單已涵蓋 ${cov}%</span>`;
+            }
+
+            card.innerHTML = `
+                <div>
+                    <div class="tc-header">
+                        <div class="tc-flag-title">
+                            <span class="tc-flag">${dest.flag}</span>
+                            <div>
+                                <div class="tc-name">${dest.title}</div>
+                                <div class="tc-country">${dest.country}・${dest.region}</div>
+                            </div>
+                        </div>
+                        <span class="tc-badge-tier" style="background: ${tierColorBg}; color: ${tierColorText};">${dest.tierName}</span>
+                    </div>
+
+                    <div class="tc-desc">${dest.desc}</div>
+                    <span class="tc-highlight-tag">✨ ${dest.highlight}</span>
+                </div>
+
+                <div>
+                    <div class="tc-price-row">
+                        <div>
+                            <div class="tc-price-label">${personCount === 1 ? '單人預算 / 趟' : '雙人同行預算 (2人) / 趟'}</div>
+                            <div class="tc-price-val" style="color: ${isAffordable ? '#059669' : '#0f172a'};">$${tripCost.toLocaleString()} <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">TWD</span></div>
+                        </div>
+                        <div>${timesHtml}</div>
+                    </div>
+
+                    <button type="button" class="tc-action-btn ${isSelected ? 'selected' : ''}" onclick="toggleTravelTrip('${dest.id}')">
+                        ${isSelected ? '✓ 已在年度旅遊清單 (點擊移除)' : '＋ 加入年度旅遊清單'}
+                    </button>
+                </div>
+            `;
+
+            grid.appendChild(card);
+        });
+    }
+
+    // 更新自選行程清單面板
+    function updateTravelBucketUI(totalTwd) {
+        const personCount = state.travelPersonCount;
+        let totalExpense = 0;
+        const selectedList = [];
+
+        state.selectedTrips.forEach(id => {
+            const d = travelDestinations.find(item => item.id === id);
+            if (d) {
+                const cost = d.cost * personCount;
+                totalExpense += cost;
+                selectedList.push({ ...d, cost });
+            }
+        });
+
+        const balance = totalTwd - totalExpense;
+        const isFundSufficient = balance >= 0;
+
+        document.getElementById('tbFundTotal').innerText = `$${totalTwd.toLocaleString()}`;
+        document.getElementById('tbTripCount').innerText = selectedList.length;
+        document.getElementById('tbExpenseTotal').innerText = `$${totalExpense.toLocaleString()}`;
+
+        const tbBal = document.getElementById('tbBalanceTotal');
+        if (tbBal) {
+            if (isFundSufficient) {
+                tbBal.style.color = '#059669';
+                tbBal.innerText = `+$${balance.toLocaleString()}`;
+            } else {
+                tbBal.style.color = '#dc2626';
+                tbBal.innerText = `-$${Math.abs(balance).toLocaleString()}`;
+            }
+        }
+
+        const covRate = document.getElementById('tbCoverageRate');
+        const pBar = document.getElementById('tbProgressBar');
+        if (totalExpense === 0) {
+            if (covRate) { covRate.style.color = '#64748b'; covRate.innerText = '尚未勾選行程'; }
+            if (pBar) { pBar.style.width = '0%'; pBar.style.background = '#cbd5e1'; }
+        } else if (isFundSufficient) {
+            const pct = Math.round((totalTwd / totalExpense) * 100);
+            if (covRate) { covRate.style.color = '#059669'; covRate.innerText = `100% 全額達標 (超額 ${pct}%)`; }
+            const usedPct = Math.min(100, Math.round((totalExpense / (totalTwd || 1)) * 100));
+            if (pBar) { pBar.style.width = `${usedPct}%`; pBar.style.background = 'linear-gradient(90deg, #10b981 0%, #059669 100%)'; }
+        } else {
+            const coveredPct = Math.round((totalTwd / totalExpense) * 100);
+            if (covRate) { covRate.style.color = '#dc2626'; covRate.innerText = `已由保單涵蓋 ${coveredPct}% (不足差額 $${Math.abs(balance).toLocaleString()})`; }
+            if (pBar) { pBar.style.width = '100%'; pBar.style.background = '#ef4444'; }
+        }
+
+        // 渲染行程標籤膠囊
+        const container = document.getElementById('selectedTripsPillContainer');
+        if (container) {
+            container.innerHTML = '';
+            if (selectedList.length === 0) {
+                container.innerHTML = `<span style="font-size: 0.8rem; color: #94a3b8;">💡 尚未加入行程，請從下方卡片點選「＋加入年度旅遊清單」或點擊右上方「✨ 帶入熱門精選組合」！</span>`;
+            } else {
+                selectedList.forEach(item => {
+                    const pill = document.createElement('span');
+                    pill.className = 'selected-trip-pill';
+                    pill.innerHTML = `
+                        <span>${item.flag} ${item.title} ($${item.cost.toLocaleString()})</span>
+                        <span class="selected-trip-remove" onclick="toggleTravelTrip('${item.id}')" title="移除此行程">✕</span>
+                    `;
+                    container.appendChild(pill);
+                });
+            }
+        }
+    }
+
+    // 計算 20 年退休黃金期累計成果
+    function updateLifetimeTravelStats(fx) {
+        if (!state.yearlyData || state.yearlyData.length === 0) return;
+        const isStress = document.getElementById('chkTravelZeroStress') ? document.getElementById('chkTravelZeroStress').checked : false;
+
+        // 計算自 65 歲 (或退休年齡) 起算 20 年的累計領取金
+        const startAge = state.retireAge || 65;
+        const retirementRows = state.yearlyData.filter(r => r.age >= startAge && r.age <= startAge + 20);
+        let lifetimeTotalOrig = 0;
+        retirementRows.forEach(r => {
+            const effSurv = getEffectiveSurvivalAnnual(r);
+            const divAnn = isStress ? 0 : r.dividendAnnual;
+            lifetimeTotalOrig += (effSurv + divAnn);
+        });
+
+        const lifetimeTwd = Math.round(lifetimeTotalOrig * fx);
+
+        const elTotal = document.getElementById('tlsTotalFund');
+        if (elTotal) elTotal.innerText = `$${lifetimeTwd.toLocaleString()}`;
+
+        const isArue = !state.policyCode || state.policyCode.toUpperCase().includes('ARUE');
+        const elSub = document.getElementById('tlsSubPrincipal');
+        if (elSub) {
+            if (isArue) {
+                elSub.innerHTML = '定期逐年本利給付・<strong>領到最後本金領完</strong> (百歲前充分圓夢)';
+                elSub.style.color = '#0284c7';
+            } else {
+                elSub.innerHTML = '終身保證給付・保額持續保留傳承';
+                elSub.style.color = '#059669';
+            }
+        }
+        const elSubCard = document.getElementById('tlsCardSubtitle');
+        if (elSubCard) {
+            if (isArue) {
+                elSubCard.innerHTML = '試算 65 歲至 85 歲期間，由保單提供之累計出國旅遊圓夢基金（※ <strong>ARUE 樂享百歲</strong>為定期給付型，逐年給付還本金與增值收益，<strong>領到最後本金會隨年度領完</strong>，將資產在百歲前充分發揮出國旅遊與退休生活價值）';
+            } else {
+                elSubCard.innerHTML = '試算 65 歲至 85 歲期間，由保單源源不絕提供之累計旅遊圓夢能量（終身保證給付，保額持續保留傳承）';
+            }
+        }
+
+        const japanCost = 58000;
+        const europeCost = 135000;
+        const auroraCost = 210000;
+
+        const japanTrips = Math.floor(lifetimeTwd / japanCost);
+        const europeTrips = Math.floor(lifetimeTwd / europeCost);
+        const auroraTrips = Math.floor(lifetimeTwd / auroraCost);
+
+        const elJ = document.getElementById('tlsJapanTrips');
+        if (elJ) elJ.innerText = `${japanTrips} 趟`;
+
+        const elE = document.getElementById('tlsEuropeTrips');
+        if (elE) elE.innerText = `${europeTrips} 趟`;
+
+        const elA = document.getElementById('tlsAuroraTrips');
+        if (elA) elA.innerText = `${auroraTrips} 趟`;
+    }
+
+    // 渲染第三頁 Chart.js 雙圖表
+    function renderPage3Charts() {
+        if (!state.yearlyData || state.yearlyData.length === 0) return;
+        const fx = state.currency === 'USD' ? state.usdRate : 1;
+        const isStress = document.getElementById('chkTravelZeroStress') ? document.getElementById('chkTravelZeroStress').checked : false;
+
+        // 1. 歷年旅遊基金堆疊柱狀圖
+        const canvas1 = document.getElementById('travelBudgetChart');
+        if (canvas1) {
+            const ctx1 = canvas1.getContext('2d');
+            if (travelBudgetChartInstance) {
+                travelBudgetChartInstance.destroy();
+            }
+
+            const labels = state.yearlyData.map(r => `${r.age}歲`);
+            const survData = state.yearlyData.map(r => Math.round(getEffectiveSurvivalAnnual(r) * fx));
+            const divData = state.yearlyData.map(r => Math.round((isStress ? 0 : r.dividendAnnual) * fx));
+
+            travelBudgetChartInstance = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: '生存還本金 (C+D)',
+                            data: survData,
+                            backgroundColor: 'rgba(16, 185, 129, 0.85)',
+                            borderColor: '#10b981',
+                            borderWidth: 1,
+                            stack: 'travel'
+                        },
+                        {
+                            label: '增值回饋分享金 (A@)',
+                            data: divData,
+                            backgroundColor: 'rgba(245, 158, 11, 0.85)',
+                            borderColor: '#f59e0b',
+                            borderWidth: 1,
+                            stack: 'travel'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: NT$ ${context.parsed.y.toLocaleString()} 元/年`;
+                                },
+                                afterBody: function(items) {
+                                    const total = items.reduce((acc, item) => acc + item.parsed.y, 0);
+                                    return `年度旅遊基金總額: NT$ ${total.toLocaleString()} 元/年`;
+                                }
+                            }
+                        },
+                        datalabels: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                maxRotation: 0,
+                                autoSkip: true,
+                                maxTicksLimit: 15,
+                                font: { size: 11 }
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            grid: { color: '#f1f5f9' },
+                            ticks: {
+                                callback: function(val) {
+                                    return (val >= 10000) ? (val / 10000) + '萬' : val;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 2. 圓夢旅遊配比甜甜圈圖
+        const canvas2 = document.getElementById('travelLifetimeChart');
+        if (canvas2) {
+            const ctx2 = canvas2.getContext('2d');
+            if (travelLifetimeChartInstance) {
+                travelLifetimeChartInstance.destroy();
+            }
+
+            travelLifetimeChartInstance = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['🏰 歐美長程深度 (45%)', '🍁 亞洲精緻慢活 (35%)', '🌸 海島放鬆快閃 (20%)'],
+                    datasets: [{
+                        data: [45, 35, 20],
+                        backgroundColor: ['#6366f1', '#0284c7', '#10b981'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '68%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                boxWidth: 12,
+                                font: { size: 11, weight: '700' },
+                                color: '#334155'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(c) {
+                                    return `圓夢比例: ${c.label}`;
+                                }
+                            }
+                        },
+                        datalabels: { display: false }
+                    }
+                }
+            });
+        }
+    }
+
+    // 匯出第三頁出國旅遊試算圖檔
+    function exportPage3Image() {
+        const area = document.getElementById('page3CaptureArea');
+        if (!area) return;
+        html2canvas(area, {
+            scale: 2,
+            backgroundColor: '#f1f5f9',
+            useCORS: true
+        }).then(canvas => {
+            const currRow = state.yearlyData[state.selectedYearIndex] || { age: 65 };
+            const link = document.createElement('a');
+            link.download = `出國旅遊夢想金_${currRow.age}歲旅費規劃試算.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    }
+
+
     window.addEventListener('DOMContentLoaded', () => {
         loadSampleProposal('10ARUE3');
         renderPage1Charts();
