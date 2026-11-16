@@ -61,6 +61,10 @@
             line-height: 1.5;
             -webkit-text-size-adjust: 100%;
             overscroll-behavior-y: none;
+            /* iPad 繁體中文防孤字斷行與等寬數字對齊 */
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            font-variant-numeric: tabular-nums;
         }
 
         button, label, .city-check-card, .step-pill {
@@ -594,6 +598,8 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 8px;
+            min-height: 28px;
+            gap: 6px;
         }
 
         .pillar-title {
@@ -602,6 +608,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
         }
 
         .color-swatch {
@@ -609,17 +616,23 @@
             height: 12px;
             border-radius: 3px;
             display: inline-block;
+            flex-shrink: 0;
         }
 
         .pillar-monthly-val {
-            font-size: 1.35rem;
+            font-size: clamp(1.15rem, 1.8vw, 1.35rem);
             font-weight: 900;
             margin: 4px 0;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
         }
 
         .pillar-sub-note {
             font-size: 0.76rem;
             color: #64748b;
+            min-height: 20px;
+            display: flex;
+            align-items: center;
         }
 
         /* 勞保請領年齡快速切換按鈕 */
@@ -710,10 +723,14 @@
         .kpi-box {
             background: #fff;
             border-radius: 12px;
-            padding: 16px;
+            padding: 16px 12px;
             border: 1px solid #e2e8f0;
             text-align: center;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .kpi-box.total-highlight {
@@ -727,6 +744,7 @@
             font-weight: 700;
             color: #64748b;
             margin-bottom: 6px;
+            white-space: nowrap;
         }
 
         .kpi-box.total-highlight .kpi-label {
@@ -734,14 +752,17 @@
         }
 
         .kpi-val {
-            font-size: 1.45rem;
+            font-size: clamp(1.2rem, 2vw, 1.45rem);
             font-weight: 900;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
         }
 
         .kpi-sub {
             font-size: 0.75rem;
             margin-top: 4px;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         /* 單一年度控制滑桿與圖表區 */
@@ -1133,8 +1154,8 @@
                             <button type="button" class="btn-primary-upload">📄 選擇建議書 PDF 匯入</button>
                             <input type="file" id="pdfFileInput" accept=".pdf,application/pdf">
                         </div>
-                        <button type="button" class="btn-sample" onclick="loadSampleProposal('USD')">💵 載入美元雙金流建議書範本</button>
-                        <button type="button" class="btn-sample" onclick="loadSampleProposal('TWD')">🏦 載入台幣還本建議書範本</button>
+                        <button type="button" class="btn-sample" onclick="loadSampleProposal('10ARUE3')">💵 範本1：樂享百歲 (10ARUE3)</button>
+                        <button type="button" class="btn-sample" onclick="loadSampleProposal('10AUALE')">💵 範本2：年年發 (10AUALE)</button>
                         <button type="button" class="btn-sample" onclick="openModal()" style="border-color: #6366f1; color: #4f46e5;">✏️ 檢視/編輯歷年明細</button>
                     </div>
 
@@ -1309,7 +1330,10 @@
                                     <span class="color-swatch" style="background: var(--color-survival);"></span>
                                     生存還本金
                                 </label>
-                                <span style="font-size: 0.7rem; background: #d1fae5; color: #065f46; padding: 2px 6px; border-radius: 4px; font-weight: 700;">中層‧契約保證</span>
+                                <div class="age-toggle-group" style="border-color: #6ee7b7;">
+                                    <button type="button" class="age-toggle-btn active" id="btnSurvCD" onclick="setSurvivalMode('CD')" style="font-size: 0.7rem; padding: 2px 6px;" title="基本保額對應(C) + 累計增額繳清對應(D)">C+D合計</button>
+                                    <button type="button" class="age-toggle-btn" id="btnSurvC" onclick="setSurvivalMode('C')" style="font-size: 0.7rem; padding: 2px 6px;" title="僅計「基本保額」對應之保證金額(C)">僅基本C</button>
+                                </div>
                             </div>
                             <div class="pillar-monthly-val" style="color: var(--color-survival);" id="p2SurvivalMonthlyDisplay">$10,000</div>
                             <div class="pillar-sub-note" id="p2SurvivalAnnualNote">建議書年領 $120,000 ÷ 12月</div>
@@ -1323,7 +1347,7 @@
                                     <span class="color-swatch" style="background: var(--color-dividend);"></span>
                                     增值回饋分享金
                                 </label>
-                                <span id="dividendBadgeTag" style="font-size: 0.7rem; background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; font-weight: 700;">頂層‧宣告增益</span>
+                                <span id="dividendBadgeTag" style="font-size: 0.7rem; background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; font-weight: 700;">僅列@現金給付</span>
                             </div>
                             <div class="pillar-monthly-val" style="color: var(--color-dividend);" id="p2DividendMonthlyDisplay">$7,000</div>
                             <div class="pillar-sub-note" id="p2DividendAnnualNote">建議書年領 $84,000 ÷ 12月</div>
@@ -1463,11 +1487,11 @@
 
 <!-- 建議書歷年明細檢視與手動編輯 Modal -->
 <div class="modal-backdrop" id="detailModal">
-    <div class="modal-card">
+    <div class="modal-card" style="max-width: 1020px;">
         <div class="modal-header">
             <div>
-                <h3 style="margin: 0; font-size: 1.15rem; color: #0f172a;">📋 建議書歷年「生存還本金」與「增值回饋分享金」明細表</h3>
-                <div style="font-size: 0.8rem; color: #64748b;">可針對個別保單年度微調年領金額（原幣），系統將自動除以 12 換算每月退休金</div>
+                <h3 style="margin: 0; font-size: 1.15rem; color: #0f172a;">📋 建議書歷年「生存還本金 (C、D)」與「增值回饋分享金 (A@)」明細表</h3>
+                <div style="font-size: 0.8rem; color: #64748b;">增值回饋分享金僅列入建議書上尾巴帶有「@」（現金給付）之金額；生存還本金對應建議書 (C) 基本保額與 (D) 增額繳清欄位</div>
             </div>
             <button type="button" onclick="closeModal()" style="background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #64748b;">✕</button>
         </div>
@@ -1477,10 +1501,12 @@
                     <tr>
                         <th>保單年度</th>
                         <th>保險年齡</th>
-                        <th>生存還本金 (年領/原幣)</th>
-                        <th>增值回饋分享金 (年領/原幣)</th>
-                        <th>折合台幣月領「生存還本」</th>
-                        <th>折合台幣月領「增值回饋」</th>
+                        <th style="background: #ecfdf5; color: #065f46;">生存還本(C)<br><span style="font-size: 0.72rem; font-weight: 600;">基本保額對應</span></th>
+                        <th style="background: #ecfdf5; color: #065f46;">生存還本(D)<br><span style="font-size: 0.72rem; font-weight: 600;">增額繳清對應</span></th>
+                        <th style="background: #d1fae5; color: #065f46;">當年度還本合計<br><span style="font-size: 0.72rem; font-weight: 600;">(C + D) 原幣</span></th>
+                        <th style="background: #fffbeb; color: #92400e;">增值回饋(A@)<br><span style="font-size: 0.72rem; font-weight: 600;">僅列@現金給付</span></th>
+                        <th>折合台幣月領<br>「生存還本」</th>
+                        <th>折合台幣月領<br>「增值回饋」</th>
                     </tr>
                 </thead>
                 <tbody id="detailTableBody"></tbody>
@@ -1507,6 +1533,7 @@
         selectedCityKey: 'taipei',
         laborCeiling: 28396, // 預設勞保天花板 (45800 * 40年 * 1.55% = 28396)
         laborStartAge: 65,   // 勞保退休金開始顯示年齡 (預設 65 歲，可切換 60 歲或自訂)
+        survivalMode: 'CD',  // 'CD' = 基本保額對應(C)+累計增額繳清對應(D)；'C' = 僅計基本保額對應(C)
         currency: 'TWD',
         usdRate: 32.50,
         startAge: 55,
@@ -1515,7 +1542,7 @@
         annualSurvivalBase: 120000,
         annualDividendBase: 84000,
         selectedYearIndex: 9, // 預設第10保單年度 (65歲)
-        yearlyData: [] // { year, age, survivalAnnual, dividendAnnual }
+        yearlyData: [] // { year, age, survivalC, survivalD, survivalAnnual, dividendAnnual, rawDivStr }
     };
 
     let cityChartInstance = null;
@@ -1563,8 +1590,11 @@
             rows.push({
                 year: y,
                 age: age,
+                survivalC: survival,
+                survivalD: 0,
                 survivalAnnual: survival,
-                dividendAnnual: dividend
+                dividendAnnual: dividend,
+                rawDivStr: dividend > 0 ? `${dividend}@` : '─'
             });
         }
         state.yearlyData = rows;
@@ -1839,46 +1869,213 @@
         document.getElementById('previewMonthlyDividend').innerText = monthlyDividendTwd.toLocaleString();
     }
 
+    // 內建兩份南山人壽真實建議書精準數據 (10ARUE3 樂享百歲 與 10AUALE 年年發)
+    function getBuiltInProposalRows(code) {
+        const rows = [];
+        if (code === '10ARUE3') {
+            // 南山人壽樂享百歲美元利率變動型還本終身保險 10ARUE3 (46歲男，10年期，保額2萬美元)
+            // 第1~18年 (46~63歲)：增值回饋無@ (購買增額繳清)，生存還本 C=0, D=0
+            // 第19~54年 (64~99歲)：生存還本 C=4800, D=1359 (合計 6159)；增值回饋(A)帶@現金給付
+            // 第55年 (100歲)：生存還本 C=0, D=0；增值回饋(A)=132@
+            const divAtFrom19 = [
+                2889, 2838, 2790, 2742, 2680, 2631, 2559, 2496, 2448, 2386,
+                2324, 2264, 2202, 2139, 2079, 2006, 1933, 1859, 1798, 1713,
+                1640, 1552, 1468, 1384, 1297, 1212, 1114, 1027, 928, 831,
+                744, 645, 548, 438, 341, 242, 132
+            ];
+            const nonCashDiv1to18 = [132, 330, 513, 709, 918, 1138, 1345, 1577, 1821, 2066, 2154, 2228, 2314, 2412, 2496, 2595, 2679, 2777];
+            for (let y = 1; y <= 55; y++) {
+                const age = 46 + y - 1;
+                if (y <= 18) {
+                    rows.push({
+                        year: y, age,
+                        survivalC: 0, survivalD: 0, survivalAnnual: 0,
+                        dividendAnnual: 0, // 無 @ 不列入現金給付
+                        rawDivStr: `${nonCashDiv1to18[y - 1]} (無@增額)`
+                    });
+                } else if (y <= 54) {
+                    const dVal = divAtFrom19[y - 19];
+                    rows.push({
+                        year: y, age,
+                        survivalC: 4800, survivalD: 1359, survivalAnnual: 4800 + 1359,
+                        dividendAnnual: dVal,
+                        rawDivStr: `${dVal}@`
+                    });
+                } else {
+                    rows.push({
+                        year: y, age,
+                        survivalC: 0, survivalD: 0, survivalAnnual: 0,
+                        dividendAnnual: 132,
+                        rawDivStr: `132@`
+                    });
+                }
+            }
+        } else if (code === '10AUALE') {
+            // 南山人壽年年發美元利率變動型還本終身保險 10AUALE (46歲男，10年期，保額5萬美元)
+            // 第1~5年 (46~50歲)：增值回饋無@ (144~1089)，生存還本 C=0, D=0
+            // 第6~9年 (51~54歲)：
+            //   Y6: A=1345@, C=1400, D=42 (C+D=1442)
+            //   Y7: A=1565@, C=1675, D=50 (C+D=1725)
+            //   Y8: A=1787@, C=1950, D=59 (C+D=2009)
+            //   Y9: A=1995@, C=2225, D=67 (C+D=2292)
+            // 第10~64年 (55~109歲)：C=2500, D=75 (C+D=2575)，增值回饋(A)=2214@~2398@
+            // 第65年 (110歲)：C=0, D=0，增值回饋(A)=2398@
+            const nonCash1to5 = [144, 379, 599, 831, 1089];
+            const y6to9 = [
+                { div: 1345, c: 1400, d: 42 },
+                { div: 1565, c: 1675, d: 50 },
+                { div: 1787, c: 1950, d: 59 },
+                { div: 1995, c: 2225, d: 67 }
+            ];
+            const divFrom10 = [
+                2214, 2214, 2214, 2214, 2214, 2214, 2214, 2214, 2214, // Y10~18
+                2226, 2226, 2226, 2226, 2226, 2226, 2226, 2226, 2226, // Y19~27
+                2238, 2238, 2238, 2238,                               // Y28~31
+                2251, 2251, 2250, 2251,                               // Y32~35
+                2263, 2263, 2263, 2263, 2263, 2263,                   // Y36~41
+                2275, 2276, 2276, 2276, 2275, 2276,                   // Y42~47
+                2288, 2288,                                           // Y48~49
+                2300, 2300,                                           // Y50~51
+                2313, 2313,                                           // Y52~53
+                2325, 2326,                                           // Y54~55
+                2338, 2338,                                           // Y56~57
+                2350,                                                 // Y58
+                2362, 2362,                                           // Y59~60
+                2374, 2374,                                           // Y61~62
+                2386,                                                 // Y63
+                2398, 2398                                            // Y64~65
+            ];
+            for (let y = 1; y <= 65; y++) {
+                const age = 46 + y - 1;
+                if (y <= 5) {
+                    rows.push({
+                        year: y, age,
+                        survivalC: 0, survivalD: 0, survivalAnnual: 0,
+                        dividendAnnual: 0,
+                        rawDivStr: `${nonCash1to5[y - 1]} (無@增額)`
+                    });
+                } else if (y <= 9) {
+                    const item = y6to9[y - 6];
+                    rows.push({
+                        year: y, age,
+                        survivalC: item.c, survivalD: item.d, survivalAnnual: item.c + item.d,
+                        dividendAnnual: item.div,
+                        rawDivStr: `${item.div}@`
+                    });
+                } else if (y <= 64) {
+                    const dVal = divFrom10[y - 10] || 2398;
+                    rows.push({
+                        year: y, age,
+                        survivalC: 2500, survivalD: 75, survivalAnnual: 2500 + 75,
+                        dividendAnnual: dVal,
+                        rawDivStr: `${dVal}@`
+                    });
+                } else {
+                    rows.push({
+                        year: y, age,
+                        survivalC: 0, survivalD: 0, survivalAnnual: 0,
+                        dividendAnnual: 2398,
+                        rawDivStr: `2398@`
+                    });
+                }
+            }
+        }
+        return rows;
+    }
+
+    function applyParsedProposalRows(parsedRows, detectedCurrency, detectedStartAge, sourceTitle, bannerMsg) {
+        state.isPdfImported = true;
+        state.currency = detectedCurrency;
+        state.startAge = detectedStartAge;
+        state.yearlyData = parsedRows;
+
+        document.getElementById('policyCurrency').value = detectedCurrency;
+        document.getElementById('startAgeInput').value = detectedStartAge;
+
+        // 找出 65 歲（或第一個有領取生存還本金 / @增值回饋分享金）的年度作為預設檢視點
+        const firstPayoutRow = parsedRows.find(r => r.survivalAnnual > 0 || r.dividendAnnual > 0);
+        const age65Idx = parsedRows.findIndex(r => r.age === 65 && (r.survivalAnnual > 0 || r.dividendAnnual > 0));
+        const firstPayoutIdx = parsedRows.findIndex(r => r.survivalAnnual > 0 || r.dividendAnnual > 0);
+        const targetIdx = age65Idx >= 0 ? age65Idx : (firstPayoutIdx >= 0 ? firstPayoutIdx : Math.min(9, parsedRows.length - 1));
+
+        state.selectedYearIndex = targetIdx;
+        const slider = document.getElementById('policyYearSlider');
+        slider.max = parsedRows.length;
+        slider.value = targetIdx + 1;
+
+        const refRow = parsedRows[targetIdx] || firstPayoutRow || parsedRows[0];
+        if (refRow) {
+            const survVal = state.survivalMode === 'C' ? refRow.survivalC : refRow.survivalAnnual;
+            state.annualSurvivalBase = survVal;
+            state.annualDividendBase = refRow.dividendAnnual;
+            state.retireAge = firstPayoutRow ? firstPayoutRow.age : refRow.age;
+            document.getElementById('annualSurvivalInput').value = survVal;
+            document.getElementById('annualDividendInput').value = refRow.dividendAnnual;
+            document.getElementById('retireAgeInput').value = state.retireAge;
+        }
+
+        onCurrencyOrRateChange();
+        updateAllSourceBadges('pdf', sourceTitle);
+        const banner = document.getElementById('importStatusBanner');
+        banner.style.background = '#dcfce7';
+        banner.style.color = '#15803d';
+        banner.innerHTML = bannerMsg;
+    }
+
     function loadSampleProposal(type) {
-        if (type === 'USD') {
-            document.getElementById('policyCurrency').value = 'USD';
-            document.getElementById('startAgeInput').value = 55;
-            document.getElementById('retireAgeInput').value = 65;
-            document.getElementById('paymentTermInput').value = '6';
-            document.getElementById('annualSurvivalInput').value = 4200;  // 每年 4,200 美元生存還本
-            document.getElementById('annualDividendInput').value = 2800;  // 每年 2,800 美元增值回饋
-            document.getElementById('importStatusBanner').innerHTML = `✅ 已載入【美元還本雙金流建議書範本】：年領生存還本金 $4,200 USD ＋ 增值回饋分享金 $2,800 USD`;
-            onProposalParamChange(true, '📌 資料來源：美元建議書範本');
+        if (type === '10ARUE3') {
+            const rows = getBuiltInProposalRows('10ARUE3');
+            applyParsedProposalRows(
+                rows,
+                'USD',
+                46,
+                '🔒 資料來源：樂享百歲 10ARUE3 (55年明細)',
+                '✅ 已載入【南山人壽樂享百歲 10ARUE3 建議書】：第19年(64歲)起生存還本 C=$4,800 + D=$1,359 (合計 $6,159 USD)，增值回饋僅列有 @ 之現金給付 ($2,889@ 起)'
+            );
+        } else if (type === '10AUALE') {
+            const rows = getBuiltInProposalRows('10AUALE');
+            applyParsedProposalRows(
+                rows,
+                'USD',
+                46,
+                '🔒 資料來源：年年發 10AUALE (65年明細)',
+                '✅ 已載入【南山人壽年年發 10AUALE 建議書】：第6年(51歲)起領取 @ 增值回饋 ($1,345@ 起) 與生存還本 (第10年起 C=$2,500 + D=$75 = $2,575 USD)'
+            );
         } else {
             document.getElementById('policyCurrency').value = 'TWD';
             document.getElementById('startAgeInput').value = 55;
             document.getElementById('retireAgeInput').value = 65;
             document.getElementById('paymentTermInput').value = '6';
-            document.getElementById('annualSurvivalInput').value = 120000; // 每年 12 萬生存還本
-            document.getElementById('annualDividendInput').value = 84000;  // 每年 8.4 萬增值回饋
+            document.getElementById('annualSurvivalInput').value = 120000;
+            document.getElementById('annualDividendInput').value = 84000;
             document.getElementById('importStatusBanner').innerHTML = `✅ 已載入【台幣退休還本建議書範本】：年領生存還本金 $120,000 元 ＋ 增值回饋分享金 $84,000 元`;
             onProposalParamChange(true, '📌 資料來源：台幣建議書範本');
         }
     }
 
-    // ================= 真實 PDF 建議書解析功能 =================
+    // ================= 真實 PDF 建議書解析功能（精準對應南山人壽建議書欄位與 @ 現金給付規則） =================
     document.getElementById('pdfFileInput').addEventListener('change', async (e) => {
         if (e.target.files.length === 0) return;
         const file = e.target.files[0];
         const banner = document.getElementById('importStatusBanner');
         banner.style.background = '#fef3c7';
         banner.style.color = '#92400e';
-        banner.innerHTML = `🔄 正在解析建議書「${file.name}」中之生存還本金與增值回饋分享金...`;
+        banner.innerHTML = `🔄 正在解析建議書「${file.name}」中之生存還本金(C、D欄)與增值回饋分享金(僅列尾巴有@)...`;
 
         try {
             const arrayBuffer = await file.arrayBuffer();
             const typedarray = new Uint8Array(arrayBuffer);
             const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
 
-            let fullText = '';
             let parsedRows = [];
             let detectedStartAge = state.startAge;
             let detectedCurrency = 'TWD';
+            let detectedPolicyCode = '';
+
+            const parseTokenNum = (tok) => {
+                if (!tok || tok === '-' || tok === '─') return 0;
+                return parseInt(tok.replace(/[^0-9]/g, ''), 10) || 0;
+            };
 
             for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
                 const page = await pdf.getPage(pageNum);
@@ -1886,88 +2083,117 @@
                 const items = textContent.items;
 
                 const pageStr = items.map(i => i.str).join(' ');
-                fullText += pageStr + '\n';
 
                 if (/美元|USD|美金/.test(pageStr)) {
                     detectedCurrency = 'USD';
                 }
-                const ageMatch = pageStr.match(/(?:保\s*險\s*)?年\s*齡\s*[:：]?\s*(\d{1,2})\s*歲?/);
+                const ageMatch = pageStr.match(/保\s*險\s*年\s*齡\s*[:：]?\s*(\d{1,2})/);
                 if (ageMatch) {
-                    detectedStartAge = parseInt(ageMatch[1]);
+                    detectedStartAge = parseInt(ageMatch[1], 10);
+                }
+                const codeMatch = pageStr.match(/\b(\d{1,2}[A-Z]{3,6}\d?)\b/);
+                if (codeMatch && !detectedPolicyCode) {
+                    detectedPolicyCode = codeMatch[1];
                 }
 
-                // 依 Y 座標分行解析表格
-                items.sort((a, b) => {
-                    const yDiff = b.transform[5] - a.transform[5];
-                    if (Math.abs(yDiff) > 7) return yDiff;
-                    return a.transform[4] - b.transform[4];
+                // 1. 先過濾有效文字區塊，並嚴格依 Y 軸由上而下排序
+                const validItems = items
+                    .filter(it => it.str && it.str.trim().length > 0)
+                    .map(it => ({
+                        str: it.str.trim(),
+                        x: it.transform[4],
+                        y: it.transform[5]
+                    }))
+                    .sort((a, b) => b.y - a.y);
+
+                // 2. 將同一水平列 (Y 差距 <= 5) 的文字歸入同一列
+                const rowClusters = [];
+                for (const it of validItems) {
+                    let row = rowClusters.find(r => Math.abs(r.y - it.y) <= 5);
+                    if (!row) {
+                        row = { y: it.y, items: [] };
+                        rowClusters.push(row);
+                    }
+                    row.items.push(it);
+                }
+
+                // 3. 每一列內部嚴格依 X 軸由左至右排序，確保欄位順序 100% 不錯位
+                const lines = rowClusters.map(r => {
+                    r.items.sort((a, b) => a.x - b.x);
+                    return r.items.map(i => i.str).join(' ');
                 });
 
-                let lines = [];
-                let currY = null;
-                let currLine = [];
-                for (const item of items) {
-                    const y = item.transform[5];
-                    const str = item.str.trim();
-                    if (!str) continue;
-                    if (currY === null || Math.abs(y - currY) > 7) {
-                        if (currLine.length > 0) lines.push(currLine.join(' '));
-                        currLine = [str];
-                        currY = y;
-                    } else {
-                        currLine.push(str);
-                    }
-                }
-                if (currLine.length > 0) lines.push(currLine.join(' '));
+                for (const rawLine of lines) {
+                    // 正規化：
+                    // (a) 合併千分位逗號被空白拆開的數字，如 "108, 900" -> "108900"
+                    // (b) 確保數字尾巴的 @ 或 # 緊黏數字，如 "2,889 @" -> "2889@"
+                    // (c) 將所有表格破折號 (─, ━, —, –, －) 轉為獨立的 " - " token
+                    let normLine = rawLine
+                        .replace(/(\d)\s*,\s*(?=\d)/g, '$1')
+                        .replace(/(\d)\s*,\s*(?=\d)/g, '$1')
+                        .replace(/(\d)\s*([@#＠＃])/g, '$1$2')
+                        .replace(/[─━—–－]+/g, ' - ');
 
-                for (const line of lines) {
-                    const tokens = line.replace(/,/g, '').trim().split(/\s+/);
-                    if (tokens.length >= 5) {
-                        const yVal = parseInt(tokens[0]);
-                        const ageVal = parseInt(tokens[1]);
+                    const tokens = normLine.trim().split(/\s+/);
+
+                    // 南山建議書「增值回饋分享金利益彙整表」每列共有 15 個欄位：
+                    // [0]保單年度 [1]保險年齡 [2]累積保費
+                    // [3]增值回饋當年度金額(A) [4]儲存生息(B) [5]累計增額繳清基本保額
+                    // [6]生存還本-基本保額對應(C) [7]生存還本-累計增額繳清對應(D) [8]生存還本累計(C+D)
+                    // [9]身故(E) [10]身故(F) [11]身故合計
+                    // [12]解約(G) [13]解約(H) [14]解約合計
+                    if (tokens.length >= 12 && /^\d+$/.test(tokens[0]) && /^\d+$/.test(tokens[1])) {
+                        const yVal = parseInt(tokens[0], 10);
+                        const ageVal = parseInt(tokens[1], 10);
+
                         if (
-                            !isNaN(yVal) && !isNaN(ageVal) &&
                             yVal === parsedRows.length + 1 &&
-                            ageVal > 0 && ageVal <= 115
+                            ageVal > 0 && ageVal <= 120
                         ) {
-                            const nums = tokens.slice(2)
-                                .map(t => (t === '-' || t === '─' ? 0 : parseInt(t.replace(/[^0-9]/g, '')) || 0));
-                            // 從建議書各欄推測「生存還本金」與「增值回饋分享金」
-                            // 一般還本型建議書：保單年度 | 年齡 | 應繳保費 | 生存還本金 | 保單價值/解約金 | 增值回饋分享金 ...
-                            let survivalVal = nums[1] || 0;
-                            let dividendVal = nums[3] || nums[2] || 0;
+                            const divTokenA = tokens[3]; // (A) 當年度增值回饋分享金
+                            const hasAt = /[@＠]/.test(divTokenA);
+                            const rawDivNum = parseTokenNum(divTokenA);
+                            // 關鍵規則：增值回饋分享金必須尾巴有 @ (代表現金給付) 才能列入月退休金！
+                            const dividendVal = hasAt ? rawDivNum : 0;
+
+                            let survivalC = 0;
+                            let survivalD = 0;
+
+                            if (tokens.length >= 14) {
+                                // 標準 15 欄格式：tokens[6] 為 (C)基本保額還本，tokens[7] 為 (D)累計增額繳清還本
+                                survivalC = parseTokenNum(tokens[6]);
+                                survivalD = parseTokenNum(tokens[7]);
+                            } else {
+                                // 若為無增額繳清欄之簡化表格
+                                survivalC = parseTokenNum(tokens[5]);
+                                survivalD = 0;
+                            }
+
                             parsedRows.push({
                                 year: yVal,
                                 age: ageVal,
-                                survivalAnnual: survivalVal,
-                                dividendAnnual: dividendVal
+                                survivalC: survivalC,
+                                survivalD: survivalD,
+                                survivalAnnual: survivalC + survivalD,
+                                dividendAnnual: dividendVal,
+                                rawDivStr: hasAt ? `${rawDivNum.toLocaleString()}@` : (rawDivNum > 0 ? `${rawDivNum.toLocaleString()} (無@不計)` : '─')
                             });
                         }
                     }
                 }
             }
 
-            document.getElementById('policyCurrency').value = detectedCurrency;
-            document.getElementById('startAgeInput').value = detectedStartAge;
-
-            if (parsedRows.length >= 6) {
-                state.isPdfImported = true;
-                state.yearlyData = parsedRows;
-                const sampleRow = parsedRows.find(r => r.survivalAnnual > 0 || r.dividendAnnual > 0) || parsedRows[Math.min(10, parsedRows.length - 1)];
-                if (sampleRow) {
-                    state.annualSurvivalBase = sampleRow.survivalAnnual;
-                    state.annualDividendBase = sampleRow.dividendAnnual;
-                    state.retireAge = sampleRow.age;
-                    document.getElementById('annualSurvivalInput').value = sampleRow.survivalAnnual;
-                    document.getElementById('annualDividendInput').value = sampleRow.dividendAnnual;
-                    document.getElementById('retireAgeInput').value = sampleRow.age;
-                }
-                document.getElementById('policyYearSlider').max = parsedRows.length;
-                onCurrencyOrRateChange();
-                updateAllSourceBadges('pdf', `🔒 資料來源：已匯入 PDF (${parsedRows.length}年明細)`);
-                banner.style.background = '#dcfce7';
-                banner.style.color = '#15803d';
-                banner.innerHTML = `✅ 成功解析 PDF「${file.name}」（共擷取 ${parsedRows.length} 個保單年度明細，已直接鎖定採用 PDF 資料，無須手動填寫右側參數！）`;
+            if (parsedRows.length >= 5) {
+                const codeLabel = detectedPolicyCode ? ` ${detectedPolicyCode}` : '';
+                const firstCashDivRow = parsedRows.find(r => r.dividendAnnual > 0);
+                const firstSurvRow = parsedRows.find(r => r.survivalAnnual > 0);
+                applyParsedProposalRows(
+                    parsedRows,
+                    detectedCurrency,
+                    detectedStartAge,
+                    `🔒 資料來源：已匯入 PDF${codeLabel} (${parsedRows.length}年明細)`,
+                    `✅ 成功解析 PDF「${file.name}」${codeLabel}（共 ${parsedRows.length} 年明細｜生存還本自 ${firstSurvRow ? firstSurvRow.age + '歲(第' + firstSurvRow.year + '年)' : '--'} 起領，@增值回饋自 ${firstCashDivRow ? firstCashDivRow.age + '歲(第' + firstCashDivRow.year + '年)' : '--'} 起領）`
+                );
             } else {
                 onProposalParamChange();
                 banner.style.background = '#e0f2fe';
@@ -2077,6 +2303,15 @@
         }
     }
 
+    function setSurvivalMode(mode) {
+        state.survivalMode = mode; // 'CD' or 'C'
+        const btnCD = document.getElementById('btnSurvCD');
+        const btnC = document.getElementById('btnSurvC');
+        if (btnCD) btnCD.classList.toggle('active', mode === 'CD');
+        if (btnC) btnC.classList.toggle('active', mode === 'C');
+        updatePage2();
+    }
+
     function onYearSliderChange(val) {
         state.selectedYearIndex = Math.max(0, Math.min(state.yearlyData.length - 1, parseInt(val) - 1));
         updatePage2();
@@ -2089,6 +2324,18 @@
         onYearSliderChange(nextVal);
     }
 
+    // 取得該年度適用之年領生存還本金（原幣）
+    function getEffectiveSurvivalAnnual(row) {
+        const isZeroStress = document.getElementById('chkZeroRateStress').checked;
+        const cVal = (row.survivalC !== undefined) ? row.survivalC : row.survivalAnnual;
+        const dVal = (row.survivalD !== undefined) ? row.survivalD : 0;
+        // 若選「僅基本C」或勾選「最差狀況宣告利率=0%」，則僅計基本保額對應之保證還本金(C)
+        if (state.survivalMode === 'C' || isZeroStress) {
+            return cVal;
+        }
+        return cVal + dVal;
+    }
+
     // 計算單一保單年度之月退休金三層組成 (皆換算為台幣/月)
     // 勞保退休金僅在達到設定之開始年齡 (60或65歲) 後才計入顯示
     function getMonthlyBreakdownAtRow(row) {
@@ -2098,12 +2345,14 @@
         const includeDividend = document.getElementById('chkDividend').checked;
 
         const isLaborAgeReached = row.age >= state.laborStartAge;
+        const effSurvAnnual = getEffectiveSurvivalAnnual(row);
+
         const laborMonthly = (includeLabor && isLaborAgeReached) ? state.laborCeiling : 0;
-        const survivalMonthly = includeSurvival ? Math.round((row.survivalAnnual * fx) / 12) : 0;
+        const survivalMonthly = includeSurvival ? Math.round((effSurvAnnual * fx) / 12) : 0;
         const dividendMonthly = includeDividend ? Math.round((row.dividendAnnual * fx) / 12) : 0;
         const totalMonthly = laborMonthly + survivalMonthly + dividendMonthly;
 
-        return { laborMonthly, survivalMonthly, dividendMonthly, totalMonthly, isLaborAgeReached };
+        return { laborMonthly, survivalMonthly, dividendMonthly, totalMonthly, isLaborAgeReached, effSurvAnnual };
     }
 
     // 更新第二頁所有面板與雙圖表
@@ -2115,8 +2364,11 @@
         const currSym = state.currency === 'USD' ? 'USD ' : '$';
         const includeDividend = document.getElementById('chkDividend').checked;
 
+        // 計算當前選定年度的月退組成
+        const { laborMonthly, survivalMonthly, dividendMonthly, totalMonthly, isLaborAgeReached, effSurvAnnual } = getMonthlyBreakdownAtRow(currRow);
+
         // 更新上方三支柱卡片顯示
-        const rawSurvivalMonthly = Math.round((currRow.survivalAnnual * fx) / 12);
+        const rawSurvivalMonthly = Math.round((effSurvAnnual * fx) / 12);
         const rawDividendMonthly = Math.round((currRow.dividendAnnual * fx) / 12);
 
         document.getElementById('p2SurvivalMonthlyDisplay').innerText = `$${rawSurvivalMonthly.toLocaleString()} /月`;
@@ -2127,20 +2379,27 @@
             divDisplayEl.innerHTML = `<span style="text-decoration: line-through; color: #94a3b8; font-size: 0.95rem;">$${rawDividendMonthly.toLocaleString()}</span> <span style="color: #dc2626;">$0 /月</span>`;
         }
 
+        const cVal = (currRow.survivalC !== undefined) ? currRow.survivalC : currRow.survivalAnnual;
+        const dVal = (currRow.survivalD !== undefined) ? currRow.survivalD : 0;
+        const survBreakdownText = dVal > 0
+            ? `(C基本 ${cVal.toLocaleString()} + D增額 ${dVal.toLocaleString()})`
+            : `(C基本保額 ${cVal.toLocaleString()})`;
+
         if (state.currency === 'USD') {
-            document.getElementById('p2SurvivalAnnualNote').innerText = `年領 ${currSym}${currRow.survivalAnnual.toLocaleString()} × 匯率 ${state.usdRate} ÷ 12月`;
+            document.getElementById('p2SurvivalAnnualNote').innerText = `年領 ${currSym}${effSurvAnnual.toLocaleString()} ${survBreakdownText} × 匯率 ${state.usdRate} ÷ 12月`;
             document.getElementById('p2DividendAnnualNote').innerText = includeDividend
-                ? `年領 ${currSym}${currRow.dividendAnnual.toLocaleString()} × 匯率 ${state.usdRate} ÷ 12月`
+                ? (currRow.dividendAnnual > 0
+                    ? `建議書(A) ${currSym}${currRow.dividendAnnual.toLocaleString()}@ × 匯率 ${state.usdRate} ÷ 12月`
+                    : `本年度建議書(A)欄無 @ 現金給付 (${currRow.rawDivStr || '0'})`)
                 : `⚠️ 模擬最差狀況：宣告利率 = 0% (不計入增值回饋)`;
         } else {
-            document.getElementById('p2SurvivalAnnualNote').innerText = `建議書年領 $${currRow.survivalAnnual.toLocaleString()} ÷ 12月`;
+            document.getElementById('p2SurvivalAnnualNote').innerText = `建議書年領 $${effSurvAnnual.toLocaleString()} ${survBreakdownText} ÷ 12月`;
             document.getElementById('p2DividendAnnualNote').innerText = includeDividend
-                ? `建議書年領 $${currRow.dividendAnnual.toLocaleString()} ÷ 12月`
+                ? (currRow.dividendAnnual > 0
+                    ? `建議書(A) $${currRow.dividendAnnual.toLocaleString()}@ ÷ 12月`
+                    : `本年度建議書(A)欄無 @ 現金給付 (${currRow.rawDivStr || '0'})`)
                 : `⚠️ 模擬最差狀況：宣告利率 = 0% (不計入增值回饋)`;
         }
-
-        // 計算當前選定年度的月退組成
-        const { laborMonthly, survivalMonthly, dividendMonthly, totalMonthly, isLaborAgeReached } = getMonthlyBreakdownAtRow(currRow);
         const cityObj = state.cities[state.selectedCityKey];
         const targetExpense = cityObj.amount;
         const diff = totalMonthly - targetExpense;
@@ -2505,14 +2764,23 @@
         const fx = state.currency === 'USD' ? state.usdRate : 1;
 
         state.yearlyData.forEach((row, i) => {
-            const mSurv = Math.round((row.survivalAnnual * fx) / 12);
+            const cVal = (row.survivalC !== undefined) ? row.survivalC : row.survivalAnnual;
+            const dVal = (row.survivalD !== undefined) ? row.survivalD : 0;
+            const cdSum = cVal + dVal;
+            const effSurv = getEffectiveSurvivalAnnual(row);
+            const mSurv = Math.round((effSurv * fx) / 12);
             const mDiv = Math.round((row.dividendAnnual * fx) / 12);
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>第 ${row.year} 年</td>
-                <td><input type="number" id="m_age_${i}" value="${row.age}" style="width: 65px;"> 歲</td>
-                <td><input type="number" id="m_surv_${i}" value="${row.survivalAnnual}"></td>
-                <td><input type="number" id="m_div_${i}" value="${row.dividendAnnual}"></td>
+                <td><input type="number" id="m_age_${i}" value="${row.age}" style="width: 60px;"> 歲</td>
+                <td><input type="number" id="m_survc_${i}" value="${cVal}" style="width: 85px;"></td>
+                <td><input type="number" id="m_survd_${i}" value="${dVal}" style="width: 85px;"></td>
+                <td style="font-weight: 800; color: #065f46;">${cdSum.toLocaleString()}</td>
+                <td>
+                    <input type="number" id="m_div_${i}" value="${row.dividendAnnual}" style="width: 85px;">
+                    <div style="font-size: 0.7rem; color: ${row.dividendAnnual > 0 ? '#b45309' : '#94a3b8'};">${row.rawDivStr || ''}</div>
+                </td>
                 <td style="color: var(--color-survival); font-weight: 700;">$${mSurv.toLocaleString()} /月</td>
                 <td style="color: var(--color-dividend); font-weight: 700;">$${mDiv.toLocaleString()} /月</td>
             `;
@@ -2529,8 +2797,14 @@
     function saveModalDetails() {
         state.yearlyData.forEach((row, i) => {
             row.age = parseInt(document.getElementById(`m_age_${i}`).value) || row.age;
-            row.survivalAnnual = parseFloat(document.getElementById(`m_surv_${i}`).value) || 0;
-            row.dividendAnnual = parseFloat(document.getElementById(`m_div_${i}`).value) || 0;
+            const cVal = parseFloat(document.getElementById(`m_survc_${i}`).value) || 0;
+            const dVal = parseFloat(document.getElementById(`m_survd_${i}`).value) || 0;
+            const divVal = parseFloat(document.getElementById(`m_div_${i}`).value) || 0;
+            row.survivalC = cVal;
+            row.survivalD = dVal;
+            row.survivalAnnual = cVal + dVal;
+            row.dividendAnnual = divVal;
+            row.rawDivStr = divVal > 0 ? `${divVal}@` : '─';
         });
         closeModal();
         updatePage2();
@@ -2553,10 +2827,9 @@
         });
     }
 
-    // 初始化啟動
+    // 初始化啟動（預設預載 10ARUE3 樂享百歲建議書）
     window.addEventListener('DOMContentLoaded', () => {
-        buildYearlyDataFromBase();
-        updateMonthlyPreview();
+        loadSampleProposal('10ARUE3');
         renderPage1Charts();
         fetchLiveExchangeRate();
     });
