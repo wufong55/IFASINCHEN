@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <!-- 引入 PWA 相關設定 -->
+    <link rel="manifest" href="manifest.json">
+    <!-- 針對 iOS / iPadOS Safari 的設定 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="IFA 決策系統">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>IFA 精算與保障規劃系統</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body { 
+            font-family: 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #1c2833 0%, #2c3e50 100%); 
+            color: #fff; 
+            padding: 20px;
+            padding-left: max(20px, env(safe-area-inset-left));
+            padding-right: max(20px, env(safe-area-inset-right));
+            padding-bottom: max(20px, env(safe-area-inset-bottom));
+            line-height: 1.6; 
+            margin: 0; 
+            min-height: 100vh;
+            -webkit-text-size-adjust: 100%;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: auto; 
+            padding: 30px 15px 50px; 
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 { 
+            color: #e67e22; 
+            font-size: 34px; 
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            color: #bdc3c7;
+            font-size: 18px;
+            margin-top: 0;
+            letter-spacing: 1px;
+        }
+
+        /* 分類區塊標題設計 */
+        .category-section {
+            margin-bottom: 40px;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .section-title-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .section-badge-bar {
+            width: 6px;
+            height: 28px;
+            border-radius: 4px;
+            background: linear-gradient(180deg, #2ecc71 0%, #1abc9c 100%);
+            box-shadow: 0 0 12px rgba(46, 204, 113, 0.5);
+        }
+        .section-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 1px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-subtitle {
+            color: #94a3b8;
+            font-size: 14.5px;
+            font-weight: 500;
+        }
+        
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 28px; 
+        }
+        
+        /* 模組卡片設計 */
+        .module-card { 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 12px; 
+            padding: 25px; 
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            touch-action: manipulation;
+        }
+        .module-card:hover { 
+            transform: translateY(-5px); 
+            background: rgba(255, 255, 255, 0.1); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-color: rgba(230, 126, 34, 0.5);
+        }
+        
+        /* 卡片頂部裝飾線 */
+        .card-line {
+            height: 4px;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .line-health { background-color: #1abc9c; }
+        .line-bva { background-color: #4ade80; }
+        .line-acupl { background-color: #8e44ad; }
+        .line-retire { background-color: #f59e0b; }
+
+        .module-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        .module-title { 
+            color: #fff; 
+            font-size: 22px; 
+            font-weight: bold; 
+            margin-bottom: 10px;
+        }
+        .module-desc { 
+            color: #95a5a6; 
+            font-size: 15px; 
+            flex-grow: 1;
+        }
+        .module-tags {
+            margin-top: 20px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tag {
+            background: rgba(255, 255, 255, 0.1);
+            color: #bdc3c7;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        @media screen and (max-width: 768px) { 
+            .header h1 { font-size: 26px; }
+            .section-title { font-size: 20px; }
+            .grid-container { grid-template-columns: 1fr; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🏛️ IFA 精算與保障規劃系統</h1>
+        <p>高階醫療防禦 ╳ 樂齡意外保障 ╳ 退休與資產現金流規劃</p>
+    </div>
+
+    <div class="category-section">
+        <div class="section-header">
+            <div class="section-title-group">
+                <div class="section-badge-bar"></div>
+                <h2 class="section-title">🛡️ 核心商品與退休戰略模組專區</h2>
+            </div>
+            <span class="section-subtitle">終身醫療 ‧ 樂齡意外 ‧ 保障戰術圖 ‧ 退休帳戶計畫 ‧ 高資產全委</span>
+        </div>
+
+        <div class="grid-container">
+            
+            <!-- 1. WEHS_Ultimate_Cross_v2.html -->
+            <a href="WEHS_Ultimate_Cross_v2.html" class="module-card">
+                <div class="card-line line-health"></div>
+                <div class="module-icon">🛡️</div>
+                <div class="module-title">終身醫療金庫試算器</div>
+                <div class="module-desc">精準對標定期險與終身醫療。內建黃金交叉圖表與高齡自費警示，破解「買定期險就好」的迷思。</div>
+                <div class="module-tags">
+                    <span class="tag">醫療防禦</span>
+                    <span class="tag">WEHS</span>
+                </div>
+            </a>
+
+            <!-- 2. SUPA_Senior_Accident_Module.html -->
+            <a href="SUPA_Senior_Accident_Module.html" class="module-card">
+                <div class="card-line line-health"></div>
+                <div class="module-icon">🦴</div>
+                <div class="module-title">長享平安終身傷害險 (SUPA)</div>
+                <div class="module-desc">50+樂齡專屬終身意外險試算。動態計算90歲前骨折/醫療與100歲前身故失能保障，內建12部位骨折實際賠付金額試算。</div>
+                <div class="module-tags">
+                    <span class="tag">50+樂齡專屬</span>
+                    <span class="tag">骨折實賠試算</span>
+                </div>
+            </a>
+
+            <!-- 3. ACUPL_Tactical_Chart_Module.html -->
+            <a href="ACUPL_Tactical_Chart_Module.html" class="module-card">
+                <div class="card-line line-acupl"></div>
+                <div class="module-icon">📊</div>
+                <div class="module-title">ACUPL 保障戰術圖</div>
+                <div class="module-desc">支援建議書匯入與動態年度推演，視覺化呈現身故保障、解約金、重度癌症提前給付與保費豁免壓力測試。</div>
+                <div class="module-tags">
+                    <span class="tag">ACUPL</span>
+                    <span class="tag">動態戰術圖</span>
+                </div>
+            </a>
+
+            <!-- 4. Retirement_Account_Plan_Module.html -->
+            <a href="Retirement_Account_Plan_Module.html" class="module-card">
+                <div class="card-line line-retire"></div>
+                <div class="module-icon">🏖️</div>
+                <div class="module-title">退休帳戶計畫</div>
+                <div class="module-desc">對標台北、台中、高雄平均月消費與勞保月退天花板，結合建議書匯入試算「勞保＋生存還本金＋增值回饋分享金」三色堆疊月退休金。</div>
+                <div class="module-tags">
+                    <span class="tag">三都月消費</span>
+                    <span class="tag">勞保天花板</span>
+                    <span class="tag">建議書匯入</span>
+                </div>
+            </a>
+
+            <!-- 5. BVA.html -->
+            <a href="BVA.html" class="module-card">
+                <div class="card-line line-bva"></div>
+                <div class="module-icon">📈</div>
+                <div class="module-title">BVA 試算器</div>
+                <div class="module-desc">BVA1.2.3 高資產類全委保單視覺化計算模組，支援建立基礎帳戶、中途贖回、增額投入與加值給付沙盤推演。</div>
+                <div class="module-tags">
+                    <span class="tag">高資產全委</span>
+                    <span class="tag">BVA 1.2 / 3</span>
+                </div>
+            </a>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker 註冊成功'))
+                .catch(err => console.log('Service Worker 註冊失敗', err));
+        });
+    }
+</script>
+</body>
+</html>
