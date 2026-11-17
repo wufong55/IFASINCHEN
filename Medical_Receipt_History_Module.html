@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>實支實付功能與進化史查詢</title>
+    <!-- 引入 PWA 相關設定 -->
+    <link rel="manifest" href="manifest.json">
+    <!-- 針對 iOS Safari 的設定 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="實支查詢">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; color: #333; padding: 20px; line-height: 1.6; margin: 0; }
+        .container { max-width: 1100px; margin: auto; display: flex; flex-wrap: wrap; gap: 25px; align-items: flex-start;}
+        
+        h1 { width: 100%; color: #1a5276; text-align: center; border-bottom: 3px solid #2980b9; padding-bottom: 12px; margin-bottom: 25px; font-size: 28px; font-weight: 800;}
+        
+        .left-panel { flex: 1; min-width: 320px; position: sticky; top: 20px;}
+        .right-panel { flex: 2; min-width: 320px; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+
+        .query-box { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 20px; border-top: 5px solid #2980b9;}
+        .query-box h3 { margin-top: 0; color: #2c3e50; font-size: 20px; margin-bottom: 15px;}
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #34495e; font-size: 15px;}
+        .date-inputs { display: flex; gap: 10px; }
+        .date-inputs input { flex: 1; padding: 12px; border: 1px solid #bdc3c7; border-radius: 6px; font-size: 16px; text-align: center; background-color: #fdfefe;}
+        
+        button.action-btn { background-color: #2980b9; color: #fff; padding: 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 18px; width: 100%; font-weight: bold; transition: 0.3s;}
+        button.action-btn:hover { background-color: #1f618d; }
+
+        .result-card { background: #eafaf1; border: 1px solid #a9dfbf; padding: 20px; border-radius: 8px; display: none; margin-top: 20px; border-left: 6px solid #27ae60;}
+        .result-card h4 { margin-top: 0; color: #1e8449; font-size: 18px; margin-bottom: 10px;}
+        .result-card ul { margin: 0; padding-left: 20px; color: #145a32; font-size: 16px;}
+        .result-card li { margin-bottom: 5px; }
+
+        .calc-card { background: #fef9e7; border: 1px solid #f9e79f; padding: 20px; border-radius: 8px; display: none; margin-top: 20px; border-left: 6px solid #f1c40f;}
+        .calc-card h4 { margin-top: 0; color: #b7950b; font-size: 18px; margin-bottom: 8px;}
+        .calc-value { font-size: 24px; font-weight: bold; color: #d35400; letter-spacing: 1px; margin: 10px 0;}
+        
+        /* 垂直時間軸設計 */
+        .timeline { position: relative; padding-left: 30px; margin-top: 20px;}
+        .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #bdc3c7; border-radius: 2px;}
+        .tl-item { position: relative; margin-bottom: 25px; padding: 18px; background: #f8f9f9; border-radius: 8px; border: 1px solid #e5e8e8; transition: all 0.3s;}
+        .tl-item::before { content: ''; position: absolute; left: -36px; top: 20px; width: 16px; height: 16px; border-radius: 50%; background: #3498db; border: 3px solid #fff; box-shadow: 0 0 0 2px #3498db; transition: all 0.3s;}
+        
+        .tl-item.active { background: #ebf5fb; border-color: #85c1e9; box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2); transform: translateX(5px);}
+        .tl-item.active::before { background: #e74c3c; box-shadow: 0 0 0 3px #e74c3c; border-color: #fff;}
+        
+        .tl-date { font-weight: bold; color: #e67e22; font-size: 18px; margin-bottom: 5px;}
+        .tl-title { font-size: 20px; font-weight: 800; color: #2c3e50; margin-bottom: 10px;}
+        .tl-desc { margin: 0; padding-left: 18px; font-size: 15px; color: #444; }
+        .tl-desc li { margin-bottom: 6px; }
+
+        @media screen and (max-width: 768px) {
+            .left-panel { position: static; }
+        }
+    </style>
+</head>
+<body>
+
+<a href="index.html" style="
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    background-color: #2c3e50;
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 9999;
+    border: 1px solid #34495e;
+">🏠 回首頁</a>
+
+<div class="container">
+    <h1>📋 南山人壽實支實付進化史與功能查詢</h1>
+
+    <div class="left-panel">
+        <!-- 查詢生效日功能 -->
+        <div class="query-box">
+            <h3>🔍 實支實付條款查詢</h3>
+            <div class="form-group">
+                <label>保單生效日期 (民國年/月/日)</label>
+                <div class="date-inputs">
+                    <input type="number" id="q_year" placeholder="年 (例: 106)">
+                    <input type="number" id="q_month" placeholder="月 (1-12)" min="1" max="12">
+                    <input type="number" id="q_day" placeholder="日 (1-31)" min="1" max="31">
+                </div>
+            </div>
+            <button class="action-btn" onclick="queryRules()">查詢當時理賠規則</button>
+            
+            <div id="resultCard" class="result-card"></div>
+        </div>
+
+        <!-- WEHS 啟動日計算器 -->
+        <div class="query-box" style="border-top-color: #f39c12;">
+            <h3>⏱️ WEHS 實支啟動日計算機</h3>
+            <p style="font-size: 14px; color: #7f8c8d; margin-top: -10px;">依據公式：出生日期 + 73年6個月又1天 = 74歲</p>
+            <div class="form-group">
+                <label>客戶出生日期 (民國年/月/日)</label>
+                <div class="date-inputs">
+                    <input type="number" id="b_year" placeholder="年 (例: 70)">
+                    <input type="number" id="b_month" placeholder="月 (1-12)" min="1" max="12">
+                    <input type="number" id="b_day" placeholder="日 (1-31)" min="1" max="31">
+                </div>
+            </div>
+            <button class="action-btn" style="background-color: #f39c12;" onclick="calcActivation()">計算實支啟動日</button>
+            
+            <div id="calcCard" class="calc-card"></div>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <h3 style="margin-top: 0; color: #34495e;">📜 歷史沿革時間軸</h3>
+        <div class="timeline" id="timelineContainer">
+            <!-- Timeline items will be injected here by JS -->
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const timelineData = [
+        { id: "era1", date: "96.09.22 以前", numDate: 960921, title: "早期實支實付 (HSG/HSQ)", rules: ["理賠依當時條款，未特別限制正副本", "最高續保至 74 歲末"] },
+        { id: "era2", date: "96.09.22 起", numDate: 960922, title: "正/副本皆可理賠", rules: ["醫療收據正本或副本，皆可理賠"] },
+        { id: "era3", date: "96.10.23 起", numDate: 961023, title: "依要保書告知決定", rules: ["醫療收據以『要保書』告知為準", "告知「是」👉 副本理賠", "告知「否」👉 正本理賠", "E諮詢理賠"] },
+        { id: "era4", date: "106.01.01 起", numDate: 1060101, title: "NHS 上市", rules: ["含業界限買一張 (南山內規)", "南山要先買，再買友家 (業界多張實支年代)", "須以『正本收據』理賠", "非健保身分就醫給付 65%", "門診手術 1.5萬 / 一年限6次", "健保支付標準 226/227/3343 正式納入條款"] },
+        { id: "era5", date: "106.07.17 起", numDate: 1060717, title: "HSD 上市", rules: ["HSD：自負額型，副本收據理賠", "補實支實付，不能轉換日額", "HSCO 同步上市：A型75-85歲末 / B型76-85歲末"] },
+        { id: "era6", date: "108.11.08 起", numDate: 1081108, title: "實支實付限購三張", rules: ["法規限制：實支實付業界最多三張為限"] },
+        { id: "era7", date: "109.08.17 起", numDate: 1090817, title: "HSCO 小福系列上市", rules: ["部分負擔機制：A1/B1(80:20), A2/B2(70:30), A3/B3(60:40)", "須以『正本收據』理賠"] },
+        { id: "era8", date: "110.09.12 起", numDate: 1100912, title: "1HS / 1HSD 上市", rules: ["1HS 正本理賠 / 1HSD 副本理賠 / 1HSCO 正本理賠", "採自然費率", "非健保身份就醫給付 70%", "特定手術關懷金 (5項/限1HSD)"] },
+        { id: "era9", date: "113.07.01 起", numDate: 1130701, title: "損害填補原則實施", rules: ["實行『損害填補原則』", "1HSD 改為『正本理賠』，同時簽署『特別提醒事項聲明書』", "113.08.24：實支實付投保規範 (例: HS-7+1HSD-B/C/D)", "114.06.21：南山+業界 投保規範"] },
+        { id: "era10", date: "115.03.27 起", numDate: 1150327, title: "WEHS 終身實支上市", rules: ["WEHS終身型實支，每人限購一張", "實支啟動年齡：74歲", "正本收據理賠", "只能降保額，不能提高保額", "搭配 1HSCO4C 批註條款暨更約權 (限115.03.27前生效之HSCO/1HSCO)", "核保體況要求 B~E 級"] }
+    ];
+
+    function renderTimeline() {
+        const container = document.getElementById('timelineContainer');
+        container.innerHTML = '';
+        timelineData.forEach(data => {
+            let html = `<div class="tl-item" id="${data.id}">
+                            <div class="tl-date">${data.date}</div>
+                            <div class="tl-title">${data.title}</div>
+                            <ul class="tl-desc">`;
+            data.rules.forEach(rule => {
+                html += `<li>${rule}</li>`;
+            });
+            html += `</ul></div>`;
+            container.innerHTML += html;
+        });
+    }
+
+    function queryRules() {
+        let y = parseInt(document.getElementById('q_year').value);
+        let m = parseInt(document.getElementById('q_month').value);
+        let d = parseInt(document.getElementById('q_day').value);
+
+        if (!y || !m || !d) {
+            alert('請完整輸入年月日的數字');
+            return;
+        }
+
+        let numDate = y * 10000 + m * 100 + d;
+        let matchedEra = timelineData[0]; // default to earliest
+
+        for (let i = 0; i < timelineData.length; i++) {
+            if (numDate >= timelineData[i].numDate) {
+                matchedEra = timelineData[i];
+            } else {
+                break;
+            }
+        }
+
+        // Highlight timeline
+        document.querySelectorAll('.tl-item').forEach(item => item.classList.remove('active'));
+        let targetEl = document.getElementById(matchedEra.id);
+        if(targetEl) {
+            targetEl.classList.add('active');
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Show result card
+        let card = document.getElementById('resultCard');
+        let html = `<h4>✅ 適用時期：${matchedEra.title}</h4><ul>`;
+        matchedEra.rules.forEach(r => html += `<li>${r}</li>`);
+        html += `</ul>`;
+        
+        // Add special regulatory notices if applicable
+        if (numDate < 1081108) {
+            html += `<div style="margin-top:10px; font-size:14px; color:#c0392b;">⚠️ 注意：雖本保單生效於早期，但 108.11.08 起法規已限制每人實支實付最多 3 張。</div>`;
+        }
+        if (numDate < 1130701 && matchedEra.id === "era8") { 
+            html += `<div style="margin-top:10px; font-size:14px; color:#c0392b;">⚠️ 重大變更：113.07.01 起實施損害填補原則，1HSD 改為『正本理賠』。</div>`;
+        }
+
+        card.innerHTML = html;
+        card.style.display = 'block';
+    }
+
+    function calcActivation() {
+        let y = parseInt(document.getElementById('b_year').value);
+        let m = parseInt(document.getElementById('b_month').value);
+        let d = parseInt(document.getElementById('b_day').value);
+
+        if (!y || !m || !d) {
+            alert('請完整輸入年月日的數字');
+            return;
+        }
+
+        // 邏輯：出生日期 + 73年 6個月 1天
+        // 將西元年轉換：民國年 + 1911
+        let birthDate = new Date(y + 1911, m - 1, d);
+        
+        // 加上 73 年
+        let targetYear = birthDate.getFullYear() + 73;
+        // 加上 6 個月
+        let targetMonth = birthDate.getMonth() + 6; 
+        // 加上 1 天
+        let targetDay = birthDate.getDate() + 1;
+
+        let activationDate = new Date(targetYear, targetMonth, targetDay);
+        
+        // 轉回民國年
+        let a_y = activationDate.getFullYear() - 1911;
+        let a_m = activationDate.getMonth() + 1;
+        let a_d = activationDate.getDate();
+
+        let card = document.getElementById('calcCard');
+        card.innerHTML = `<h4>🎯 您的 WEHS 實支啟動日為：</h4>
+                          <div class="calc-value">民國 ${a_y} 年 ${a_m} 月 ${a_d} 日</div>
+                          <p style="font-size:14px; color:#7f8c8d; margin:0;">(保險年齡達 74 歲之日)</p>`;
+        card.style.display = 'block';
+    }
+
+    window.onload = function() {
+        renderTimeline();
+    };
+</script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker 註冊成功'))
+                .catch(err => console.log('Service Worker 註冊失敗', err));
+        });
+    }
+</script>
+</body>
+</html>
