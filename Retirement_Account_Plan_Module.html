@@ -25,10 +25,10 @@
         :root {
             --bg-dark: #0f172a;
             --bg-card: #ffffff;
-            --bg-page: #f1f5f9;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
+            --bg-page: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #1e293b;
+            --border-color: #cbd5e1;
 
             /* 退休金三層組成專屬色彩 */
             --color-labor: #3b82f6;       /* 勞保月退休金：穩健藍 */
@@ -128,15 +128,15 @@
         }
 
         .step-pill {
-            padding: 6px 16px;
+            padding: 7px 18px;
             border-radius: 20px;
-            font-size: 0.88rem;
-            font-weight: 700;
+            font-size: 0.96rem;
+            font-weight: 800;
             cursor: pointer;
             transition: all 0.25s;
-            background: rgba(255, 255, 255, 0.08);
-            color: #94a3b8;
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.15);
+            color: #f1f5f9;
+            border: 1px solid rgba(255, 255, 255, 0.25);
         }
 
         .step-pill.active {
@@ -206,15 +206,18 @@
 
         .card-title {
             margin: 0;
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             font-weight: 800;
             color: #0f172a;
+            letter-spacing: -0.3px;
         }
 
         .card-subtitle {
-            font-size: 0.88rem;
-            color: var(--text-muted);
-            margin-top: 2px;
+            font-size: 1.02rem;
+            color: #1e293b;
+            font-weight: 600;
+            line-height: 1.55;
+            margin-top: 4px;
         }
 
         /* 第一頁：雙欄圖表佈局 */
@@ -250,9 +253,9 @@
         }
 
         .city-edit-item label {
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: #475569;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #0f172a;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -285,9 +288,9 @@
         .input-with-unit .unit {
             position: absolute;
             right: 10px;
-            font-size: 0.8rem;
-            color: #64748b;
-            font-weight: 600;
+            font-size: 0.92rem;
+            color: #0f172a;
+            font-weight: 800;
             pointer-events: none;
         }
 
@@ -444,10 +447,10 @@
 
         .config-field label {
             display: block;
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: #475569;
-            margin-bottom: 5px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 6px;
         }
 
         .config-field input, .config-field select {
@@ -597,8 +600,9 @@
         }
 
         .city-check-sub {
-            font-size: 0.75rem;
-            color: #64748b;
+            font-size: 0.92rem;
+            color: #1e293b;
+            font-weight: 700;
         }
 
         /* 退休金三支柱設定與顏色圖例卡 */
@@ -658,9 +662,10 @@
         }
 
         .pillar-sub-note {
-            font-size: 0.76rem;
-            color: #64748b;
-            min-height: 20px;
+            font-size: 0.92rem;
+            color: #1e293b;
+            font-weight: 700;
+            min-height: 22px;
             display: flex;
             align-items: center;
         }
@@ -675,13 +680,14 @@
         }
 
         .age-toggle-btn {
-            border: none;
-            background: transparent;
-            color: #475569;
-            font-size: 0.75rem;
+            border: 1.5px solid #cbd5e1;
+            background: #ffffff;
+            color: #0f172a;
+            font-size: 0.9rem;
             font-weight: 800;
-            padding: 3px 8px;
+            padding: 4px 12px;
             cursor: pointer;
+            border-radius: 14px;
             transition: all 0.2s;
         }
 
@@ -770,9 +776,9 @@
         }
 
         .kpi-label {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: #64748b;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #0f172a;
             margin-bottom: 6px;
             white-space: nowrap;
         }
@@ -1059,13 +1065,13 @@
         }
 
         .travel-person-btn {
-            background: none;
-            border: none;
-            padding: 4px 12px;
-            border-radius: 14px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: #64748b;
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: #0f172a;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -1108,20 +1114,20 @@
         }
 
         .tm-title {
-            font-size: 0.86rem;
+            font-size: 1.05rem;
             font-weight: 800;
-            color: #334155;
+            color: #0f172a;
         }
 
         .tm-badge {
-            font-size: 0.72rem;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 12px;
         }
 
         .tm-val-twd {
-            font-size: 1.55rem;
+            font-size: 1.75rem;
             font-weight: 900;
             color: #0f172a;
             letter-spacing: -0.5px;
@@ -1131,9 +1137,9 @@
         }
 
         .tm-val-orig {
-            font-size: 0.78rem;
-            color: #64748b;
-            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1e293b;
+            font-weight: 700;
             font-variant-numeric: tabular-nums;
         }
 
@@ -1143,11 +1149,11 @@
             align-items: center;
             justify-content: space-between;
             background: #ffffff;
-            border: 1px solid #bae6fd;
-            border-radius: 12px;
-            padding: 14px 20px;
+            border: 2px solid #bae6fd;
+            border-radius: 14px;
+            padding: 16px 22px;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 14px;
             box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08);
         }
 
@@ -1157,59 +1163,59 @@
         }
 
         .tb-label {
-            font-size: 0.75rem;
-            color: #64748b;
-            font-weight: 700;
-            margin-bottom: 2px;
+            font-size: 0.92rem;
+            color: #0f172a;
+            font-weight: 800;
+            margin-bottom: 3px;
         }
 
         .tb-val {
-            font-size: 1.35rem;
+            font-size: 1.55rem;
             font-weight: 900;
             color: #0f172a;
             font-variant-numeric: tabular-nums;
         }
 
         .tb-divider {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: #94a3b8;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #0f172a;
         }
 
         .tb-item.progress-box {
-            min-width: 200px;
+            min-width: 220px;
             flex: 1;
         }
 
         .tb-progress-bg {
-            background: #e2e8f0;
-            height: 10px;
-            border-radius: 5px;
+            background: #cbd5e1;
+            height: 12px;
+            border-radius: 6px;
             overflow: hidden;
         }
 
         .tb-progress-bar {
             height: 100%;
             background: linear-gradient(90deg, #10b981 0%, #059669 100%);
-            border-radius: 5px;
+            border-radius: 6px;
             transition: width 0.3s ease;
         }
 
         /* 目的地卡片網格 */
         .travel-filter-tabs {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .t-filter-btn {
             background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            padding: 5px 12px;
-            border-radius: 16px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: #475569;
+            border: 1.5px solid #94a3b8;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: #0f172a;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -1227,36 +1233,37 @@
 
         .travel-destinations-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
+            gap: 18px;
         }
 
         .travel-card {
             background: #fff;
             border-radius: 14px;
-            border: 2px solid #e2e8f0;
-            padding: 16px;
+            border: 2px solid #cbd5e1;
+            padding: 18px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             transition: all 0.25s ease;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
         }
 
         .travel-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
         }
 
         .travel-card.affordable {
-            border-color: #86efac;
-            background: linear-gradient(to bottom, #f0fdf4 0%, #ffffff 100%);
+            border-color: #34d399;
+            background: linear-gradient(to bottom, #ecfdf5 0%, #ffffff 40%);
         }
 
         .travel-card.selected {
             border-color: #f59e0b;
-            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+            box-shadow: 0 0 0 2.5px #f59e0b, 0 8px 20px rgba(245, 158, 11, 0.18);
         }
 
         .tc-header {
@@ -1274,46 +1281,47 @@
         }
 
         .tc-flag {
-            font-size: 1.8rem;
+            font-size: 2rem;
             line-height: 1;
         }
 
         .tc-name {
-            font-size: 1.02rem;
+            font-size: 1.15rem;
             font-weight: 800;
             color: #0f172a;
             line-height: 1.25;
         }
 
         .tc-country {
-            font-size: 0.76rem;
-            color: #64748b;
-            font-weight: 600;
+            font-size: 0.92rem;
+            color: #1e293b;
+            font-weight: 700;
         }
 
         .tc-badge-tier {
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: 800;
-            padding: 2px 7px;
+            padding: 3px 8px;
             border-radius: 6px;
             white-space: nowrap;
         }
 
         .tc-desc {
-            font-size: 0.8rem;
-            color: #475569;
-            line-height: 1.45;
+            font-size: 0.95rem;
+            color: #0f172a;
+            line-height: 1.5;
             margin-bottom: 12px;
             flex: 1;
+            font-weight: 500;
         }
 
         .tc-highlight-tag {
             display: inline-block;
-            background: #f1f5f9;
-            color: #334155;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.72rem;
+            background: #e2e8f0;
+            color: #0f172a;
+            padding: 3px 9px;
+            border-radius: 5px;
+            font-size: 0.85rem;
             font-weight: 700;
             margin-bottom: 12px;
         }
@@ -1322,28 +1330,28 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            border-top: 1px dashed #e2e8f0;
+            border-top: 1.5px dashed #cbd5e1;
             padding-top: 10px;
             margin-bottom: 12px;
         }
 
         .tc-price-label {
-            font-size: 0.75rem;
-            color: #64748b;
-            font-weight: 700;
+            font-size: 0.92rem;
+            color: #0f172a;
+            font-weight: 800;
         }
 
         .tc-price-val {
-            font-size: 1.22rem;
+            font-size: 1.35rem;
             font-weight: 900;
             color: #0f172a;
             font-variant-numeric: tabular-nums;
         }
 
         .tc-times-badge {
-            font-size: 0.78rem;
+            font-size: 0.88rem;
             font-weight: 800;
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 8px;
             display: inline-flex;
             align-items: center;
@@ -1352,15 +1360,15 @@
 
         .tc-action-btn {
             width: 100%;
-            padding: 8px 12px;
+            padding: 10px 14px;
             border-radius: 8px;
-            font-size: 0.84rem;
+            font-size: 0.95rem;
             font-weight: 800;
             cursor: pointer;
             transition: all 0.2s;
-            border: 1px solid #cbd5e1;
+            border: 1.5px solid #cbd5e1;
             background: #f8fafc;
-            color: #334155;
+            color: #0f172a;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1368,8 +1376,8 @@
         }
 
         .tc-action-btn:hover {
-            background: #f1f5f9;
-            border-color: #94a3b8;
+            background: #e2e8f0;
+            border-color: #64748b;
         }
 
         .tc-action-btn.selected {
@@ -1381,36 +1389,39 @@
         /* 退休圓夢四格看板 */
         .travel-lifetime-stat-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 12px;
             margin-bottom: 12px;
         }
 
         .tls-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 12px;
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 14px 12px;
             text-align: center;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
         }
 
         .tls-title {
-            font-size: 0.75rem;
-            color: #64748b;
-            font-weight: 700;
-            margin-bottom: 4px;
+            font-size: 1.02rem;
+            color: #0f172a;
+            font-weight: 800;
+            margin-bottom: 6px;
         }
 
         .tls-num {
-            font-size: 1.25rem;
+            font-size: 1.65rem;
             font-weight: 900;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
             font-variant-numeric: tabular-nums;
         }
 
         .tls-sub {
-            font-size: 0.68rem;
-            color: #94a3b8;
+            font-size: 0.92rem;
+            color: #1e293b;
+            font-weight: 700;
+            line-height: 1.45;
         }
 
         /* 已選行程膠囊 */
@@ -1420,10 +1431,12 @@
             gap: 6px;
             background: #e0f2fe;
             color: #0369a1;
-            padding: 4px 10px;
-            border-radius: 14px;
-            font-size: 0.78rem;
-            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
             border: 1px solid #bae6fd;
         }
 
@@ -1432,6 +1445,8 @@
             color: #0284c7;
             font-weight: 900;
             margin-left: 2px;
+            font-size: 1rem;
+            line-height: 1;
         }
 
         .selected-trip-remove:hover {
@@ -1567,7 +1582,7 @@
                 <div class="dropzone-box" id="dropzoneBox">
                     <div style="font-size: 2.6rem;">📥</div>
                     <div style="font-size: 1.1rem; font-weight: 800; color: #0f172a;">匯入保單建議書 (PDF) 或載入退休還本範本</div>
-                    <div style="font-size: 0.86rem; color: #64748b; max-width: 460px;">
+                    <div style="font-size: 1.05rem; color: #0f172a; font-weight: 600; max-width: 520px;">
                         系統將自動辨識建議書表格中之<strong>「生存還本保險金」</strong>與<strong>「增值回饋分享金」</strong>，並於下一頁自動換算為每月退休現金流。
                     </div>
 
@@ -1593,7 +1608,7 @@
                             <span>📊 建議書數據摘要與幣別匯率</span>
                             <span id="dataSourceBadge" style="background: #e0e7ff; color: #3730a3; padding: 3px 10px; border-radius: 12px; font-size: 0.76rem; font-weight: 800;">📌 來源：內建退休範本（匯入 PDF 後自動以 PDF 為準）</span>
                         </div>
-                        <div style="font-size: 0.78rem; color: #64748b; margin-bottom: 12px;">
+                        <div style="font-size: 0.95rem; color: #0f172a; font-weight: 800; margin-bottom: 12px;">
                             💡 <strong>無須手動填寫：</strong>匯入 PDF 建議書後，系統會<strong>直接採用 PDF 內的歷年明細</strong>（不會被下方欄位覆蓋）；下方欄位僅供「未帶 PDF 時快速模擬」或「調整美元匯率」使用。
                         </div>
 
@@ -1613,7 +1628,7 @@
                                 <label>投保年齡 / 預計退休年齡</label>
                                 <div style="display: flex; gap: 6px; align-items: center;">
                                     <input type="number" id="startAgeInput" value="55" min="15" max="80" title="投保年齡" oninput="onProposalParamChange()">
-                                    <span style="font-weight: 700; color: #64748b;">→</span>
+                                    <span style="font-weight: 800; color: #0f172a;">→</span>
                                     <input type="number" id="retireAgeInput" value="65" min="50" max="95" title="退休開始領取年齡" oninput="onProposalParamChange()">
                                 </div>
                             </div>
@@ -1653,7 +1668,7 @@
                     <div style="font-size: 0.98rem; font-weight: 800; color: #0f172a; margin-bottom: 4px;">
                         🎯 規劃數據已備妥！請選擇您要與客戶展開互動的試算功能磚：
                     </div>
-                    <div style="font-size: 0.82rem; color: #64748b;">
+                    <div style="font-size: 0.95rem; color: #1e293b; font-weight: 600;">
                         💡 兩大模組隨時可自由互相切換，數據全自動同步連動，無須重新設定。
                     </div>
                 </div>
@@ -1776,7 +1791,7 @@
                                         <button type="button" class="age-toggle-btn active" id="p2BtnAge65" onclick="setLaborStartAge(65)">65歲</button>
                                     </div>
                                     <input type="number" id="p2LaborStartAgeInput" value="65" min="50" max="80" title="自訂勞保開始顯示年齡" oninput="setLaborStartAge(this.value)" style="width: 48px; padding: 2px 4px; border: 1px solid #93c5fd; border-radius: 4px; font-size: 0.78rem; font-weight: 800; text-align: center; color: #1e3a8a;">
-                                    <span style="font-size: 0.72rem; color: #64748b;">歲</span>
+                                    <span style="font-size: 0.92rem; color: #0f172a; font-weight: 800;">歲</span>
                                 </div>
                             </div>
                         </div>
@@ -1830,17 +1845,17 @@
                 <div class="kpi-box" style="border-bottom: 4px solid var(--color-labor);">
                     <div class="kpi-label">🟦 勞保月退休金</div>
                     <div class="kpi-val" style="color: var(--color-labor);" id="kpiLabor">$28,396</div>
-                    <div class="kpi-sub" id="kpiLaborPct" style="color: #64748b;">佔總額 62.5%</div>
+                    <div class="kpi-sub" id="kpiLaborPct" style="color: #0f172a; font-weight: 800; font-size: 0.95rem;">佔總額 62.5%</div>
                 </div>
                 <div class="kpi-box" style="border-bottom: 4px solid var(--color-survival);">
                     <div class="kpi-label">🟩 建議書生存還本 (月)</div>
                     <div class="kpi-val" style="color: var(--color-survival);" id="kpiSurvival">$10,000</div>
-                    <div class="kpi-sub" id="kpiSurvivalPct" style="color: #64748b;">佔總額 22.0%</div>
+                    <div class="kpi-sub" id="kpiSurvivalPct" style="color: #0f172a; font-weight: 800; font-size: 0.95rem;">佔總額 22.0%</div>
                 </div>
                 <div class="kpi-box" style="border-bottom: 4px solid var(--color-dividend);">
                     <div class="kpi-label">🟧 增值回饋分享金 (月)</div>
                     <div class="kpi-val" style="color: var(--color-dividend);" id="kpiDividend">$7,000</div>
-                    <div class="kpi-sub" id="kpiDividendPct" style="color: #64748b;">佔總額 15.4%</div>
+                    <div class="kpi-sub" id="kpiDividendPct" style="color: #0f172a; font-weight: 800; font-size: 0.95rem;">佔總額 15.4%</div>
                 </div>
                 <div class="kpi-box total-highlight">
                     <div class="kpi-label">👑 每月退休金總額</div>
@@ -1870,7 +1885,7 @@
                         <button type="button" class="btn-step-yr" onclick="stepYear(1)">+1年 ▶</button>
                     </div>
 
-                    <div style="font-size: 0.85rem; color: #475569; font-weight: 700;">
+                    <div style="font-size: 1.02rem; color: #0f172a; font-weight: 800;">
                         💡 拖曳滑桿可檢視不同年齡之「勞保＋生存還本＋增值回饋」月退休金堆疊變化
                     </div>
                 </div>
@@ -1884,7 +1899,7 @@
                             </div>
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <span class="source-status-badge" id="page2SourceBadge">📌 目前資料來源：內建退休範本</span>
-                                <span style="font-size: 0.8rem; color: #64748b;">單位：新臺幣 (元 / 月)</span>
+                                <span style="font-size: 0.92rem; color: #0f172a; font-weight: 800;">單位：新臺幣 (元 / 月)</span>
                             </div>
                         </div>
                         <div class="main-stack-chart-wrap">
@@ -1933,7 +1948,7 @@
                     </div>
                 </div>
 
-                <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #f1f5f9; font-size: 0.78rem; color: #94a3b8; text-align: center;">
+                <div style="margin-top: 16px; padding-top: 12px; border-top: 1.5px solid #cbd5e1; font-size: 0.92rem; color: #1e293b; font-weight: 600; line-height: 1.6; text-align: center;">
                     ※ 本試算圖表僅供退休財務規劃參考。勞保老年年金金額依實際投保薪資與年資計算；保單之「生存還本金」依保單條款約定給付，「增值回饋分享金」係假設宣告利率維持不變之試算值，非保證給付項目。
                 </div>
 
@@ -1970,7 +1985,7 @@
                                 ✈️ 每年領取金額 ✕ 出國旅遊各國旅費試算
                             </h2>
                         </div>
-                        <div style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">
+                        <div style="font-size: 1.05rem; color: #0f172a; font-weight: 600; margin-top: 4px;">
                             將建議書每年產生的「保證生存還本金 (C+D)」與「增值回饋分享金 (A@)」轉化為全球出國旅遊圓夢基金！
                         </div>
                     </div>
@@ -1984,7 +1999,7 @@
                         </span>
                         <!-- 出遊人數切換：單人 / 雙人 -->
                         <div class="travel-person-pill-group">
-                            <span style="font-size: 0.82rem; font-weight: 700; color: #475569;">出遊模式：</span>
+                            <span style="font-size: 0.95rem; font-weight: 800; color: #0f172a;">出遊模式：</span>
                             <button type="button" class="travel-person-btn active" id="btnPerson1" onclick="setTravelPersonCount(1)">👤 單人自由行</button>
                             <button type="button" class="travel-person-btn" id="btnPerson2" onclick="setTravelPersonCount(2)">👥 雙人同行 (攜伴)</button>
                         </div>
@@ -2055,7 +2070,7 @@
             </div>
 
             <!-- 互動面板：年度自選旅遊計畫 (Bucket List Planner) -->
-            <div class="section-card" style="padding: 20px 24px; margin-bottom: 20px; border: 2px solid #38bdf8; background: linear-gradient(to bottom, #f0f9ff 0%, #ffffff 100%);">
+            <div class="section-card no-export-travel" id="travelBucketPlannerCard" style="padding: 20px 24px; margin-bottom: 20px; border: 2px solid #38bdf8; background: linear-gradient(to bottom, #f0f9ff 0%, #ffffff 100%);">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
                     <div>
                         <div style="display: flex; align-items: center; gap: 8px;">
@@ -2091,7 +2106,7 @@
                         <span class="tb-val" id="tbBalanceTotal" style="color: #059669;">+$292,403</span>
                     </div>
                     <div class="tb-item progress-box">
-                        <div style="display: flex; justify-content: space-between; font-size: 0.76rem; font-weight: 700; color: #475569; margin-bottom: 4px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.92rem; font-weight: 800; color: #0f172a; margin-bottom: 4px;">
                             <span>保單旅費覆蓋率</span>
                             <span id="tbCoverageRate" style="color: #059669; font-weight: 800;">100% 全額達標</span>
                         </div>
@@ -2108,7 +2123,7 @@
             </div>
 
             <!-- 全球熱門目的地對應矩陣 (4 大等級區塊) -->
-            <div class="section-card" style="padding: 22px 24px; margin-bottom: 20px;">
+            <div class="section-card no-export-travel" id="travelDestinationsCard" style="padding: 22px 24px; margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px;">
                     <div>
                         <div style="display: flex; align-items: center; gap: 8px;">
@@ -2117,7 +2132,7 @@
                                 全球熱門出國旅遊行程 ✕ 旅費預算對應矩陣
                             </h3>
                         </div>
-                        <div style="font-size: 0.82rem; color: #64748b; margin-top: 3px;">
+                        <div style="font-size: 1.02rem; color: #0f172a; font-weight: 600; margin-top: 3px;">
                             綠色邊框卡片代表「本年度保單領取金足夠全額支付」；標示次數代表以整年領取金可成行的出國趟數！
                         </div>
                     </div>
@@ -2138,9 +2153,9 @@
             </div>
 
             <!-- 圖表區：歷年旅遊基金走勢 ＋ 退休出國圓夢累計統計 -->
-            <div class="charts-two-col" style="margin-bottom: 20px;">
+            <div class="charts-two-col" id="travelChartsRow" style="margin-bottom: 20px;">
                 <!-- 圖表 1：歷年出國旅遊基金走勢圖 (Stacked Bar) -->
-                <div class="section-card" style="margin-bottom: 0;">
+                <div class="section-card no-export-travel" id="travelChart3Card" style="margin-bottom: 0;">
                     <div class="card-header-row">
                         <div>
                             <div class="card-title-group">
@@ -2164,39 +2179,44 @@
                 </div>
 
                 <!-- 圖表 2：退休圓夢累計統計看板與夢想比例圖 -->
-                <div class="section-card" style="margin-bottom: 0;">
-                    <div class="card-header-row">
+                <div class="section-card" id="travelMilestoneCard" style="margin-bottom: 0;">
+                    <div class="card-header-row" style="align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
                         <div>
                             <div class="card-title-group">
                                 <span class="step-badge" style="background: #6366f1; color: #fff;">MILESTONE</span>
-                                <h3 class="card-title">🌍 退休 20 年出國圓夢累計成果</h3>
+                                <h3 class="card-title" id="tlsCardTitle">🌍 退休 20 年出國圓夢累計成果</h3>
                             </div>
                             <div class="card-subtitle" id="tlsCardSubtitle">
-                                試算 65 歲至 85 歲期間，由保單提供之累計出國旅遊圓夢基金（※ <strong>ARUE 樂享百歲</strong>為定期給付型，逐年給付還本金與增值收益，<strong>領到最後本金會隨年度領完</strong>，將資產在百歲前充分發揮出國旅遊與退休生活價值）
+                                試算 65 歲至 84 歲期間 (共 20 年)，由保單提供之累計出國旅遊圓夢基金
                             </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 0.92rem; font-weight: 800; color: #0f172a;">退休起算：</span>
+                            <button type="button" class="age-toggle-btn" id="p3BtnAge60" onclick="setLaborStartAge(60)" style="padding: 6px 14px; font-size: 0.9rem; font-weight: 800;">60歲退休</button>
+                            <button type="button" class="age-toggle-btn active" id="p3BtnAge65" onclick="setLaborStartAge(65)" style="padding: 6px 14px; font-size: 0.9rem; font-weight: 800;">65歲退休</button>
                         </div>
                     </div>
                     <!-- 統計看板四格 -->
                     <div class="travel-lifetime-stat-grid">
                         <div class="tls-card">
-                            <div class="tls-title">20 年累計出國旅遊基金</div>
+                            <div class="tls-title" id="tlsTotalTitle">20 年累計出國旅遊基金</div>
                             <div class="tls-num" id="tlsTotalFund" style="color: #4338ca;">$5,848,000</div>
                             <div class="tls-sub" id="tlsSubPrincipal">定期逐年本利給付・<strong>領到最後本金領完</strong> (百歲前充分圓夢)</div>
                         </div>
                         <div class="tls-card">
                             <div class="tls-title">可兌換日本 / 關西之旅</div>
                             <div class="tls-num" id="tlsJapanTrips" style="color: #0284c7;">100 趟</div>
-                            <div class="tls-sub">相當於每年可出國暢遊 5 趟</div>
+                            <div class="tls-sub" id="tlsJapanSub">平均每年可出國暢遊 5.0 趟</div>
                         </div>
                         <div class="tls-card">
                             <div class="tls-title">可兌換德瑞 / 奧捷歐美遊</div>
                             <div class="tls-num" id="tlsEuropeTrips" style="color: #0d9488;">43 趟</div>
-                            <div class="tls-sub">相當於每年可飛 2 趟長程深度遊</div>
+                            <div class="tls-sub" id="tlsEuropeSub">平均每年可飛 2.1 趟長程深度遊</div>
                         </div>
                         <div class="tls-card">
                             <div class="tls-title">可兌換極光 / 瑞士名峰</div>
                             <div class="tls-num" id="tlsAuroraTrips" style="color: #b45309;">28 趟</div>
-                            <div class="tls-sub">一輩子必去的頂級圓夢之旅</div>
+                            <div class="tls-sub" id="tlsAuroraSub">20 年黃金期共可圓夢 28 趟頂級之旅</div>
                         </div>
                     </div>
 
@@ -2209,7 +2229,7 @@
 
             <!-- 底部操作按鈕與免責聲明 -->
             <div class="section-card" style="padding: 18px 24px; margin-bottom: 0;">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div class="no-export-travel" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                     <button type="button" class="btn-step-yr" onclick="switchPage(2)" style="font-size: 0.9rem; padding: 10px 20px;">
                         ⬅ 返回 STEP 2 月退休金試算
                     </button>
@@ -2222,7 +2242,7 @@
                         </button>
                     </div>
                 </div>
-                <div style="margin-top: 14px; font-size: 0.78rem; color: #94a3b8; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 10px;">
+                <div style="margin-top: 14px; font-size: 0.92rem; color: #1e293b; font-weight: 600; text-align: center; border-top: 1.5px solid #cbd5e1; padding-top: 12px;">
                     ※ 旅費數據為各國代表性團體與自由行市場參考均價，包含主要機票、住宿、熱門門票與部分餐食，實際支出將依出發淡旺季、匯率浮動與個人消費習慣而異。保單各年度領取金額依保單條款約定給付與實際宣告利率為準。
                 </div>
             </div>
@@ -2237,9 +2257,9 @@
         <div class="modal-header">
             <div>
                 <h3 style="margin: 0; font-size: 1.15rem; color: #0f172a;">📋 建議書歷年「生存還本金 (C、D)」與「增值回饋分享金 (A@)」明細表</h3>
-                <div style="font-size: 0.8rem; color: #64748b;">增值回饋分享金僅列入建議書上尾巴帶有「@」（現金給付）之金額；生存還本金對應建議書 (C) 基本保額與 (D) 增額繳清欄位</div>
+                <div style="font-size: 0.95rem; color: #0f172a; font-weight: 600;">增值回饋分享金僅列入建議書上尾巴帶有「@」（現金給付）之金額；生存還本金對應建議書 (C) 基本保額與 (D) 增額繳清欄位</div>
             </div>
-            <button type="button" onclick="closeModal()" style="background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #64748b;">✕</button>
+            <button type="button" onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #0f172a; font-weight: 900;">✕</button>
         </div>
         <div class="modal-body">
             <table class="data-table">
@@ -3333,7 +3353,7 @@
         updatePage2();
     }
 
-    // 設定勞保退休金開始請領/顯示年齡 (支援 60 歲、65 歲快速切換或自訂年齡)
+    // 設定勞保退休金開始請領/顯示年齡 (支援 60 歲、65 歲快速切換或自訂年齡，並連動第3頁20年出國圓夢成果)
     function setLaborStartAge(ageVal) {
         const parsed = parseInt(ageVal);
         if (isNaN(parsed) || parsed < 50 || parsed > 85) return;
@@ -3344,16 +3364,18 @@
             inputEl.value = parsed;
         }
 
-        ['p1BtnAge60', 'p2BtnAge60'].forEach(id => {
+        ['p1BtnAge60', 'p2BtnAge60', 'p3BtnAge60'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.classList.toggle('active', parsed === 60);
         });
-        ['p1BtnAge65', 'p2BtnAge65'].forEach(id => {
+        ['p1BtnAge65', 'p2BtnAge65', 'p3BtnAge65'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.classList.toggle('active', parsed === 65);
         });
 
         updatePage2();
+        if (typeof updatePage3 === 'function') updatePage3();
+        if (typeof renderPage3Charts === 'function') renderPage3Charts();
     }
 
     // 勾選/取消「最差狀況：宣告利率為 0% (拿掉增值回饋分享金)」壓力測試
@@ -3474,7 +3496,7 @@
         if (includeDividend) {
             divDisplayEl.innerHTML = `$${rawDividendMonthly.toLocaleString()} /月`;
         } else {
-            divDisplayEl.innerHTML = `<span style="text-decoration: line-through; color: #94a3b8; font-size: 0.95rem;">$${rawDividendMonthly.toLocaleString()}</span> <span style="color: #dc2626;">$0 /月</span>`;
+            divDisplayEl.innerHTML = `<span style="text-decoration: line-through; color: #ef4444; font-weight: 700; font-size: 0.95rem;">$${rawDividendMonthly.toLocaleString()}</span> <span style="color: #dc2626; font-weight: 800;">$0 /月</span>`;
         }
 
         const cVal = (currRow.survivalC !== undefined) ? currRow.survivalC : currRow.survivalAnnual;
@@ -3877,7 +3899,7 @@
                 <td style="font-weight: 800; color: #065f46;">${cdSum.toLocaleString()}</td>
                 <td>
                     <input type="number" id="m_div_${i}" value="${row.dividendAnnual}" style="width: 85px;">
-                    <div style="font-size: 0.7rem; color: ${row.dividendAnnual > 0 ? '#b45309' : '#94a3b8'};">${row.rawDivStr || ''}</div>
+                    <div style="font-size: 0.85rem; font-weight: 700; color: ${row.dividendAnnual > 0 ? '#b45309' : '#0f172a'};">${row.rawDivStr || ''}</div>
                 </td>
                 <td style="color: var(--color-survival); font-weight: 700;">$${mSurv.toLocaleString()} /月</td>
                 <td style="color: var(--color-dividend); font-weight: 700;">$${mDiv.toLocaleString()} /月</td>
@@ -4151,7 +4173,7 @@
             const card = document.createElement('div');
             card.className = `travel-card ${isAffordable ? 'affordable' : ''} ${isSelected ? 'selected' : ''}`;
 
-            let tierColorBg = '#f1f5f9', tierColorText = '#475569';
+            let tierColorBg = '#e2e8f0', tierColorText = '#0f172a';
             if (dest.tier === 'tier1') { tierColorBg = '#ecfdf5'; tierColorText = '#065f46'; }
             else if (dest.tier === 'tier2') { tierColorBg = '#e0f2fe'; tierColorText = '#0369a1'; }
             else if (dest.tier === 'tier3') { tierColorBg = '#e0e7ff'; tierColorText = '#3730a3'; }
@@ -4159,7 +4181,7 @@
 
             let timesHtml = '';
             if (totalTwd === 0) {
-                timesHtml = `<span class="tc-times-badge" style="background: #f1f5f9; color: #64748b;">尚未開始領取</span>`;
+                timesHtml = `<span class="tc-times-badge" style="background: #e2e8f0; color: #0f172a; font-weight: 800;">尚未開始領取</span>`;
             } else if (isAffordable) {
                 if (times >= 2) {
                     timesHtml = `<span class="tc-times-badge" style="background: #dcfce7; color: #15803d;">✈️ 每年可去 <strong>${times.toFixed(1)}</strong> 趟！</span>`;
@@ -4193,7 +4215,7 @@
                     <div class="tc-price-row">
                         <div>
                             <div class="tc-price-label">${personCount === 1 ? '單人預算 / 趟' : '雙人同行預算 (2人) / 趟'}</div>
-                            <div class="tc-price-val" style="color: ${isAffordable ? '#059669' : '#0f172a'};">$${tripCost.toLocaleString()} <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">TWD</span></div>
+                            <div class="tc-price-val" style="color: ${isAffordable ? '#059669' : '#0f172a'};">$${tripCost.toLocaleString()} <span style="font-size: 0.9rem; font-weight: 800; color: #0f172a;">TWD</span></div>
                         </div>
                         <div>${timesHtml}</div>
                     </div>
@@ -4244,7 +4266,7 @@
         const covRate = document.getElementById('tbCoverageRate');
         const pBar = document.getElementById('tbProgressBar');
         if (totalExpense === 0) {
-            if (covRate) { covRate.style.color = '#64748b'; covRate.innerText = '尚未勾選行程'; }
+            if (covRate) { covRate.style.color = '#0f172a'; covRate.innerText = '尚未勾選行程'; covRate.style.fontWeight = '800'; }
             if (pBar) { pBar.style.width = '0%'; pBar.style.background = '#cbd5e1'; }
         } else if (isFundSufficient) {
             const pct = Math.round((totalTwd / totalExpense) * 100);
@@ -4262,7 +4284,7 @@
         if (container) {
             container.innerHTML = '';
             if (selectedList.length === 0) {
-                container.innerHTML = `<span style="font-size: 0.8rem; color: #94a3b8;">💡 尚未加入行程，請從下方卡片點選「＋加入年度旅遊清單」或點擊右上方「✨ 帶入熱門精選組合」！</span>`;
+                container.innerHTML = `<span style="font-size: 0.95rem; color: #0f172a; font-weight: 700;">💡 尚未加入行程，請從下方卡片點選「＋加入年度旅遊清單」或點擊右上方「✨ 帶入熱門精選組合」！</span>`;
             } else {
                 selectedList.forEach(item => {
                     const pill = document.createElement('span');
@@ -4277,14 +4299,15 @@
         }
     }
 
-    // 計算 20 年退休黃金期累計成果
+    // 計算 20 年退休黃金期累計成果 (根據前面設定 60 或 65 歲退休，精確計算 20 年成果)
     function updateLifetimeTravelStats(fx) {
         if (!state.yearlyData || state.yearlyData.length === 0) return;
         const isStress = document.getElementById('chkTravelZeroStress') ? document.getElementById('chkTravelZeroStress').checked : false;
 
-        // 計算自 65 歲 (或退休年齡) 起算 20 年的累計領取金
-        const startAge = state.retireAge || 65;
-        const retirementRows = state.yearlyData.filter(r => r.age >= startAge && r.age <= startAge + 20);
+        // 根據前面設定 60 或 65 歲退休，計算精確 20 年保單年度 (例如 60~79 歲 或 65~84 歲，共 20 個保單年度)
+        const startAge = state.laborStartAge || state.retireAge || 65;
+        const endAge = startAge + 19; // 含起訖年剛好 20 年
+        const retirementRows = state.yearlyData.filter(r => r.age >= startAge && r.age <= endAge);
         let lifetimeTotalOrig = 0;
         retirementRows.forEach(r => {
             const effSurv = getEffectiveSurvivalAnnual(r);
@@ -4294,6 +4317,17 @@
 
         const lifetimeTwd = Math.round(lifetimeTotalOrig * fx);
 
+        // 更新卡片主標題標註年齡區間
+        const elTitle = document.getElementById('tlsCardTitle');
+        if (elTitle) {
+            elTitle.innerHTML = `🌍 退休 20 年出國圓夢累計成果 <span style="font-size: 1.05rem; font-weight: 800; color: #4338ca; margin-left: 6px;">(${startAge}歲 ~ ${endAge}歲)</span>`;
+        }
+
+        const elTotalTitle = document.getElementById('tlsTotalTitle');
+        if (elTotalTitle) {
+            elTotalTitle.innerText = `20 年累計基金 (${startAge}~${endAge}歲)`;
+        }
+
         const elTotal = document.getElementById('tlsTotalFund');
         if (elTotal) elTotal.innerText = `$${lifetimeTwd.toLocaleString()}`;
 
@@ -4301,21 +4335,31 @@
         const elSub = document.getElementById('tlsSubPrincipal');
         if (elSub) {
             if (isArue) {
-                elSub.innerHTML = '定期逐年本利給付・<strong>領到最後本金領完</strong> (百歲前充分圓夢)';
+                elSub.innerHTML = `定期逐年本利給付・<strong>領到最後本金領完</strong> (${startAge}~${endAge}歲共20年)`;
                 elSub.style.color = '#0284c7';
             } else {
-                elSub.innerHTML = '終身保證給付・保額持續保留傳承';
+                elSub.innerHTML = `終身保證給付・保額持續保留傳承 (${startAge}~${endAge}歲共20年)`;
                 elSub.style.color = '#059669';
             }
         }
         const elSubCard = document.getElementById('tlsCardSubtitle');
         if (elSubCard) {
             if (isArue) {
-                elSubCard.innerHTML = '試算 65 歲至 85 歲期間，由保單提供之累計出國旅遊圓夢基金（※ <strong>ARUE 樂享百歲</strong>為定期給付型，逐年給付還本金與增值收益，<strong>領到最後本金會隨年度領完</strong>，將資產在百歲前充分發揮出國旅遊與退休生活價值）';
+                elSubCard.innerHTML = `試算 <strong>${startAge} 歲至 ${endAge} 歲 (共 20 年)</strong> 期間，由保單提供之累計出國旅遊圓夢基金（※ <strong>ARUE 樂享百歲</strong>為定期給付型，逐年給付還本金與增值收益，<strong>領到最後本金會隨年度領完</strong>，將資產在百歲前充分發揮出國旅遊與退休生活價值）`;
             } else {
-                elSubCard.innerHTML = '試算 65 歲至 85 歲期間，由保單源源不絕提供之累計旅遊圓夢能量（終身保證給付，保額持續保留傳承）';
+                elSubCard.innerHTML = `試算 <strong>${startAge} 歲至 ${endAge} 歲 (共 20 年)</strong> 期間，由保單源源不絕提供之累計旅遊圓夢能量（終身保證給付，保額持續保留傳承）`;
             }
         }
+
+        // 同步 60/65 按鈕狀態
+        ['p1BtnAge60', 'p2BtnAge60', 'p3BtnAge60'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('active', startAge === 60);
+        });
+        ['p1BtnAge65', 'p2BtnAge65', 'p3BtnAge65'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('active', startAge === 65);
+        });
 
         const japanCost = 58000;
         const europeCost = 135000;
@@ -4333,6 +4377,15 @@
 
         const elA = document.getElementById('tlsAuroraTrips');
         if (elA) elA.innerText = `${auroraTrips} 趟`;
+
+        const elJSub = document.getElementById('tlsJapanSub');
+        if (elJSub) elJSub.innerText = `平均每年可出國暢遊 ${(japanTrips / 20).toFixed(1)} 趟`;
+
+        const elESub = document.getElementById('tlsEuropeSub');
+        if (elESub) elESub.innerText = `平均每年可飛 ${(europeTrips / 20).toFixed(1)} 趟深度遊`;
+
+        const elASub = document.getElementById('tlsAuroraSub');
+        if (elASub) elASub.innerText = `20 年黃金期共可圓夢 ${auroraTrips} 趟頂級之旅`;
     }
 
     // 渲染第三頁 Chart.js 雙圖表
@@ -4447,9 +4500,9 @@
                         legend: {
                             position: 'right',
                             labels: {
-                                boxWidth: 12,
-                                font: { size: 11, weight: '700' },
-                                color: '#334155'
+                                boxWidth: 14,
+                                font: { size: 13, weight: '800' },
+                                color: '#0f172a'
                             }
                         },
                         tooltip: {
@@ -4466,20 +4519,48 @@
         }
     }
 
-    // 匯出第三頁出國旅遊試算圖檔
+    // 匯出第三頁出國旅遊試算圖檔 (依客戶需求：不需列印年度旅遊計畫試算、旅遊清單和 Chart3)
     function exportPage3Image() {
         const area = document.getElementById('page3CaptureArea');
         if (!area) return;
+
+        // 1. 暫時隱藏不需匯出的區塊
+        const noExportEls = area.querySelectorAll('.no-export-travel');
+        const originalDisplays = [];
+        noExportEls.forEach(el => {
+            originalDisplays.push(el.style.display);
+            el.style.display = 'none';
+        });
+
+        // 2. 將雙圖欄位展開為單欄 100% 滿版，使退休20年出國圓夢成果卡片居中放大
+        const chartsRow = document.getElementById('travelChartsRow');
+        let origGrid = '';
+        if (chartsRow) {
+            origGrid = chartsRow.style.gridTemplateColumns;
+            chartsRow.style.gridTemplateColumns = '1fr';
+        }
+
         html2canvas(area, {
             scale: 2,
-            backgroundColor: '#f1f5f9',
+            backgroundColor: '#f8fafc',
             useCORS: true
         }).then(canvas => {
             const currRow = state.yearlyData[state.selectedYearIndex] || { age: 65 };
             const link = document.createElement('a');
-            link.download = `出國旅遊夢想金_${currRow.age}歲旅費規劃試算.png`;
+            link.download = `出國旅遊夢想金_${currRow.age}歲與退休20年圓夢規劃.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
+        }).catch(err => {
+            console.error('Export image error:', err);
+            alert('匯出圖片發生錯誤，請稍候重試');
+        }).finally(() => {
+            // 3. 還原網頁元素原本的顯示狀態
+            noExportEls.forEach((el, idx) => {
+                el.style.display = originalDisplays[idx];
+            });
+            if (chartsRow) {
+                chartsRow.style.gridTemplateColumns = origGrid;
+            }
         });
     }
 
