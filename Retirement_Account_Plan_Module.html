@@ -1452,6 +1452,26 @@
         .selected-trip-remove:hover {
             color: #ef4444;
         }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #38bdf8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        #imageExportModalImg {
+            -webkit-touch-callout: default !important;
+            -webkit-user-select: auto !important;
+            user-select: auto !important;
+            pointer-events: auto !important;
+        }
 </style>
 </head>
 <body>
@@ -2284,6 +2304,49 @@
         </div>
     </div>
 </div>
+
+<!-- 專為 iPad / 平板優化之圖檔匯出完成預覽與儲存 Modal -->
+<div class="modal-backdrop" id="imageExportModal" style="display: none; z-index: 10000;">
+    <div class="modal-card" style="max-width: 920px; max-height: 90vh;">
+        <div class="modal-header" style="position: sticky; top: 0; background: #ffffff; z-index: 10; border-bottom: 1.5px solid #cbd5e1; padding: 16px 24px;">
+            <div>
+                <h3 id="imageExportModalTitle" style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #0f172a;">
+                    📷 圖檔已成功生成！
+                </h3>
+                <div id="imageExportModalGuide" style="font-size: 0.95rem; color: #1e293b; font-weight: 600; margin-top: 4px;">
+                    💡 <strong>iPad / 手機使用者：</strong>請<strong>「長按下方圖片」選擇「儲存影像」</strong>存入相簿，或點擊下方「📤 存入 iPad 相簿 / 分享」！
+                </div>
+            </div>
+            <button type="button" onclick="closeImageExportModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #0f172a; font-weight: 900;">✕</button>
+        </div>
+        <div class="modal-body" style="text-align: center; padding: 18px; background: #f8fafc;">
+            <img id="imageExportModalImg" src="" alt="規劃圖檔預覽" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 24px rgba(15,23,42,0.15); border: 1.5px solid #cbd5e1; display: inline-block;">
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; padding: 14px 24px;">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button type="button" class="btn-primary-upload" onclick="triggerModalShare()" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); font-size: 0.95rem; font-weight: 800; padding: 10px 18px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);">
+                    📤 存入 iPad 相簿 / 分享
+                </button>
+                <button type="button" class="btn-sample" onclick="triggerModalDownload()" style="font-size: 0.95rem; font-weight: 800; padding: 10px 18px;">
+                    💾 另存圖檔
+                </button>
+                <button type="button" class="btn-sample" onclick="triggerModalOpenTab()" style="font-size: 0.95rem; font-weight: 800; padding: 10px 18px;">
+                    🔍 另開大圖分頁
+                </button>
+            </div>
+            <button type="button" class="btn-sample" onclick="closeImageExportModal()" style="font-size: 0.95rem; font-weight: 800; padding: 10px 18px;">
+                關閉
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 浮動載入提示 Toast -->
+<div id="exportLoadingToast" style="position: fixed; top: 25px; left: 50%; transform: translateX(-50%); background: #0f172a; color: #ffffff; padding: 14px 28px; border-radius: 30px; font-size: 1rem; font-weight: 800; z-index: 99999; box-shadow: 0 10px 30px rgba(0,0,0,0.4); display: none; align-items: center; gap: 12px; pointer-events: none; border: 1.5px solid #38bdf8;">
+    <span class="loading-spinner"></span>
+    <span id="exportLoadingMsg">正在生成圖檔...</span>
+</div>
+
 
 <script>
     // 註冊 ChartDataLabels 套件
@@ -3937,18 +4000,44 @@
     // 匯出第二頁試算報告圖檔
     function exportPage2Image() {
         const area = document.getElementById('page2CaptureArea');
-        html2canvas(area, {
-            scale: 2,
-            backgroundColor: '#f1f5f9',
-            useCORS: true
-        }).then(canvas => {
-            const cityObj = state.cities[state.selectedCityKey];
-            const currRow = state.yearlyData[state.selectedYearIndex];
-            const link = document.createElement('a');
-            link.download = `退休帳戶計畫_${cityObj.name}_${currRow.age}歲月退試算.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        });
+        if (!area) return;
+
+        showLoadingToast('正在生成月退休金試算圖檔，請稍候...');
+
+        setTimeout(() => {
+            html2canvas(area, {
+                scale: 1.5,
+                backgroundColor: '#f1f5f9',
+                useCORS: true,
+                allowTaint: true,
+                scrollX: 0,
+                scrollY: 0,
+                windowWidth: document.documentElement.offsetWidth,
+                windowHeight: document.documentElement.offsetHeight,
+                logging: false,
+                imageTimeout: 0,
+                onclone: (clonedDoc) => {
+                    ['monthlyExpenseChart', 'laborCeilingChart', 'p2RetirementStackChart'].forEach(id => {
+                        const orig = document.getElementById(id);
+                        const cloned = clonedDoc.getElementById(id);
+                        if (orig && cloned) {
+                            const ctx = cloned.getContext('2d');
+                            ctx.drawImage(orig, 0, 0);
+                        }
+                    });
+                }
+            }).then(canvas => {
+                hideLoadingToast();
+                const cityObj = state.cities[state.selectedCityKey];
+                const currRow = state.yearlyData[state.selectedYearIndex] || { age: 65 };
+                const filename = `退休帳戶計畫_${cityObj.name}_${currRow.age}歲月退試算.png`;
+                handleCanvasExport(canvas, filename, '月退休金組成與總額試算');
+            }).catch(err => {
+                hideLoadingToast();
+                console.error('Export error:', err);
+                alert('匯出圖片發生錯誤：' + (err.message || err));
+            });
+        }, 120);
     }
 
     // 初始化啟動（預設預載 10ARUE3 樂享百歲建議書）
@@ -4519,17 +4608,147 @@
         }
     }
 
-    // 匯出第三頁出國旅遊試算圖檔 (依客戶需求：不需列印年度旅遊計畫試算、旅遊清單和 Chart3)
+
+    // =========================================================================
+    // 跨平台（專為 iPad / iOS Safari / Android / PC 優化）圖檔匯出核心處理函式
+    // =========================================================================
+    window._lastExportData = {
+        blob: null,
+        dataUrl: '',
+        filename: '',
+        title: ''
+    };
+
+    function showLoadingToast(msg) {
+        const toast = document.getElementById('exportLoadingToast');
+        const msgEl = document.getElementById('exportLoadingMsg');
+        if (msgEl) msgEl.innerText = msg || '正在生成圖檔...';
+        if (toast) toast.style.display = 'flex';
+    }
+
+    function hideLoadingToast() {
+        const toast = document.getElementById('exportLoadingToast');
+        if (toast) toast.style.display = 'none';
+    }
+
+    async function handleCanvasExport(canvas, filename, titleText) {
+        const dataUrl = canvas.toDataURL('image/png');
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        
+        window._lastExportData = {
+            blob: blob,
+            dataUrl: dataUrl,
+            filename: filename,
+            title: titleText || '退休帳戶計畫'
+        };
+
+        // 1. 若為非 iOS 裝置 (PC / Mac)，直接觸發瀏覽器下載
+        if (!isIOS) {
+            try {
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = dataUrl;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (e) {
+                console.warn('Auto download fallback:', e);
+            }
+        }
+
+        // 2. 開啟圖檔預覽與儲存彈窗（iPad 上最可靠的方式：使用者可長按儲存圖片或點分享）
+        showImageExportModal(dataUrl, filename, titleText, isIOS);
+    }
+
+    function showImageExportModal(dataUrl, filename, titleText, isIOS) {
+        const modal = document.getElementById('imageExportModal');
+        const img = document.getElementById('imageExportModalImg');
+        const title = document.getElementById('imageExportModalTitle');
+        const guide = document.getElementById('imageExportModalGuide');
+
+        if (!modal || !img) return;
+
+        img.src = dataUrl;
+        if (title) title.innerText = `📷 ${titleText || '規劃圖檔'} 已生成！`;
+        if (guide) {
+            guide.innerHTML = isIOS
+                ? '💡 <strong>iPad / 手機使用者：</strong>請<strong>「長按下方圖片」選擇「儲存影像」</strong>存入相簿，或點擊下方「📤 存入 iPad 相簿 / 分享」！'
+                : '💡 <strong>電腦版使用者：</strong>圖檔已自動啟動下載，您亦可點擊下方按鈕另存或放大檢視。';
+        }
+
+        modal.style.display = 'flex';
+    }
+
+    function closeImageExportModal() {
+        const modal = document.getElementById('imageExportModal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    async function triggerModalShare() {
+        if (!window._lastExportData || !window._lastExportData.blob) {
+            alert('請長按圖片選擇「儲存影像」存入相簿！');
+            return;
+        }
+        const { blob, filename, title } = window._lastExportData;
+
+        try {
+            if (navigator.share && window.File) {
+                const file = new File([blob], filename, { type: 'image/png' });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: title,
+                        text: filename
+                    });
+                    return;
+                }
+            }
+            alert('您的瀏覽器暫不支援直接呼叫相簿分享，請直接「長按下方圖片」選擇「儲存影像」即可存入相簿！');
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                console.error('Share error:', err);
+                alert('請直接「長按下方圖片」選擇「儲存影像」即可存入相簿！');
+            }
+        }
+    }
+
+    function triggerModalDownload() {
+        if (!window._lastExportData || !window._lastExportData.dataUrl) return;
+        const { dataUrl, filename } = window._lastExportData;
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function triggerModalOpenTab() {
+        if (!window._lastExportData || !window._lastExportData.dataUrl) return;
+        const { dataUrl, filename } = window._lastExportData;
+        const w = window.open('');
+        if (w) {
+            w.document.write(`<html><head><title>${filename}</title></head><body style="margin:0; background:#0f172a; display:flex; justify-content:center; align-items:center; min-height:100vh;"><img src="${dataUrl}" style="max-width:100%; height:auto; box-shadow:0 8px 30px rgba(0,0,0,0.5);"></body></html>`);
+        } else {
+            window.location.href = dataUrl;
+        }
+    }
+
+    // 匯出第三頁出國旅遊試算圖檔 (專為 iPad 與跨平台優化)
     function exportPage3Image() {
         const area = document.getElementById('page3CaptureArea');
         if (!area) return;
 
-        // 1. 暫時隱藏不需匯出的區塊
+        // 1. 暫時隱藏不需匯出的區塊 (設定 display: none 與 data-html2canvas-ignore)
         const noExportEls = area.querySelectorAll('.no-export-travel');
         const originalDisplays = [];
         noExportEls.forEach(el => {
             originalDisplays.push(el.style.display);
             el.style.display = 'none';
+            el.setAttribute('data-html2canvas-ignore', 'true');
         });
 
         // 2. 將雙圖欄位展開為單欄 100% 滿版，使退休20年出國圓夢成果卡片居中放大
@@ -4540,28 +4759,49 @@
             chartsRow.style.gridTemplateColumns = '1fr';
         }
 
-        html2canvas(area, {
-            scale: 2,
-            backgroundColor: '#f8fafc',
-            useCORS: true
-        }).then(canvas => {
-            const currRow = state.yearlyData[state.selectedYearIndex] || { age: 65 };
-            const link = document.createElement('a');
-            link.download = `出國旅遊夢想金_${currRow.age}歲與退休20年圓夢規劃.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        }).catch(err => {
-            console.error('Export image error:', err);
-            alert('匯出圖片發生錯誤，請稍候重試');
-        }).finally(() => {
-            // 3. 還原網頁元素原本的顯示狀態
-            noExportEls.forEach((el, idx) => {
-                el.style.display = originalDisplays[idx];
+        showLoadingToast('正在生成出國旅遊規劃圖檔，請稍候...');
+
+        // 延遲 120ms 確保 iPad Safari 完成 DOM 排版計算
+        setTimeout(() => {
+            html2canvas(area, {
+                scale: 1.5,
+                backgroundColor: '#f8fafc',
+                useCORS: true,
+                allowTaint: true,
+                scrollX: 0,
+                scrollY: 0,
+                windowWidth: document.documentElement.offsetWidth,
+                windowHeight: document.documentElement.offsetHeight,
+                logging: false,
+                imageTimeout: 0,
+                onclone: (clonedDoc) => {
+                    const origCanvas = document.getElementById('travelLifetimeChart');
+                    const clonedCanvas = clonedDoc.getElementById('travelLifetimeChart');
+                    if (origCanvas && clonedCanvas) {
+                        const ctx = clonedCanvas.getContext('2d');
+                        ctx.drawImage(origCanvas, 0, 0);
+                    }
+                }
+            }).then(canvas => {
+                hideLoadingToast();
+                const currRow = state.yearlyData[state.selectedYearIndex] || { age: 65 };
+                const filename = `出國旅遊夢想金_${currRow.age}歲與退休20年圓夢規劃.png`;
+                handleCanvasExport(canvas, filename, '出國旅遊夢想金規劃試算');
+            }).catch(err => {
+                hideLoadingToast();
+                console.error('Export image error:', err);
+                alert('匯出圖片發生錯誤：' + (err.message || err));
+            }).finally(() => {
+                // 還原網頁元素原本的顯示狀態
+                noExportEls.forEach((el, idx) => {
+                    el.style.display = originalDisplays[idx];
+                    el.removeAttribute('data-html2canvas-ignore');
+                });
+                if (chartsRow) {
+                    chartsRow.style.gridTemplateColumns = origGrid;
+                }
             });
-            if (chartsRow) {
-                chartsRow.style.gridTemplateColumns = origGrid;
-            }
-        });
+        }, 120);
     }
 
 
